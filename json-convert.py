@@ -44,7 +44,6 @@ class JSONConvert:
     Generate dictionary
     '''
     def generateDict(self,line):
-        import re
         self.records.append({
             "name" : self.checkkey(line, 0),
             "type" : self.checkkey(line, 1),
