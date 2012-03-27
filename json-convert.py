@@ -30,9 +30,9 @@ class JSONConvert:
             self.f = open(self.filename, 'r')
 
     '''
-    Parse record
+    Read record
     '''
-    def parseRecords(self):
+    def readRecords(self):
         import re
         self.records = []
         for line in self.f:
@@ -79,6 +79,6 @@ class JSONConvert:
 ''' main '''
 o = JSONConvert()
 o.readFile()
-o.parseRecords()
+o.readRecords()
 o.serializeJSON()
 print o.build_records
