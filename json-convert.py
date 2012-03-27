@@ -19,7 +19,7 @@
 
 class JSONConvert:
     '''
-    Read txt file
+    Read text file
     '''
     def readFile(self):
         import os.path, sys
@@ -41,7 +41,7 @@ class JSONConvert:
                 self.generateDict(line)
 
     '''
-    generate dictionary
+    Generate dictionary
     '''
     def generateDict(self,line):
         import re
@@ -54,7 +54,7 @@ class JSONConvert:
             })
 
     '''
-    Check input file
+    Check input key
     '''
     def checkkey(self, key, index):
         import re
@@ -76,7 +76,7 @@ class JSONConvert:
                 })
 
 
-''' main '''
+''' Main '''
 o = JSONConvert()
 o.readFile()
 o.readRecords()
