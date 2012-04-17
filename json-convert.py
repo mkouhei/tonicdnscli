@@ -68,6 +68,7 @@ class JSONConvert():
         self.build_records = json.JSONEncoder().encode(data(act))
 
 def parse_options():
+    import sys
     usage = "usage: %prog [options] inputfile"
     parser = OptionParser(usage=usage)
     parser.add_option("-d", "--delete", action="store_true",
