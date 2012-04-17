@@ -20,8 +20,24 @@ mx2.example.org A               10.10.11.10 3600
 Usage
 -----
 
+Add records.
+
 ```bash
-$ python json-convert.py sample/example.org.txt
+$ ./json-convert.py sample/example.org.txt
+{"records": [
+{"content": "10.10.10.10", "priority": null, "type": "A", "name": "test0.example.org", "ttl": "86400"},
+{"content": "10.10.10.11", "priority": null, "type": "A", "name": "test1.example.org", "ttl": "86400"},
+{"content": "10.10.10.12", "priority": null, "type": "A", "name": "test2.example.org", "ttl": "86400"},
+{"content": "mx.example.org", "priority": "0", "type": "MX", "name": "example.org", "ttl": "86400"},
+{"content": "mx2.example.org", "priority": "10", "type": "MX", "name": "example.org", "ttl": "86400"},
+{"content": "10.10.11.10", "priority": null, "type": "A", "name": "mx.example.org", "ttl": "3600"},
+{"content": "10.10.11.10", "priority": null, "type": "A", "name": "mx2.example.org", "ttl": "3600"}]}
+```
+
+Delete records.
+
+```bash
+$ ./json-convert.py -d sample/example.org.txt
 {"records": [
 {"content": "10.10.10.10", "priority": null, "type": "A", "name": "test0.example.org", "ttl": "86400"},
 {"content": "10.10.10.11", "priority": null, "type": "A", "name": "test1.example.org", "ttl": "86400"},
