@@ -95,7 +95,6 @@ def main():
         act = True
 
     filename = args[0]
-    print filename
     if os.path.isfile(filename):
         d = os.path.basename(filename).split('.txt')[0]
         f = open(filename, 'r')
