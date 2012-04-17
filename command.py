@@ -17,58 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from optparse import OptionParser
-
-class JSONConvert():
-    '''
-    Read record
-    '''
-    def __init__(self, domain):
-        self.domain = domain
-
-    def readRecords(self,filename):
-        import re
-        self.records = []
-        for line in filename:
-            # Ignore number(#) at begining of a line.
-            if not re.search('^#', line):
-                self.generateDict(line)
-
-    '''
-    Generate dictionary
-    '''
-    def generateDict(self,line):
-        self.records.append({
-            "name" : self.checkkey(line, 0),
-            "type" : self.checkkey(line, 1),
-            "content" : self.checkkey(line, 2),
-            "ttl": self.checkkey(line, 3),
-            "priority" : self.checkkey(line, 4)
-            })
-
-    '''
-    Check input key
-    '''
-    def checkkey(self, key, index):
-        import re
-        length = len(re.split('\s*', key[:-1]))
-        if length > index:
-            v = re.split('\s*', key[:-1])[index]
-        else:
-            v = None
-        return v
-        
-    '''
-    Serialize JSON
-    '''
-    def serializeJSON(self, act):
-        import json
-        data = lambda act: {"records": self.records} \
-            if act else {"name": self.domain, "records": self.records}
-        self.build_records = json.JSONEncoder().encode(data(act))
-
 def parse_options():
     import sys
+    from optparse import OptionParser
     usage = "usage: %prog [options] inputfile"
     parser = OptionParser(usage=usage)
     parser.add_option("-d", "--delete", action="store_true",
@@ -84,6 +35,7 @@ def parse_options():
 
 def main():
     import os.path, sys
+    import converter
     try:
         options, args = parse_options()
     except RuntimeError, e:
@@ -100,12 +52,10 @@ def main():
         d = os.path.basename(filename).split('.txt')[0]
         f = open(filename, 'r')
 
-    o = JSONConvert(d)
+    o = converter.JSONConvert(d)
     o.readRecords(f)
     o.serializeJSON(act)
     print o.build_records
     
 if __name__ == "__main__":
     main()
-
-
