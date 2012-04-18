@@ -36,13 +36,21 @@ class JSONConvert():
     Generate dictionary
     '''
     def generateDict(self,line):
-        self.records.append({
-            "name" : self.checkkey(line, 0),
-            "type" : self.checkkey(line, 1),
-            "content" : self.checkkey(line, 2),
-            "ttl": self.checkkey(line, 3),
-            "priority" : self.checkkey(line, 4)
-            })
+        if self.checkkey(line, 4):
+            self.records.append({
+                    "name" : self.checkkey(line, 0),
+                    "type" : self.checkkey(line, 1),
+                    "content" : self.checkkey(line, 2),
+                    "ttl": self.checkkey(line, 3),
+                    "priority" : self.checkkey(line, 4)
+                    })
+        else:
+            self.records.append({
+                    "name" : self.checkkey(line, 0),
+                    "type" : self.checkkey(line, 1),
+                    "content" : self.checkkey(line, 2),
+                    "ttl": self.checkkey(line, 3)
+                    })
 
     '''
     Check input key
