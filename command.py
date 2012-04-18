@@ -39,6 +39,7 @@ def parse_options():
 def main():
     import os.path, sys
     import converter, tdauth
+    import processing as p
 
     try:
         options, args = parse_options()
@@ -53,10 +54,10 @@ def main():
 
     filename = args[0]
     if os.path.isfile(filename):
-        d = os.path.basename(filename).split('.txt')[0]
+        domain = os.path.basename(filename).split('.txt')[0]
         f = open(filename, 'r')
 
-    o = converter.JSONConvert(d)
+    o = converter.JSONConvert(domain)
     o.readRecords(f)
     o.serializeJSON(act)
     if options.stdout:
@@ -73,6 +74,12 @@ def main():
         try:
             o = tdauth.authInfo(username, password, server)
             o.getToken()
+
+            # Retrieve zone records
+            p.getZone(server, o.token, domain)
+
+            # Retrieve all zones
+            p.getAllZone(server, o.token)
 
         except UnboundLocalError, e:
             sys.stderr.write("ERROR: %s\n" % e)
