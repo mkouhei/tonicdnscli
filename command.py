@@ -59,11 +59,11 @@ def main():
 
     o = converter.JSONConvert(domain)
     o.readRecords(f)
-    o.serializeJSON(act)
+    o.genDict(act)
     if options.stdout:
-        print o.build_records
+        print o.dict_records
     else:
-        encoded = o.build_records
+        dict_records = o.dict_records
         if options.fqdn:
             server = options.fqdn
         if options.username:
@@ -76,10 +76,13 @@ def main():
             o.getToken()
 
             # Retrieve zone records
-            p.getZone(server, o.token, domain)
+            #p.getZone(server, o.token, domain)
 
             # Retrieve all zones
-            p.getAllZone(server, o.token)
+            #p.getAllZone(server, o.token)
+
+            # create recores
+            p.createRecords(server, o.token, domain, dict_records)
 
         except UnboundLocalError, e:
             sys.stderr.write("ERROR: %s\n" % e)

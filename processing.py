@@ -23,15 +23,31 @@ def unprovide():
 
 def tonicDNSClient(uri, method, token, data):
     import json, urllib2
-    encoded = json.JSONEncoder().encode(data)
+
+    # When data is False, retrieve data as GET method.
+    if data:
+        encoded = json.JSONEncoder().encode(data)
+    else:
+        encoded = data
+
     o = urllib2.build_opener(urllib2.HTTPHandler)
     r = urllib2.Request(uri, data=encoded)
-    r.add_header('Content-Type', 'application/json')
-    r.add_header('x-authentication-token', token)
-    r.get_method = lambda: method
-    data = json.loads(o.open(r).read())
-    print data
 
+    r.add_header('x-authentication-token', token)
+
+    # When encoded(=data) is False, retrieve data as GET method.
+    if encoded:
+        r.add_header('Content-Type', 'application/json')
+
+    r.get_method = lambda: method
+    url = o.open(r)
+
+    # response body
+    if method == 'GET':
+        data = json.loads(url.read())
+    else:
+        data = url.read()
+    print data
 
 def createZoneRecords():
     # ContentType: application/json
@@ -40,13 +56,13 @@ def createZoneRecords():
     # uri: /zone
     unprovide()
 
-def createRecords():
+def createRecords(server, token, domain, data):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: PUT
-    # uri: /zone/:domain
-    return
-
+    method = 'PUT'
+    uri = 'https://' + server + '/zone/' + domain
+    tonicDNSClient(uri, method, token, data)
+    
 def deleteRecords():
     # ContentType: application/json
     # x-authentication-token: token

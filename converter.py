@@ -65,10 +65,10 @@ class JSONConvert():
         return v
         
     '''
-    Serialize JSON
+    generate dictionary
     '''
-    def serializeJSON(self, act):
+    def genDict(self, act):
         import json
         data = lambda act: {"records": self.records} \
             if act else {"name": self.domain, "records": self.records}
-        self.build_records = json.JSONEncoder().encode(data(act))
+        self.dict_records = data(act)
