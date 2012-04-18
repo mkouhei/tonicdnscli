@@ -22,8 +22,11 @@ def parse_options():
     from optparse import OptionParser
     usage = "usage: %prog [options] inputfile"
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--delete", action="store_true",
-                      help="delete records")
+    parser.add_option("-d", "--delete", action="store_true", help="delete records")
+    parser.add_option("-o", "--stdout", action="store_true", help="print json format to stdout")
+    parser.add_option("-s", "--server", dest='fqdn', help="specify TonicDNS server")
+    parser.add_option("-u", "--username", dest='username', help="TonicDNS username")
+    parser.add_option("-p", "--password", dest='password', help="TonicDNS password")
     options, args = parser.parse_args()
 
     if len(args) == 0:
@@ -35,7 +38,8 @@ def parse_options():
 
 def main():
     import os.path, sys
-    import converter
+    import converter, tdauth
+
     try:
         options, args = parse_options()
     except RuntimeError, e:
@@ -55,7 +59,24 @@ def main():
     o = converter.JSONConvert(d)
     o.readRecords(f)
     o.serializeJSON(act)
-    print o.build_records
-    
+    if options.stdout:
+        print o.build_records
+    else:
+        encoded = o.build_records
+        if options.fqdn:
+            server = options.fqdn
+        if options.username:
+            username = options.username
+        if options.password:
+            password = options.password
+
+        try:
+            o = tdauth.authInfo(username, password, server)
+            o.getToken()
+
+        except UnboundLocalError, e:
+            sys.stderr.write("ERROR: %s\n" % e)
+            return
+
 if __name__ == "__main__":
     main()

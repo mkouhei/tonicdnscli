@@ -19,11 +19,11 @@
 
 class authInfo():
     
-    def __init__(self, username, password):
+    def __init__(self, username, password, server):
         self.username = username
         self.password = password
         self.token = ''
-        self.uri = 'https://example.org/authenticate'
+        self.uri = 'https://' + server + '/authenticate'
 
     def setInfo(self):
         authinfo = {
