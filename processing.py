@@ -40,10 +40,12 @@ def tonicDNSClient(uri, method, token, data):
 
     # response body
     if method == 'GET':
-        data = json.loads(url.read())
+        datas = json.loads(url.read())
+        print json.dumps(datas, sort_keys=True, indent=2)
+            
     else:
         data = url.read()
-    print data
+        print data
 
 def createZoneRecords():
     # ContentType: application/json

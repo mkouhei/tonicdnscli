@@ -39,7 +39,7 @@ def parse_options():
 
 
 def main():
-    import os.path, sys
+    import os.path, sys, json
     import converter, tdauth
     import processing as p
 
@@ -63,7 +63,7 @@ def main():
     o.readRecords(f)
     o.genDict(act)
     if options.stdout:
-        print o.dict_records
+        print json.dumps(o.dict_records, sort_keys=True, indent=2)
     else:
         dict_records = o.dict_records
         if options.fqdn:
