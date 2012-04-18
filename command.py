@@ -22,11 +22,13 @@ def parse_options():
     from optparse import OptionParser
     usage = "usage: %prog [options] inputfile"
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--delete", action="store_true", help="delete records")
     parser.add_option("-o", "--stdout", action="store_true", help="print json format to stdout")
-    parser.add_option("-s", "--server", dest='fqdn', help="specify TonicDNS server")
-    parser.add_option("-u", "--username", dest='username', help="TonicDNS username")
-    parser.add_option("-p", "--password", dest='password', help="TonicDNS password")
+    parser.add_option("-c", "--create", action="store_true", help="create records")
+    parser.add_option("-d", "--delete", action="store_true", help="delete records")
+    parser.add_option("-g", "--retrieve", action="store_true", help="retrieve records")
+    parser.add_option("-s", dest='fqdn', help="specify TonicDNS server")
+    parser.add_option("-u", dest='username', help="TonicDNS username")
+    parser.add_option("-p", dest='password', help="TonicDNS password")
     options, args = parser.parse_args()
 
     if len(args) == 0:
@@ -75,18 +77,24 @@ def main():
             o = tdauth.authInfo(username, password, server)
             o.getToken()
 
+
             # Retrieve zone records
-            #p.getZone(server, o.token, domain)
+            if options.retrieve:
+                p.getZone(server, o.token, domain)
+                exit
 
             # Retrieve all zones
             #p.getAllZone(server, o.token)
 
             # create recores
-            #p.createRecords(server, o.token, domain, dict_records)
+            if options.create:
+                p.createRecords(server, o.token, domain, dict_records)
+                exit
 
             # delete recores
             if options.delete:
                 p.deleteRecords(server, o.token, dict_records)
+                exit
 
         except UnboundLocalError, e:
             sys.stderr.write("ERROR: %s\n" % e)

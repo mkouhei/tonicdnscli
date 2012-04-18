@@ -24,11 +24,7 @@ def unprovide():
 def tonicDNSClient(uri, method, token, data):
     import json, urllib2
 
-    # When data is False, retrieve data as GET method.
-    if data:
-        encoded = json.JSONEncoder().encode(data)
-    else:
-        encoded = data
+    encoded = json.JSONEncoder().encode(data)
 
     o = urllib2.build_opener(urllib2.HTTPHandler)
     r = urllib2.Request(uri, data=encoded)
