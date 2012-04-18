@@ -63,12 +63,12 @@ def createRecords(server, token, domain, data):
     uri = 'https://' + server + '/zone/' + domain
     tonicDNSClient(uri, method, token, data)
     
-def deleteRecords():
+def deleteRecords(server, token, data):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: DELETE
-    # uri: /zone
-    return
+    method = 'DELETE'
+    uri = 'https://' + server + '/zone'
+    tonicDNSClient(uri, method, token, data)
 
 def getZone(server, token, domain):
     # x-authentication-token: token

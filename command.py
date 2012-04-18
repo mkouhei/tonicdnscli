@@ -82,7 +82,11 @@ def main():
             #p.getAllZone(server, o.token)
 
             # create recores
-            p.createRecords(server, o.token, domain, dict_records)
+            #p.createRecords(server, o.token, domain, dict_records)
+
+            # delete recores
+            if options.delete:
+                p.deleteRecords(server, o.token, dict_records)
 
         except UnboundLocalError, e:
             sys.stderr.write("ERROR: %s\n" % e)
