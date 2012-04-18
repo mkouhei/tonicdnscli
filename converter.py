@@ -18,23 +18,21 @@
 """
 
 class JSONConvert():
-    '''
-    Read record
-    '''
+    maxdata = 2
+
     def __init__(self, domain):
         self.domain = domain
+        self.split_index =0
+        self.records = []
+        self.separated_list = []
 
     def readRecords(self,filename):
         import re
-        self.records = []
         for line in filename:
             # Ignore number(#) at begining of a line.
             if not re.search('^#', line):
                 self.generateDict(line)
 
-    '''
-    Generate dictionary
-    '''
     def generateDict(self,line):
         if self.checkkey(line, 4):
             self.records.append({
@@ -52,9 +50,6 @@ class JSONConvert():
                     "ttl": self.checkkey(line, 3)
                     })
 
-    '''
-    Check input key
-    '''
     def checkkey(self, key, index):
         import re
         length = len(re.split('\s*', key[:-1]))
@@ -64,11 +59,22 @@ class JSONConvert():
             v = None
         return v
         
-    '''
-    generate dictionary
-    '''
-    def genDict(self, act):
+    def genData(self, act):
         import json
         data = lambda act: {"records": self.records} \
             if act else {"name": self.domain, "records": self.records}
         self.dict_records = data(act)
+
+    def separateInputFile(self, file):
+        import re
+        line_index = 1
+        separated_str = ''
+        for line in file:
+            if not re.search('^#', line):
+                if line_index > self.maxdata:
+                    line_index = 1
+                    self.split_index += 1
+                    self.separated_list.append(separated_str)
+                    separated_str = ''
+                line_index += 1
+                separated_str += line

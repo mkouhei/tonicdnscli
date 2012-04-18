@@ -60,8 +60,12 @@ def main():
         f = open(filename, 'r')
 
     o = converter.JSONConvert(domain)
+    o.separateInputFile(f)
+    for listitem in o.separated_list:
+        print listitem
+        o.readRecords(listitem)
     o.readRecords(f)
-    o.genDict(act)
+    o.genData(act)
     if options.stdout:
         print json.dumps(o.dict_records, sort_keys=True, indent=2)
     else:
