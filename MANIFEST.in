@@ -1,4 +1,4 @@
 include MANIFEST.in
 include LICENSE
 recursive-include examples *.txt
-recursive-include src *.py *.md
+recursive-include src *.py *.rst

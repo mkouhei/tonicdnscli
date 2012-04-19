@@ -34,8 +34,8 @@ classifiers = [
 ]
 
 long_description = \
-        open(os.path.join("src","README.md")).read() + \
-        open(os.path.join("src","TODO.md")).read()
+        open(os.path.join("src","README.rst")).read() + \
+        open(os.path.join("src","TODO.rst")).read()
 
 requires = ['setuptools']
 
