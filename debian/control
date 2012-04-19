@@ -1,0 +1,17 @@
+Source: tonicdnscli
+Section: python
+Priority: optional
+Maintainer: Kouhei Maeda <mkouhei@palmtb.net>
+Build-Depends: debhelper (>= 8.0.0), python-all, python-setuptools
+Standards-Version: 3.9.2
+X-Python-Version: 2.7
+Homepage: https://github.com/mkouhei/tonicdnscli
+
+Package: python-tonicdnscli
+Architecture: all
+Provides: ${python:Provides}
+Depends: ${python:Depends}, ${misc:Depends}
+Description: TonicDNS Client
+ This command line tool for TonicDNS API. TonicDNS is  RESTful API for
+ PowerDNS. Convert readble text record to JSON, and create or delete zone
+ records with TonicDNS.
