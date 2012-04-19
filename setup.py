@@ -21,7 +21,7 @@ import os, sys
 from setuptools import setup, find_packages
 
 sys.path.insert(0, 'src')
-import tonicdns_cli
+import tonicdnscli
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -39,22 +39,22 @@ long_description = \
 
 requires = ['setuptools']
 
-setup(name='tonicdns_cli',
-      version=tonicdns_cli.__version__,
+setup(name='tonicdnscli',
+      version=tonicdnscli.__version__,
       description='TonicDNS CLI tool',
       long_description=long_description,
       author='Kouhei Maeda',
       author_email='mkouhei@palmtb.net',
-      url='https://github.com/mkouhei/tonicdns_cli',
+      url='https://github.com/mkouhei/tonicdnscli',
       license=' GNU General Public License version 3',
       classifiers=classifiers,
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      data_files = [('share/tonicdns_cli/examples', ['examples/example.org.txt'])],
+      data_files = [('share/tonicdnscli/examples', ['examples/example.org.txt'])],
       include_data_files=True,
       install_requires=requires,
       entry_points="""
         [console_scripts]
-        tonicdns_cli = tonicdns_cli.command:main
+        tonicdnscli = tonicdnscli.command:main
 """,
 )

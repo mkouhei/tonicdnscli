@@ -24,8 +24,8 @@ Install
 -------
 
 ```bash
-$ git clone https://github.com/mkouhei/tonicdns_cli
-$ cd tonicdns_cli
+$ git clone https://github.com/mkouhei/tonicdnscli
+$ cd tonicdnscli
 $ sudo python setup.py install
 ```
 
@@ -35,7 +35,7 @@ Usage
 #### Print converted JSON
 
 ```bash
-$ tonicdns_cli -o sample/example.org.txt
+$ tonicdnscli -o sample/example.org.txt
 {
   "records": [
     {
@@ -62,7 +62,7 @@ $ tonicdns_cli -o sample/example.org.txt
 #### Retrieve records
 
 ```bash
-$ tonicdns_cli -g -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+$ tonicdnscli -g -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
 {
   "name": "example.org", 
   "notified_serial": "2012021402", 
@@ -88,14 +88,14 @@ $ tonicdns_cli -g -s ns.example.org -u tonicusername -p tonicpassword sample/exa
 #### Create records
 
 ```bash
-$ tonicdns_cli -c -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+$ tonicdnscli -c -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
 True
 ```
 
 #### Delete records.
 
 ```bash
-$ tonicdns_cli -d -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+$ tonicdnscli -d -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
 True
 ```
 
