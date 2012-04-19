@@ -50,8 +50,8 @@ setup(name='tonicdns_cli',
       classifiers=classifiers,
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      package_data = {'sample': ['sample/*']},
-      include_package_data=True,
+      data_files = [('share/tonicdns_cli/examples', ['examples/example.org.txt'])],
+      include_data_files=True,
       install_requires=requires,
       entry_points="""
         [console_scripts]
