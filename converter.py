@@ -18,7 +18,10 @@
 """
 
 class JSONConvert():
-    maxdata = 2
+    # This magic number is work around.
+    # Body size limitation with PUT method,
+    # The boudnary of body size in over 27915 byte and under 27938 byte.
+    maxdata = 100
 
     def __init__(self, domain):
         self.domain = domain
@@ -26,9 +29,9 @@ class JSONConvert():
         self.records = []
         self.separated_list = []
 
-    def readRecords(self,filename):
+    def readRecords(self,listitems):
         import re
-        for line in filename:
+        for line in listitems:
             # Ignore number(#) at begining of a line.
             if not re.search('^#', line):
                 self.generateDict(line)
@@ -64,11 +67,13 @@ class JSONConvert():
         data = lambda act: {"records": self.records} \
             if act else {"name": self.domain, "records": self.records}
         self.dict_records = data(act)
+        self.records = []
 
     def separateInputFile(self, file):
         import re
         line_index = 1
         separated_str = ''
+
         for line in file:
             if not re.search('^#', line):
                 if line_index > self.maxdata:
@@ -78,3 +83,5 @@ class JSONConvert():
                     separated_str = ''
                 line_index += 1
                 separated_str += line
+        self.separated_list.append(separated_str)
+        

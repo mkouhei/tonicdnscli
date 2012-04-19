@@ -62,47 +62,45 @@ def main():
     o = converter.JSONConvert(domain)
     o.separateInputFile(f)
     for listitem in o.separated_list:
-        print listitem
-        o.readRecords(listitem)
-    o.readRecords(f)
-    o.genData(act)
-    if options.stdout:
-        print json.dumps(o.dict_records, sort_keys=True, indent=2)
-    else:
-        dict_records = o.dict_records
-        if options.fqdn:
-            server = options.fqdn
-        if options.username:
-            username = options.username
-        if options.password:
-            password = options.password
+        o.readRecords(listitem.splitlines())
+        o.genData(act)
 
-        try:
-            o = tdauth.authInfo(username, password, server)
-            o.getToken()
+        if options.stdout:
+            print json.dumps(o.dict_records, sort_keys=True, indent=2)
+        else:
+            dict_records = o.dict_records
+            if options.fqdn:
+                server = options.fqdn
+            if options.username:
+                username = options.username
+            if options.password:
+                password = options.password
 
+            try:
+                a = tdauth.authInfo(username, password, server)
+                a.getToken()
 
-            # Retrieve zone records
-            if options.retrieve:
-                p.getZone(server, o.token, domain)
-                exit
+                # Retrieve zone records
+                if options.retrieve:
+                    p.getZone(server, a.token, domain)
+                    exit
 
-            # Retrieve all zones
-            #p.getAllZone(server, o.token)
+                # Retrieve all zones
+                #p.getAllZone(server, a.token)
 
-            # create recores
-            if options.create:
-                p.createRecords(server, o.token, domain, dict_records)
-                exit
+                # create recores
+                if options.create:
+                    p.createRecords(server, a.token, domain, dict_records)
+                    exit
 
-            # delete recores
-            if options.delete:
-                p.deleteRecords(server, o.token, dict_records)
-                exit
+                # delete recores
+                if options.delete:
+                    p.deleteRecords(server, a.token, dict_records)
+                    exit
 
-        except UnboundLocalError, e:
-            sys.stderr.write("ERROR: %s\n" % e)
-            return
+            except UnboundLocalError, e:
+                sys.stderr.write("ERROR: %s\n" % e)
+                return
 
 if __name__ == "__main__":
     main()
