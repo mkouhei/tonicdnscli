@@ -1,10 +1,13 @@
-JSON converter for TonicDNS
-===========================
+TonicDNS Client tool
+====================
 
-This converts from readble text record to JSON for TonicDNS; RESTful API for PowerDNS.
+This command line tool for TonicDNS API.
+TonicDNS is  RESTful API for PowerDNS.
+Convert readble text record to JSON, and create or delete zone records with TonicDNS.
 
-example.org.txt
----------------
+
+Input file (example.org.txt)
+----------------------------
 
 ```
 # name type content ttl priority
