@@ -55,9 +55,9 @@ class JSONConvert():
 
     def checkkey(self, key, index):
         import re
-        length = len(re.split('\s*', key[:-1]))
+        length = len(re.split('\s*', key))
         if length > index:
-            v = re.split('\s*', key[:-1])[index]
+            v = re.split('\s*', key)[index]
         else:
             v = None
         return v
