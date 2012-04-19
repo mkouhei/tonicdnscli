@@ -51,7 +51,6 @@ setup(name='tonicdnscli',
       packages=find_packages('src'),
       package_dir={'': 'src'},
       data_files = [('share/tonicdnscli/examples', ['examples/example.org.txt'])],
-      include_data_files=True,
       install_requires=requires,
       entry_points="""
         [console_scripts]
