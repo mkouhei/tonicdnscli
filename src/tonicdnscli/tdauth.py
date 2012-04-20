@@ -36,10 +36,14 @@ class authInfo():
 
     def getToken(self):
         import json
-        import urllib2
+        import sys
+        if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+            import urllib2 as urllib
+        elif sys.version_info > (3, 0):
+            import urllib.request as urllib
         authjson = json.JSONEncoder().encode(self.setInfo())
-        o = urllib2.build_opener(urllib2.HTTPHandler)
-        r = urllib2.Request(self.uri, data=authjson)
+        o = urllib.build_opener(urllib.HTTPHandler)
+        r = urllib.Request(self.uri, data=authjson.encode('utf-8'))
         r.add_header('Content-Type', 'application/json')
         r.get_method = lambda: 'PUT'
-        self.token = json.loads(o.open(r).read())["hash"]
+        self.token = json.loads(o.open(r).read().decode('utf-8'))["hash"]

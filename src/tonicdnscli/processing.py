@@ -24,13 +24,17 @@ def unprovide():
 
 
 def tonicDNSClient(uri, method, token, data):
+    import sys
     import json
-    import urllib2
+    if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+        import urllib2 as urllib
+    elif sys.version_info > (3, 0):
+        import urllib.request as urllib
 
     encoded = json.JSONEncoder().encode(data)
 
-    o = urllib2.build_opener(urllib2.HTTPHandler)
-    r = urllib2.Request(uri, data=encoded)
+    o = urllib.build_opener(urllib.HTTPHandler)
+    r = urllib.Request(uri, data=encoded.encode('utf-8'))
 
     r.add_header('x-authentication-token', token)
 
@@ -43,7 +47,7 @@ def tonicDNSClient(uri, method, token, data):
 
     # response body
     if method == 'GET':
-        datas = json.loads(url.read())
+        datas = json.loads(url.read().decode('utf-8'))
         print(json.dumps(datas, sort_keys=True, indent=2))
 
     else:
