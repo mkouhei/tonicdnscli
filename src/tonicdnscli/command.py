@@ -29,6 +29,7 @@ def parse_options():
     parser.add_option("-s", dest='fqdn', help="specify TonicDNS server")
     parser.add_option("-u", dest='username', help="TonicDNS username")
     parser.add_option("-p", dest='password', help="TonicDNS password")
+    parser.add_option("-P", action='store_true', help="Prompt for TonicDNS password")
     options, args = parser.parse_args()
 
     if len(args) == 0:
@@ -75,6 +76,9 @@ def main():
                 username = options.username
             if options.password:
                 password = options.password
+            elif options.P:
+                import getpass
+                password = getpass.getpass(prompt='TonicDNS user password: ')
 
             try:
                 a = tdauth.authInfo(username, password, server)
