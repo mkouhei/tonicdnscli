@@ -8,7 +8,7 @@ Convert readble text record to JSON, and create or delete zone records with Toni
 Requirements
 ------------
 
-* Python 2.7 or later (not support 3.x)
+* Python 2.7 or Python 3.2 later.
 
 Setup
 -----
@@ -71,7 +71,7 @@ Retrieve records
 ~~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -g -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+   $ tonicdnscli -g -s ns.example.org -u tonicusername -P sample/example.org.txt
    {
      "name": "example.org", 
      "notified_serial": "2012021402", 
@@ -96,14 +96,14 @@ Create records
 ~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -c -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+   $ tonicdnscli -c -s ns.example.org -u tonicusername -P sample/example.org.txt
    True
 
 Delete records
 ~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -d -s ns.example.org -u tonicusername -p tonicpassword sample/example.org.txt
+   $ tonicdnscli -d -s ns.example.org -u tonicusername -P sample/example.org.txt
    True
 
 
