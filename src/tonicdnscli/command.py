@@ -17,19 +17,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
 def parse_options():
     import sys
     from optparse import OptionParser
     usage = "usage: %prog [options] inputfile"
     parser = OptionParser(usage=usage)
-    parser.add_option("-o", "--stdout", action="store_true", help="print json format to stdout")
-    parser.add_option("-c", "--create", action="store_true", help="create records")
-    parser.add_option("-d", "--delete", action="store_true", help="delete records")
-    parser.add_option("-g", "--retrieve", action="store_true", help="retrieve records")
-    parser.add_option("-s", dest='fqdn', help="specify TonicDNS server")
-    parser.add_option("-u", dest='username', help="TonicDNS username")
-    parser.add_option("-p", dest='password', help="TonicDNS password")
-    parser.add_option("-P", action='store_true', help="Prompt for TonicDNS password")
+    parser.add_option("-o", "--stdout", action="store_true",
+                      help="print json format to stdout")
+    parser.add_option("-c", "--create", action="store_true",
+                      help="create records")
+    parser.add_option("-d", "--delete", action="store_true",
+                      help="delete records")
+    parser.add_option("-g", "--retrieve", action="store_true",
+                      help="retrieve records")
+    parser.add_option("-s", dest='fqdn',
+                      help="specify TonicDNS server")
+    parser.add_option("-u", dest='username',
+                      help="TonicDNS username")
+    parser.add_option("-p", dest='password',
+                      help="TonicDNS password")
+    parser.add_option("-P", action='store_true',
+                      help="Prompt for TonicDNS password")
     options, args = parser.parse_args()
 
     if len(args) == 0:
@@ -40,8 +49,11 @@ def parse_options():
 
 
 def main():
-    import os.path, sys, json
-    import converter, tdauth
+    import os.path
+    import sys
+    import json
+    import converter
+    import tdauth
     import processing as p
 
     try:

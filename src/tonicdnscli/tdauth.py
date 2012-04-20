@@ -17,8 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
 class authInfo():
-    
+
     def __init__(self, username, password, server):
         self.username = username
         self.password = password
@@ -27,18 +28,18 @@ class authInfo():
 
     def setInfo(self):
         authinfo = {
-                "username":self.username,
-                "password":self.password,
-                "local_user":self.username
+                "username": self.username,
+                "password": self.password,
+                "local_user": self.username
                 }
         return authinfo
 
     def getToken(self):
-        import json, urllib2
+        import json
+        import urllib2
         authjson = json.JSONEncoder().encode(self.setInfo())
         o = urllib2.build_opener(urllib2.HTTPHandler)
         r = urllib2.Request(self.uri, data=authjson)
         r.add_header('Content-Type', 'application/json')
         r.get_method = lambda: 'PUT'
         self.token = json.loads(o.open(r).read())["hash"]
-        

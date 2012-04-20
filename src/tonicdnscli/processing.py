@@ -17,12 +17,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
 def unprovide():
     print "ERROR: This feature does not provide"
-    exit(10)    
+    exit(10)
+
 
 def tonicDNSClient(uri, method, token, data):
-    import json, urllib2
+    import json
+    import urllib2
 
     encoded = json.JSONEncoder().encode(data)
 
@@ -42,10 +45,11 @@ def tonicDNSClient(uri, method, token, data):
     if method == 'GET':
         datas = json.loads(url.read())
         print json.dumps(datas, sort_keys=True, indent=2)
-            
+
     else:
         data = url.read()
         print data
+
 
 def createZoneRecords():
     # ContentType: application/json
@@ -54,13 +58,15 @@ def createZoneRecords():
     # uri: /zone
     unprovide()
 
+
 def createRecords(server, token, domain, data):
     # ContentType: application/json
     # x-authentication-token: token
     method = 'PUT'
     uri = 'https://' + server + '/zone/' + domain
     tonicDNSClient(uri, method, token, data)
-    
+
+
 def deleteRecords(server, token, data):
     # ContentType: application/json
     # x-authentication-token: token
@@ -68,11 +74,13 @@ def deleteRecords(server, token, data):
     uri = 'https://' + server + '/zone'
     tonicDNSClient(uri, method, token, data)
 
+
 def getZone(server, token, domain):
     # x-authentication-token: token
     method = 'GET'
     uri = 'https://' + server + '/zone/' + domain
     tonicDNSClient(uri, method, token, data=False)
+
 
 def getAllZone(server, token):
     # x-authentication-token: token
@@ -87,12 +95,14 @@ def deleteDomain():
     # uri: /zone/:domain
     unprovide()
 
+
 def createTemplate():
     # ContentType: application/json
     # x-authentication-token: token
     # method: PUT
     # uri: /template/:template
     unprovide()
+
 
 def updateTemplate():
     # ContentType: application/json
@@ -101,11 +111,13 @@ def updateTemplate():
     # uri: /template
     unprovide()
 
+
 def deleteTemplate():
     # x-authentication-token: token
     # method: DELETE
     # uri: /template/:template
     unprovide()
+
 
 def getTemplate():
     # x-authentication-token: token
@@ -113,10 +125,9 @@ def getTemplate():
     # uri: /template/:template
     unprovide()
 
+
 def getAllTemplates():
     # x-authentication-token: token
     # method: GET
     # uri: /template
     unprovide()
-
-        

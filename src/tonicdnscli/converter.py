@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
 class JSONConvert():
     # This magic number is work around.
     # Body size limitation with PUT method,
@@ -25,31 +26,31 @@ class JSONConvert():
 
     def __init__(self, domain):
         self.domain = domain
-        self.split_index =0
+        self.split_index = 0
         self.records = []
         self.separated_list = []
 
-    def readRecords(self,listitems):
+    def readRecords(self, listitems):
         import re
         for line in listitems:
             # Ignore number(#) at begining of a line.
             if not re.search('^#', line):
                 self.generateDict(line)
 
-    def generateDict(self,line):
+    def generateDict(self, line):
         if self.checkkey(line, 4):
             self.records.append({
-                    "name" : self.checkkey(line, 0),
-                    "type" : self.checkkey(line, 1),
-                    "content" : self.checkkey(line, 2),
+                    "name": self.checkkey(line, 0),
+                    "type": self.checkkey(line, 1),
+                    "content": self.checkkey(line, 2),
                     "ttl": self.checkkey(line, 3),
-                    "priority" : self.checkkey(line, 4)
+                    "priority": self.checkkey(line, 4)
                     })
         else:
             self.records.append({
-                    "name" : self.checkkey(line, 0),
-                    "type" : self.checkkey(line, 1),
-                    "content" : self.checkkey(line, 2),
+                    "name": self.checkkey(line, 0),
+                    "type": self.checkkey(line, 1),
+                    "content": self.checkkey(line, 2),
                     "ttl": self.checkkey(line, 3)
                     })
 
@@ -61,7 +62,7 @@ class JSONConvert():
         else:
             v = None
         return v
-        
+
     def genData(self, act):
         import json
         data = lambda act: {"records": self.records} \
@@ -84,4 +85,3 @@ class JSONConvert():
                 line_index += 1
                 separated_str += line
         self.separated_list.append(separated_str)
-        
