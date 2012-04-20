@@ -20,26 +20,60 @@
 
 def parse_options():
     import sys
-    from optparse import OptionParser
-    usage = "usage: %prog [options] inputfile"
-    parser = OptionParser(usage=usage)
-    parser.add_option("-o", "--stdout", action="store_true",
-                      help="print json format to stdout")
-    parser.add_option("-c", "--create", action="store_true",
-                      help="create records")
-    parser.add_option("-d", "--delete", action="store_true",
-                      help="delete records")
-    parser.add_option("-g", "--retrieve", action="store_true",
-                      help="retrieve records")
-    parser.add_option("-s", dest='fqdn',
-                      help="specify TonicDNS server")
-    parser.add_option("-u", dest='username',
-                      help="TonicDNS username")
-    parser.add_option("-p", dest='password',
-                      help="TonicDNS password")
-    parser.add_option("-P", action='store_true',
-                      help="Prompt for TonicDNS password")
-    options, args = parser.parse_args()
+    import argparse
+    from __init__ import __version__
+
+    parser = argparse.ArgumentParser(description='usage')
+
+    parser.add_argument('-v', '--version', action='version',
+                        version=__version__)
+
+    subparsers = parser.add_subparsers(help='sub-commands')
+    parser_show = subparsers.add_parser('show',
+                                         help='show converted JSON')
+    parser_show.add_argument('domain', action='store', 
+                                 help='specify domain name')
+
+    parser_retrieve = subparsers.add_parser('retrieve',
+                                            help='retrieve records of specific zone')
+    parser_retrieve.add_argument('domain', action='store', 
+                                 help='specify domain FQDN')
+    parser_retrieve.add_argument('-s', dest='server',
+                                 help='specify TonicDNS FQDN')
+    parser_retrieve.add_argument('-u', dest='user',
+                                 help='TonicDNS username')
+    parser_retrieve.add_argument('-p', dest='password',
+                                 help='TonicDNS password')
+    parser_retrieve.add_argument('-P', action='store_true',
+                                 help='TonicDNS password prompt')
+
+    parser_create = subparsers.add_parser('create',
+                                          help='create records of specific zone')
+    parser_create.add_argument('infile', action='store', 
+                                 help='pre-converted text file')
+    parser_create.add_argument('-s', dest='server',
+                               help='specify TonicDNS FQDN')
+    parser_create.add_argument('-u', dest='user',
+                               help='TonicDNS username')
+    parser_create.add_argument('-p', dest='password',
+                               help='TonicDNS password')
+    parser_create.add_argument('-P', action='store_true',
+                               help='TonicDNS password prompt')
+
+    parser_delete = subparsers.add_parser('delete',
+                                          help='delete records of specific zone')
+    parser_delete.add_argument('infile', action='store', 
+                                 help='pre-converted text file')
+    parser_delete.add_argument('-s', dest='server',
+                               help='specify TonicDNS FQDN')
+    parser_delete.add_argument('-u', dest='user',
+                               help='TonicDNS username')
+    parser_delete.add_argument('-p', dest='password',
+                               help='TonicDNS password')
+    parser_delete.add_argument('-P', action='store_true',
+                               help='TonicDNS password prompt')
+
+    args = parser.parse_args()
 
     if len(args) == 0:
         parser.print_help()
@@ -78,7 +112,7 @@ def main():
         o.readRecords(listitem.splitlines())
         o.genData(act)
 
-        if options.stdout:
+        if options.show:
             print(json.dumps(o.dict_records, sort_keys=True, indent=2))
         else:
             dict_records = o.dict_records
