@@ -19,7 +19,7 @@
 
 
 def unprovide():
-    print "ERROR: This feature does not provide"
+    print("ERROR: This feature does not provide")
     exit(10)
 
 
@@ -44,11 +44,11 @@ def tonicDNSClient(uri, method, token, data):
     # response body
     if method == 'GET':
         datas = json.loads(url.read())
-        print json.dumps(datas, sort_keys=True, indent=2)
+        print(json.dumps(datas, sort_keys=True, indent=2))
 
     else:
         data = url.read()
-        print data
+        print(data)
 
 
 def createZoneRecords():

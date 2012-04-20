@@ -58,7 +58,7 @@ def main():
 
     try:
         options, args = parse_options()
-    except RuntimeError, e:
+    except RuntimeError as e:
         sys.stderr.write("ERROR: %s\n" % e)
         return
 
@@ -79,7 +79,7 @@ def main():
         o.genData(act)
 
         if options.stdout:
-            print json.dumps(o.dict_records, sort_keys=True, indent=2)
+            print(json.dumps(o.dict_records, sort_keys=True, indent=2))
         else:
             dict_records = o.dict_records
             if options.fqdn:
@@ -114,7 +114,7 @@ def main():
                     p.deleteRecords(server, a.token, dict_records)
                     exit
 
-            except UnboundLocalError, e:
+            except UnboundLocalError as e:
                 sys.stderr.write("ERROR: %s\n" % e)
                 return
 
