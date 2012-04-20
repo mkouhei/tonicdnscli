@@ -20,6 +20,12 @@ Setup
    
 History
 -------
+0.2 (2012-04-20)
+~~~~~~~~~~~~~~~~
+
+* Support Python3
+* Add option `-P` as password prompt with echo turned off
+
 0.1 (2012-04-20)
 ~~~~~~~~~~~~~~~~
 * first release
@@ -105,8 +111,3 @@ Delete records
 
    $ tonicdnscli -d -s ns.example.org -u tonicusername -P sample/example.org.txt
    True
-
-
-
-
-
