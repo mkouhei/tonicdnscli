@@ -19,7 +19,8 @@
 tonicdnscli \- Command line client tool for TonicDNS
 .SH SYNOPSIS
 .B tonicdnscli
-.RI [ options ] " infile"
+.RI [ options ] " sub-command"
+.RI [ sub-cmd-options ] " [infile]"
 .br
 .SH DESCRIPTION
 This manual page documents briefly the
@@ -32,6 +33,8 @@ commands.
 \fBtonicdnscli\fP is a program that command line tool for TonicDNS API.
 TonicDNS is  RESTful API for PowerDNS.
 Convert readble text record to JSON, and create or delete zone records with TonicDNS.
+.SH INFILE
+One record per one line with delimiter of space or tab.
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
@@ -41,29 +44,39 @@ For a complete description, see the Info files.
 .B \-h, \-\-help
 Show summary of options.
 .TP
-.B \-o, \-\-stdout
+.B \-v, \-\-version
+Show program's version number.
+.SH SUB COMMANDS
+.B show
 Print json format.
 .TP
-.B \-c, \-\-create
-Create records.
-.TP
-.B \-d, \-\-delete
-Delete records.
-.TP
-.B \-g, \-\-retrieve.
+.B get
 Retrieve records.
 .TP
-.B \-s FQDN
-Specify TonicDNS server.
+.B create
+Create records.
+.TP
+.B delete
+Delete records.
+
+.SH SUB COMMAND OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+For a complete description, see the Info files.
+.TP
+.B \-s (hostname|IP address)
+Specify TonicDNS server. When not `get' command only.
 .TP
 .B \-u USERNAME
 Specify TonicDNS username.
 .TP
-.B \-P
-Password prompt with echo turned off.
+.B \-d DOMAIN
+Specify zone domain. When `get' command only.
 .TP
-.B \-p PASSWORD
+.B \-P | \-p PASSWORD
 Specify TonicDNS password.
+.TP
 .SH SEE ALSO
 .br
 The programs are documented fully by

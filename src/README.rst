@@ -20,6 +20,14 @@ Setup
    
 History
 -------
+0.3 (2012-04-21)
+~~~~~~~~~~~~~~~~
+
+* New command line style, add sub-command, change options
+
+  * Change optparse to argparse
+  * new sub-command : show|get|create|delete
+
 0.2 (2012-04-20)
 ~~~~~~~~~~~~~~~~
 
@@ -50,7 +58,7 @@ Print converted JSON
 ~~~~~~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -o sample/example.org.txt
+   $ tonicdnscli show sample/example.org.txt
    {
      "records": [
        {
@@ -77,7 +85,7 @@ Retrieve records
 ~~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -g -s ns.example.org -u tonicusername -P sample/example.org.txt
+   $ tonicdnscli get -s ns.example.org -d example.org -u tonicusername -P
    {
      "name": "example.org", 
      "notified_serial": "2012021402", 
@@ -102,12 +110,12 @@ Create records
 ~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -c -s ns.example.org -u tonicusername -P sample/example.org.txt
+   $ tonicdnscli create -s ns.example.org -u tonicusername -P sample/example.org.txt
    True
 
 Delete records
 ~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli -d -s ns.example.org -u tonicusername -P sample/example.org.txt
+   $ tonicdnscli delete -s ns.example.org -u tonicusername -P sample/example.org.txt
    True

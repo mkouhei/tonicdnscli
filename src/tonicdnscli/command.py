@@ -18,6 +18,91 @@
 """
 
 
+# Check text file exisitense
+def checkInfile(filename):
+    import os.path
+    import sys
+    if os.path.isfile(filename):
+        domain = os.path.basename(filename).split('.txt')[0]
+        return domain
+    else:
+        sys.stderr.write("ERROR: %s : No such file\n" % filename)
+        sys.exit(1)
+
+
+# Convert text file to JSON
+def convertJSON(domain, filename, act):
+    import converter
+    o = converter.JSONConvert(domain)
+    f = open(filename, 'r')
+    o.separateInputFile(f)
+    for listitem in o.separated_list:
+        o.readRecords(listitem.splitlines())
+        o.genData(act)
+    return o.dict_records
+
+
+# get token
+def token(username, password, server):
+    import tdauth
+    a = tdauth.authInfo(username, password, server)
+    a.getToken()
+    return a.token
+
+
+# get password
+def getPassword(args):
+    password = ''
+    if args.password:
+        password = args.password
+    elif args.P:
+        while True:
+            if password:
+                break
+            else:
+                import getpass
+                password = getpass.getpass(prompt='TonicDNS user password: ')
+    return password
+
+
+# Convert and print JSON
+def show(args):
+    import json
+    domain = checkInfile(args.infile)
+    print(json.dumps(convertJSON(domain, args.infile, True),
+                     sort_keys=True, indent=2))
+
+
+# Retrieve records
+def get(args):
+    import processing
+    domain = args.domain
+    password = getPassword(args)
+    t = token(args.user, password, args.server)
+    processing.getZone(args.server, t, domain)
+
+
+# Create records
+def create(args):
+    import processing
+    domain = checkInfile(args.infile)
+    password = getPassword(args)
+    t = token(args.user, password, args.server)
+    processing.createRecords(args.server, t, domain,
+                             convertJSON(domain, args.infile, True))
+
+
+# Delete records
+def delete(args):
+    import processing
+    domain = checkInfile(args.infile)
+    password = getPassword(args)
+    t = token(args.user, password, args.server)
+    processing.deleteRecords(args.server, t,
+                             convertJSON(domain, args.infile, False))
+
+
+# Define sub-commands and command line options
 def parse_options():
     import sys
     import argparse
@@ -28,58 +113,66 @@ def parse_options():
     parser.add_argument('-v', '--version', action='version',
                         version=__version__)
 
-    subparsers = parser.add_subparsers(help='sub-commands')
+    subparsers = parser.add_subparsers(help='commands')
+
+    # Convert and print JSON
     parser_show = subparsers.add_parser('show',
                                          help='show converted JSON')
-    parser_show.add_argument('domain', action='store', 
-                                 help='specify domain name')
+    parser_show.add_argument('infile', action='store',
+                               help='pre-converted text file')
+    parser_show.set_defaults(func=show)
 
-    parser_retrieve = subparsers.add_parser('retrieve',
-                                            help='retrieve records of specific zone')
-    parser_retrieve.add_argument('domain', action='store', 
-                                 help='specify domain FQDN')
-    parser_retrieve.add_argument('-s', dest='server',
-                                 help='specify TonicDNS FQDN')
-    parser_retrieve.add_argument('-u', dest='user',
-                                 help='TonicDNS username')
-    parser_retrieve.add_argument('-p', dest='password',
-                                 help='TonicDNS password')
-    parser_retrieve.add_argument('-P', action='store_true',
-                                 help='TonicDNS password prompt')
+    # Retrieve records
+    parser_get = subparsers.add_parser(
+        'get', help='retrieve records of specific zone')
+    parser_get.add_argument('--domain', action='store', required=True,
+                            help='specify domain FQDN')
+    parser_get.add_argument(
+        '-s', dest='server', required=True,
+        help='specify TonicDNS Server hostname or IP address')
+    parser_get.add_argument('-u', dest='user', required=True,
+                           help='TonicDNS username')
+    group_get = parser_get.add_mutually_exclusive_group(required=True)
+    group_get.add_argument('-p', dest='password',
+                           help='TonicDNS password')
+    group_get.add_argument('-P', action='store_true',
+                            help='TonicDNS password prompt')
+    parser_get.set_defaults(func=get)
 
-    parser_create = subparsers.add_parser('create',
-                                          help='create records of specific zone')
-    parser_create.add_argument('infile', action='store', 
+    # Create records
+    parser_create = subparsers.add_parser(
+        'create', help='create records of specific zone')
+    parser_create.add_argument('infile', action='store',
                                  help='pre-converted text file')
-    parser_create.add_argument('-s', dest='server',
-                               help='specify TonicDNS FQDN')
-    parser_create.add_argument('-u', dest='user',
+    parser_create.add_argument('-s', dest='server', required=True,
+                               help='specify TonicDNS hostname or IP address')
+    parser_create.add_argument('-u', dest='user', required=True,
                                help='TonicDNS username')
-    parser_create.add_argument('-p', dest='password',
+    group_create = parser_create.add_mutually_exclusive_group(required=True)
+    group_create.add_argument('-p', dest='password',
                                help='TonicDNS password')
-    parser_create.add_argument('-P', action='store_true',
+    group_create.add_argument('-P', action='store_true',
                                help='TonicDNS password prompt')
+    parser_create.set_defaults(func=create)
 
-    parser_delete = subparsers.add_parser('delete',
-                                          help='delete records of specific zone')
-    parser_delete.add_argument('infile', action='store', 
+    # Delete records
+    parser_delete = subparsers.add_parser(
+        'delete', help='delete records of specific zone')
+    parser_delete.add_argument('infile', action='store',
                                  help='pre-converted text file')
-    parser_delete.add_argument('-s', dest='server',
-                               help='specify TonicDNS FQDN')
-    parser_delete.add_argument('-u', dest='user',
+    parser_delete.add_argument('-s', dest='server', required=True,
+                               help='specify TonicDNS hostname or IP address')
+    parser_delete.add_argument('-u', dest='user', required=True,
                                help='TonicDNS username')
-    parser_delete.add_argument('-p', dest='password',
+    group_delete = parser_delete.add_mutually_exclusive_group(required=True)
+    group_delete.add_argument('-p', dest='password',
                                help='TonicDNS password')
-    parser_delete.add_argument('-P', action='store_true',
+    group_delete.add_argument('-P', action='store_true',
                                help='TonicDNS password prompt')
+    parser_delete.set_defaults(func=delete)
 
     args = parser.parse_args()
-
-    if len(args) == 0:
-        parser.print_help()
-        sys.exit(0)
-
-    return options, args
+    return args
 
 
 def main():
@@ -91,66 +184,14 @@ def main():
     import processing as p
 
     try:
-        options, args = parse_options()
+        args = parse_options()
+        args.func(args)
     except RuntimeError as e:
         sys.stderr.write("ERROR: %s\n" % e)
         return
-
-    if options.delete:
-        act = False
-    else:
-        act = True
-
-    filename = args[0]
-    if os.path.isfile(filename):
-        domain = os.path.basename(filename).split('.txt')[0]
-        f = open(filename, 'r')
-
-    o = converter.JSONConvert(domain)
-    o.separateInputFile(f)
-    for listitem in o.separated_list:
-        o.readRecords(listitem.splitlines())
-        o.genData(act)
-
-        if options.show:
-            print(json.dumps(o.dict_records, sort_keys=True, indent=2))
-        else:
-            dict_records = o.dict_records
-            if options.fqdn:
-                server = options.fqdn
-            if options.username:
-                username = options.username
-            if options.password:
-                password = options.password
-            elif options.P:
-                import getpass
-                password = getpass.getpass(prompt='TonicDNS user password: ')
-
-            try:
-                a = tdauth.authInfo(username, password, server)
-                a.getToken()
-
-                # Retrieve zone records
-                if options.retrieve:
-                    p.getZone(server, a.token, domain)
-                    exit
-
-                # Retrieve all zones
-                #p.getAllZone(server, a.token)
-
-                # create recores
-                if options.create:
-                    p.createRecords(server, a.token, domain, dict_records)
-                    exit
-
-                # delete recores
-                if options.delete:
-                    p.deleteRecords(server, a.token, dict_records)
-                    exit
-
-            except UnboundLocalError as e:
-                sys.stderr.write("ERROR: %s\n" % e)
-                return
+    except UnboundLocalError as e:
+        sys.stderr.write("ERROR: %s\n" % e)
+        return
 
 if __name__ == "__main__":
     main()
