@@ -119,3 +119,9 @@ Delete records
 
    $ tonicdnscli delete -s ns.example.org -u tonicusername -P sample/example.org.txt
    True
+
+See also
+--------
+
+* `TonicDNS <https://github.com/Cysource/TonicDNS>`_
+* `PowerDNS <http://www.powerdns.com>`_
