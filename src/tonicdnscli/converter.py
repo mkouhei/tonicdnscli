@@ -18,7 +18,7 @@
 """
 
 
-class JSONConvert():
+class JSONConvert(object):
     # This magic number is work around.
     # Body size limitation with PUT method,
     # The boudnary of body size in over 27915 byte and under 27938 byte.
