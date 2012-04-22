@@ -31,7 +31,7 @@ def checkInfile(filename):
 
 
 # Convert text file to JSON
-def convertJSON(domain, filename, act):
+def getJSON(domain, filename, act):
     import converter
     o = converter.JSONConvert(domain)
     f = open(filename, 'r')
@@ -69,7 +69,7 @@ def getPassword(args):
 def show(args):
     import json
     domain = checkInfile(args.infile)
-    print(json.dumps(convertJSON(domain, args.infile, True),
+    print(json.dumps(getJSON(domain, args.infile, True),
                      sort_keys=True, indent=2))
 
 
@@ -89,7 +89,7 @@ def create(args):
     password = getPassword(args)
     t = token(args.user, password, args.server)
     processing.createRecords(args.server, t, domain,
-                             convertJSON(domain, args.infile, True))
+                             getJSON(domain, args.infile, True))
 
 
 # Delete records
@@ -99,7 +99,7 @@ def delete(args):
     password = getPassword(args)
     t = token(args.user, password, args.server)
     processing.deleteRecords(args.server, t,
-                             convertJSON(domain, args.infile, False))
+                             getJSON(domain, args.infile, False))
 
 
 # Define sub-commands and command line options
