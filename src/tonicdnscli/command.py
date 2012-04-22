@@ -176,12 +176,7 @@ def parse_options():
 
 
 def main():
-    import os.path
     import sys
-    import json
-    import converter
-    import tdauth
-    import processing as p
 
     try:
         args = parse_options()
