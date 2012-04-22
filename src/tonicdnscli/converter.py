@@ -64,7 +64,6 @@ class JSONConvert(object):
         return v
 
     def genData(self, act):
-        import json
         data = lambda act: {"records": self.records} \
             if act else {"name": self.domain, "records": self.records}
         self.dict_records = data(act)
