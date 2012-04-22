@@ -34,8 +34,8 @@ def checkInfile(filename):
 def getJSON(domain, filename, act):
     import converter
     o = converter.JSONConvert(domain)
-    f = open(filename, 'r')
-    o.separateInputFile(f)
+    with open(filename, 'r') as f:
+        o.separateInputFile(f)
     for listitem in o.separated_list:
         o.readRecords(listitem.splitlines())
         o.genData(act)
@@ -44,8 +44,8 @@ def getJSON(domain, filename, act):
 
 # get token
 def token(username, password, server):
-    import tdauth
-    a = tdauth.authInfo(username, password, server)
+    from tdauth import authInfo
+    a = authInfo(username, password, server)
     a.getToken()
     return a.token
 
@@ -60,8 +60,8 @@ def getPassword(args):
             if password:
                 break
             else:
-                import getpass
-                password = getpass.getpass(prompt='TonicDNS user password: ')
+                from getpass import getpass
+                password = getpass(prompt='TonicDNS user password: ')
     return password
 
 
@@ -104,7 +104,6 @@ def delete(args):
 
 # Define sub-commands and command line options
 def parse_options():
-    import sys
     import argparse
     from __init__ import __version__
 
