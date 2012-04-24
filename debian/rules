@@ -14,4 +14,5 @@
 
 override_dh_auto_clean:
 	dh_clean
-	rm -rf .tox dist
+	rm -rf .tox dist _build
+
