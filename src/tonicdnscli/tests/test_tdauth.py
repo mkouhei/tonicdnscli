@@ -20,8 +20,7 @@ class authInfoTests(unittest.TestCase):
         o = authInfo('tonicuser', 'tonicpw', 'tonic.example.org')
         authinfo = {'username': 'tonicuser', 'password': 'tonicpw',
                     'local_user': 'tonicuser'}
-        self.assertEquals(type(authinfo), type(o.setInfo()))
-        self.assertEquals(authinfo, o.setInfo())
+        self.assertDictEqual(authinfo, o.setInfo())
 
     '''
     def test_getToken(self):
