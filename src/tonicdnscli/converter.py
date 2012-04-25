@@ -29,6 +29,7 @@ class JSONConvert(object):
         self.split_index = 0
         self.records = []
         self.separated_list = []
+        self.delta = False
 
     def readRecords(self, listitems):
         import re
@@ -73,10 +74,15 @@ class JSONConvert(object):
         import re
         line_index = 1
         separated_str = ''
+        if self.delta:
+            # for test only
+            delta = self.delta
+        else:
+            delta = self.maxdata
 
         for line in file:
             if not re.search('^#', line):
-                if line_index > self.maxdata:
+                if line_index > delta:
                     line_index = 1
                     self.split_index += 1
                     self.separated_list.append(separated_str)
