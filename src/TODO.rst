@@ -10,4 +10,6 @@ Features
 Improvement
 -----------
 
-* Add test units.
+* Add unittest.
+* Add creating single record.
+* Add parsing config file.
