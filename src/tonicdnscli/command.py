@@ -117,6 +117,8 @@ def parse_options():
 
     parser.add_argument('-v', '--version', action='version',
                         version=__version__)
+    parser.add_argument('--config', action='store',
+                        help='config file path')
 
     subparsers = parser.add_subparsers(help='commands')
 
@@ -178,6 +180,20 @@ def parse_options():
 
     args = parser.parse_args()
     return args
+
+
+def checkConfig(filename):
+    import os.path
+    import sys
+    if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+        import ConfigParser as configparser
+    elif sys.version_info > (3, 0):
+        import configparser as configparser
+    conf = ConfigParser.SafeConfigParser()
+    conf.read(CONFIG_FILE)
+    username = conf.get('auth', 'username')
+    password = conf.get('auth', 'password')
+    server = conf.get('global', 'server')
 
 
 def main():
