@@ -20,8 +20,15 @@ Setup
    
 History
 -------
+0.3.2 (2012-04-25)
+~~~~~~~~~~~~~~~~~~
+
+* Add unittest of pep8, converter.py, tdauth.py (partially) 
+* Add exception error handling
+* Refactoring (Thanks Henrich)
+
 0.3.1 (2012-04-23)
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 * Add manpage
 
