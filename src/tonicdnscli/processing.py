@@ -43,7 +43,12 @@ def tonicDNSClient(uri, method, token, data):
         r.add_header('Content-Type', 'application/json')
 
     r.get_method = lambda: method
-    url = o.open(r)
+    try:
+        url = o.open(r)
+    except urllib.HTTPError as e:
+        sys.stderr.write("ERROR: %s\n" % e)
+        exit(1)
+
 
     # response body
     if method == 'GET':

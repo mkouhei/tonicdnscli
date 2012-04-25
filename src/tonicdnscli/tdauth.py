@@ -46,4 +46,11 @@ class authInfo():
         r = urllib.Request(self.uri, data=authjson.encode('utf-8'))
         r.add_header('Content-Type', 'application/json')
         r.get_method = lambda: 'PUT'
-        self.token = json.loads(o.open(r).read().decode('utf-8'))["hash"]
+        try:
+            self.token = json.loads(o.open(r).read().decode('utf-8'))["hash"]
+        except urllib.HTTPError as e:
+            sys.stderr.write("ERROR: %s\n" % e)
+        except urllib.URLError as e:
+            sys.stderr.write("ERROR: %s\n" % e)
+            exit(1)
+
