@@ -53,4 +53,3 @@ class authInfo():
         except urllib.URLError as e:
             sys.stderr.write("ERROR: %s\n" % e)
             exit(1)
-

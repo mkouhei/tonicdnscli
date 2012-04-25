@@ -74,7 +74,8 @@ def show(args):
         print(json.dumps(getJSON(domain, args.infile, True),
                          sort_keys=True, indent=2))
     except UnicodeDecodeError as e:
-        sys.stderr.write("ERROR: \"%s\" is invalid format file: \n" % args.infile)
+        sys.stderr.write("ERROR: \"%s\" is invalid format file.\n"
+                         % args.infile)
         exit(1)
 
 

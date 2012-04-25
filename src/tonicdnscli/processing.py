@@ -49,7 +49,6 @@ def tonicDNSClient(uri, method, token, data):
         sys.stderr.write("ERROR: %s\n" % e)
         exit(1)
 
-
     # response body
     if method == 'GET':
         datas = json.loads(url.read().decode('utf-8'))
