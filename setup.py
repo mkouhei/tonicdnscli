@@ -17,7 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os, sys
+import os
+import sys
 from setuptools import setup, find_packages
 
 sys.path.insert(0, 'src')
@@ -52,6 +53,15 @@ setup(name='tonicdnscli',
       package_dir={'': 'src'},
       data_files = [('share/tonicdnscli/examples', ['examples/example.org.txt'])],
       install_requires=requires,
+      extras_require=dict(
+        test=[
+            'Nose',
+            'pep8',
+            'unittest',
+            ],
+        ),
+      test_suite='nose.collector',
+      tests_require=['Nose','pep8'],
       entry_points="""
         [console_scripts]
         tonicdnscli = tonicdnscli.command:main
