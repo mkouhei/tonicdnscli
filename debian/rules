@@ -15,7 +15,3 @@
 override_dh_auto_test:
 	set -e; \
 	PYTHONPATH=$(CURDIR)/src nosetests -d
-
-override_dh_auto_clean:
-	dh_clean
-	rm -rf .tox dist
