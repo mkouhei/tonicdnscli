@@ -24,6 +24,10 @@ Setup
 History
 -------
 
+0.4.1 (2012-04-27)
+~~~~~~~~~~~~~~~~~~
+
+* Fix bug processing last data only, when separate file
 
 0.4 (2012-04-26)
 ~~~~~~~~~~~~~~~~
