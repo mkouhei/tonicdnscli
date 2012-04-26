@@ -30,6 +30,7 @@ class JSONConvert(object):
         self.records = []
         self.separated_list = []
         self.delta = False
+        self.dict_records = []
 
     def readRecords(self, listitems):
         import re
@@ -67,7 +68,7 @@ class JSONConvert(object):
     def genData(self, act):
         data = lambda act: {"records": self.records} \
             if act else {"name": self.domain, "records": self.records}
-        self.dict_records = data(act)
+        self.dict_records.append(data(act))
         self.records = []
 
     def separateInputFile(self, file):

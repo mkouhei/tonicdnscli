@@ -72,7 +72,8 @@ def createRecords(server, token, domain, data):
     # x-authentication-token: token
     method = 'PUT'
     uri = 'https://' + server + '/zone/' + domain
-    tonicDNSClient(uri, method, token, data)
+    for i in data:
+        tonicDNSClient(uri, method, token, i)
 
 
 def deleteRecords(server, token, data):
@@ -80,7 +81,8 @@ def deleteRecords(server, token, data):
     # x-authentication-token: token
     method = 'DELETE'
     uri = 'https://' + server + '/zone'
-    tonicDNSClient(uri, method, token, data)
+    for i in data:
+        tonicDNSClient(uri, method, token, i)
 
 
 def getZone(server, token, domain):
