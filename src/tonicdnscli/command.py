@@ -107,6 +107,7 @@ def delete(args):
     processing.deleteRecords(args.server, t,
                              getJSON(domain, args.infile, False))
 
+
 # Define sub-commands and command line options
 def parse_options():
     import argparse
@@ -160,7 +161,6 @@ def parse_options():
                                help='TonicDNS password prompt')
     parser_get.set_defaults(func=get)
 
-
     # Create records
     parser_create = subparsers.add_parser(
         'create', help='create records of specific zone')
@@ -175,12 +175,13 @@ def parse_options():
                                  help='pre-converted text file')
     if not server:
         parser_create.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname or IP address')
+                                   help='specify TonicDNS hostname|IP address')
     if not username:
         parser_create.add_argument('-u', dest='username', required=True,
                                    help='TonicDNS username')
     if not password:
-        group_create = parser_create.add_mutually_exclusive_group(required=True)
+        group_create = \
+            parser_create.add_mutually_exclusive_group(required=True)
         group_create.add_argument('-p', dest='password',
                                help='TonicDNS password')
         group_create.add_argument('-P', action='store_true',
@@ -201,12 +202,13 @@ def parse_options():
                                  help='pre-converted text file')
     if not server:
         parser_delete.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname or IP address')
+                                   help='specify TonicDNS hostname|IP address')
     if not username:
         parser_delete.add_argument('-u', dest='username', required=True,
                                    help='TonicDNS username')
     if not password:
-        group_delete = parser_delete.add_mutually_exclusive_group(required=True)
+        group_delete = \
+            parser_delete.add_mutually_exclusive_group(required=True)
         group_delete.add_argument('-p', dest='password',
                                   help='TonicDNS password')
         group_delete.add_argument('-P', action='store_true',
