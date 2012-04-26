@@ -1,0 +1,11 @@
+#
+# TonicDNS CLI Tool config file
+# Copy this file to $HOME/.tdclirc
+#
+
+[global]
+server: ns.example.org
+
+[auth]
+username: tonicuser
+password: tonicpw
