@@ -58,10 +58,11 @@ setup(name='tonicdnscli',
             'Nose',
             'pep8',
             'unittest',
+            'minimock',
             ],
         ),
       test_suite='nose.collector',
-      tests_require=['Nose','pep8'],
+      tests_require=['Nose','pep8','minimock'],
       entry_points="""
         [console_scripts]
         tonicdnscli = tonicdnscli.command:main
