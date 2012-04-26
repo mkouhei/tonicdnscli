@@ -18,7 +18,7 @@
 """
 
 
-class authInfo():
+class authInfo(object):
 
     def __init__(self, username, password, server):
         self.username = username
