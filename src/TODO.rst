@@ -14,5 +14,4 @@ Improvement
 
 * Add unittest.
 * Add creating single record.
-* Add parsing config file.
 * Update SOA serial.
