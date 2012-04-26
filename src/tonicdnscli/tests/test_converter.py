@@ -91,12 +91,13 @@ mx.example.org A 10.10.11.10 3600\n""",
         self.assertListEqual(self.list4, o2.records)
 
     def test_genData(self):
-        o = JSONConvert('example.org')
-        o.genData(True)
-        self.assertDictEqual({'records': []}, o.dict_records)
-        o.genData(False)
-        self.assertDictEqual({'records': [], 'name': 'example.org'},
-                          o.dict_records)
+        o1 = JSONConvert('example.org')
+        o1.genData(True)
+        self.assertListEqual([{'records': []}], o1.dict_records)
+        o2 = JSONConvert('example.org')
+        o2.genData(False)
+        self.assertListEqual([{'records': [], 'name': 'example.org'}],
+                          o2.dict_records)
 
     def test_separateInputFile(self):
         import os.path
