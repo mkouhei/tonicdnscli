@@ -15,3 +15,4 @@ Improvement
 * Add unittest.
 * Add creating single record.
 * Update SOA serial.
+* Validation input data.
