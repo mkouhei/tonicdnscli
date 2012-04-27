@@ -91,3 +91,7 @@ class JSONConvert(object):
                 line_index += 1
                 separated_str += line
         self.separated_list.append(separated_str)
+
+    def decodeJSON(self, data):
+        import json
+        json.load(data, 'utf-8')

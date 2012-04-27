@@ -53,7 +53,6 @@ def tonicDNSClient(uri, method, token, data):
     if method == 'GET':
         datas = json.loads(url.read().decode('utf-8'))
         formattedPrint(datas)
-
     else:
         data = url.read()
         print(data)
@@ -165,3 +164,14 @@ def getAllTemplates():
     # method: GET
     # uri: /template
     unprovide()
+
+
+def searchRecord(key, type, data):
+    # search target JSON -> dictionary
+    # key target is "name" or "content"
+    # type is "type", default null
+    # either key and type, or on the other hand
+    # data is dictionaly
+    import re
+    for item in data:
+        re.search(key, str(item['key']))
