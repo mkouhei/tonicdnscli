@@ -63,14 +63,20 @@ def formattedPrint(datas):
     print("serial: %(notified_serial)s" % datas)
     print("DNS   : %(type)s" % datas)
     hr()
-    print('%-25s %-4s %-50s %-5s %-3s'
+    print('%-33s %-5s %-25s %-5s %-3s'
           % ('name', 'type', 'content', 'ttl', 'prio'))
     hr()
     for record in datas['records']:
-        print("%(name)-25s" % record),
-        print("%(type)-4s" % record),
-        print("%(content)-50s" % record),
-        print("%(ttl)-5s" % record),
+        print("%(name)-33s" % record),
+        if record['type'] == 'SOA':
+            print("%(type)-5s" % record)
+        else:
+            print("%(type)-5s" % record),
+        if record['type'] == 'SOA':
+            print(">\t\t%(content)-25s" % record),
+        else:
+            print("%(content)-25s" % record),
+        print("%(ttl)-6s" % record),
         if record['priority']:
             print("%(priority)2s" % record)
         else:
@@ -79,7 +85,7 @@ def formattedPrint(datas):
 
 
 def hr():
-    print('=' * 93)
+    print('=' * 78)
 
 
 def createZoneRecords():
