@@ -19,11 +19,20 @@ class processingTests(unittest.TestCase):
             import urllib.request as urllib
 
         self.datajson = '''{"name": "example.org", "type": "MASTER",
+"notified_serial": "2012042701",
 "records": [{"name": "example.org", "type": "SOA", "content":
 "ns.example.org hostmaster.example.org 2012020501 3600 900 86400 3600",
 "ttl": "86400", "priority": null, "change_date": "1328449038"},
 {"name": "example.org", "type": "NS", "content": "ns.example.org",
 "ttl": "86400", "priority": null, "change_date":"1328449038"}]}'''
+
+        self.datadict = {"name": "example.org", "type": "MASTER",
+"notified_serial": "2012042701",
+"records": [{"name": "example.org", "type": "SOA", "content":
+"ns.example.org hostmaster.example.org 2012020501 3600 900 86400 3600",
+"ttl": "86400", "priority": False, "change_date": "1328449038"},
+{"name": "example.org", "type": "NS", "content": "ns.example.org",
+"ttl": "86400", "priority": False, "change_date":"1328449038"}]}
 
         urllib.build_opener = Mock('build_opener',
             returns=Mock('opener',
@@ -47,6 +56,17 @@ class processingTests(unittest.TestCase):
         sys.stdout = dumpout
         processing.tonicDNSClient(self.uri,
                                   'GET', self.token, self.data)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        self.assert_(dumpout.getvalue())
+
+    def test_formattedPrint(self):
+        import sys
+        import StringIO
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        processing.formattedPrint(self.datadict)
         sys.stdout = ostdout
         dumpout.seek(0)
         self.assert_(dumpout.getvalue())
