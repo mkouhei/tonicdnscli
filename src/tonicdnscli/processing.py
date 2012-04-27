@@ -52,11 +52,35 @@ def tonicDNSClient(uri, method, token, data):
     # response body
     if method == 'GET':
         datas = json.loads(url.read().decode('utf-8'))
-        print(json.dumps(datas, sort_keys=True, indent=2))
+        formattedPrint(datas)
 
     else:
         data = url.read()
         print(data)
+
+
+def formattedPrint(datas):
+    print("domain: %(name)s" % datas)
+    print("serial: %(notified_serial)s" % datas)
+    print("DNS   : %(type)s" % datas)
+    hr()
+    print('%-25s %-4s %-50s %-5s %-3s'
+          % ('name', 'type', 'content', 'ttl', 'prio'))
+    hr()
+    for record in datas['records']:
+        print("%(name)-25s" % record),
+        print("%(type)-4s" % record),
+        print("%(content)-50s" % record),
+        print("%(ttl)-5s" % record),
+        if record['priority']:
+            print("%(priority)2s" % record)
+        else:
+            print
+    hr()
+
+
+def hr():
+    print('=' * 93)
 
 
 def createZoneRecords():
