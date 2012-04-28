@@ -68,7 +68,9 @@ def formattedPrint(datas):
         import utils2 as utils
     elif sys.version_info > (3, 0):
         import utils3 as utils
-
+    if not datas:
+        print("No data")
+        exit(1)
     print("domain: %(name)s" % datas)
     print("serial: %(notified_serial)s" % datas)
     print("DNS   : %(type)s" % datas)
@@ -178,11 +180,11 @@ def getTemplate():
     unprovide()
 
 
-def getAllTemplates():
+def getAllTemplates(server, token):
     # x-authentication-token: token
-    # method: GET
-    # uri: /template
-    unprovide()
+    method = 'GET'
+    uri = 'https://' + server + '/template'
+    tonicDNSClient(uri, method, token, data=False)
 
 
 def searchRecord(datas, keyword):

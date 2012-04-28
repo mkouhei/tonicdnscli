@@ -115,6 +115,18 @@ def delete(args):
                              getJSON(domain, args.infile, False))
 
 
+# Retrieve template
+def template_get(args):
+    import processing
+    password = getPassword(args)
+    t = token(args.username, password, args.server)
+    if args.template:
+        template = args.template
+        processing.getTemplate(args.server, t, template)
+    else:
+        processing.getAllTemplates(args.server, t)
+
+
 # Define sub-commands and command line options
 def parse_options():
     import argparse
@@ -223,6 +235,33 @@ def parse_options():
         group_delete.add_argument('-P', action='store_true',
                                   help='TonicDNS password prompt')
     parser_delete.set_defaults(func=delete)
+
+    # Retrieve template
+    parser_template_get = subparsers.add_parser(
+        'template_get', help='retrieve templates')
+    if server and username and password:
+        parser_template_get.set_defaults(server=server,
+                            username=username, password=password)
+    elif server and username:
+        parser_template_get.set_defaults(server=server, username=username)
+
+    parser_template_get.add_argument('--template', action='store',
+                            help='specify template')
+    if not server:
+        parser_template_get.add_argument(
+            '-s', dest='server', required=True,
+            help='specify TonicDNS Server hostname or IP address')
+    if not username:
+        parser_template_get.add_argument('-u', dest='username',
+                                  required=True, help='TonicDNS username')
+    if not password:
+        group_template_get = \
+            parser_template_get.add_mutually_exclusive_group(required=True)
+        group_template_get.add_argument('-p', dest='password',
+                               help='TonicDNS password')
+        group_template_get.add_argument('-P', action='store_true',
+                               help='TonicDNS password prompt')
+    parser_template_get.set_defaults(func=template_get)
 
     args = parser.parse_args()
     return args
