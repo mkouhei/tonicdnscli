@@ -63,6 +63,12 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
 
 
 def formattedPrint(datas):
+    import sys
+    if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+        import utils2 as utils
+    elif sys.version_info > (3, 0):
+        import utils3 as utils
+
     print("domain: %(name)s" % datas)
     print("serial: %(notified_serial)s" % datas)
     print("DNS   : %(type)s" % datas)
@@ -71,20 +77,20 @@ def formattedPrint(datas):
           % ('name', 'type', 'content', 'ttl', 'prio'))
     hr()
     for record in datas['records']:
-        print("%(name)-33s" % record),
+        utils.print_inline("%(name)-33s" % record)
         if record['type'] == 'SOA':
             print("%(type)-5s" % record)
         else:
-            print("%(type)-5s" % record),
+            utils.print_inline("%(type)-5s" % record)
         if record['type'] == 'SOA':
-            print(">\t\t%(content)-25s" % record),
+            utils.print_inline(">\t\t%(content)-25s " % record)
         else:
-            print("%(content)-25s" % record),
-        print("%(ttl)-6s" % record),
+            utils.print_inline("%(content)-25s" % record)
         if record['priority']:
+            utils.print_inline("%(ttl)5s" % record)
             print("%(priority)2s" % record)
         else:
-            print
+            print("%(ttl)5s " % record)
     hr()
 
 
