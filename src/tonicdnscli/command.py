@@ -164,7 +164,7 @@ def parse_options():
         group_get.add_argument('-P', action='store_true',
                                help='TonicDNS password prompt')
     parser_get.add_argument('--search', action='store',
-                            help='pertial match search')
+                            help='partial match search')
     parser_get.set_defaults(func=get)
 
     # Create records
