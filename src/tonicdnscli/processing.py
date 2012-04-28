@@ -193,6 +193,8 @@ def searchRecord(datas, keyword):
     # data is dictionaly
     result = []
     for record in datas['records']:
-        if record['name'].find(keyword) >= 0:
+        if record['name'].find(keyword) >= 0 or \
+                record['content'].find(keyword) >= 0 or \
+                record['type'] == keyword:
             result.append(record)
     return result
