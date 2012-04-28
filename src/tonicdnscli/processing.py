@@ -73,25 +73,28 @@ def formattedPrint(datas):
     print("serial: %(notified_serial)s" % datas)
     print("DNS   : %(type)s" % datas)
     hr()
-    print('%-33s %-5s %-25s %-5s %-3s'
-          % ('name', 'type', 'content', 'ttl', 'prio'))
-    hr()
-    for record in datas['records']:
-        utils.print_inline("%(name)-33s" % record)
-        if record['type'] == 'SOA':
-            print("%(type)-5s" % record)
-        else:
-            utils.print_inline("%(type)-5s" % record)
-        if record['type'] == 'SOA':
-            utils.print_inline(">\t\t%(content)-25s " % record)
-        else:
-            utils.print_inline("%(content)-25s" % record)
-        if record['priority']:
-            utils.print_inline("%(ttl)5s" % record)
-            print("%(priority)2s" % record)
-        else:
-            print("%(ttl)5s " % record)
-    hr()
+    if datas['records']:
+        print('%-33s %-5s %-25s %-5s %-3s'
+              % ('name', 'type', 'content', 'ttl', 'prio'))
+        hr()
+        for record in datas['records']:
+            utils.print_inline("%(name)-33s" % record)
+            if record['type'] == 'SOA':
+                print("%(type)-5s" % record)
+            else:
+                utils.print_inline("%(type)-5s" % record)
+            if record['type'] == 'SOA':
+                utils.print_inline(">\t\t%(content)-25s " % record)
+            else:
+                utils.print_inline("%(content)-25s" % record)
+            if record['priority']:
+                utils.print_inline("%(ttl)5s" % record)
+                print("%(priority)2s" % record)
+            else:
+                print("%(ttl)5s " % record)
+        hr()
+    else:
+        print("No match records")
 
 
 def hr():
