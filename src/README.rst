@@ -24,6 +24,12 @@ Setup
 History
 -------
 
+0.4.2 (2012-04-28)
+~~~~~~~~~~~~~~~~~~
+
+* Add search records
+* Format of stdout of retrieve records
+
 0.4.1 (2012-04-27)
 ~~~~~~~~~~~~~~~~~~
 
