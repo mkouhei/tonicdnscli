@@ -23,7 +23,7 @@ def unprovide():
     exit(10)
 
 
-def tonicDNSClient(uri, method, token, data):
+def tonicDNSClient(uri, method, token, data, keyword=''):
     import sys
     import json
     if sys.version_info > (2, 6) and sys.version_info < (2, 8):
@@ -52,6 +52,10 @@ def tonicDNSClient(uri, method, token, data):
     # response body
     if method == 'GET':
         datas = json.loads(url.read().decode('utf-8'))
+        # filtering with keyword
+        if keyword:
+            records = searchRecord(datas, keyword)
+            datas.update({"records": records})
         formattedPrint(datas)
     else:
         data = url.read()
@@ -114,11 +118,11 @@ def deleteRecords(server, token, data):
         tonicDNSClient(uri, method, token, i)
 
 
-def getZone(server, token, domain):
+def getZone(server, token, domain, keyword=''):
     # x-authentication-token: token
     method = 'GET'
     uri = 'https://' + server + '/zone/' + domain
-    tonicDNSClient(uri, method, token, data=False)
+    tonicDNSClient(uri, method, token, data=False, keyword=keyword)
 
 
 def getAllZone(server, token):
@@ -172,12 +176,14 @@ def getAllTemplates():
     unprovide()
 
 
-def searchRecord(key, type, data):
+def searchRecord(datas, keyword):
     # search target JSON -> dictionary
     # key target is "name" or "content"
     # type is "type", default null
     # either key and type, or on the other hand
     # data is dictionaly
-    import re
-    for item in data:
-        re.search(key, str(item['key']))
+    result = []
+    for record in datas['records']:
+        if record['name'].find(keyword) >= 0:
+            result.append(record)
+    return result

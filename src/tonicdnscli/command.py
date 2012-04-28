@@ -85,7 +85,11 @@ def get(args):
     domain = args.domain
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    processing.getZone(args.server, t, domain)
+    if args.search:
+        keyword = args.search
+    else:
+        keyword = ''
+    processing.getZone(args.server, t, domain, keyword)
 
 
 # Create records
@@ -159,6 +163,8 @@ def parse_options():
                                help='TonicDNS password')
         group_get.add_argument('-P', action='store_true',
                                help='TonicDNS password prompt')
+    parser_get.add_argument('--search', action='store',
+                            help='pertial match search')
     parser_get.set_defaults(func=get)
 
     # Create records
