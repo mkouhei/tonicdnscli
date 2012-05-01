@@ -1,6 +1,6 @@
 include MANIFEST.in
 include LICENSE
 include tonicdnscli.1
-recursive-include examples *.txt
+recursive-include examples *.txt *.sample
 recursive-include src *.py *.rst
 recursive-exclude src utils3.py
