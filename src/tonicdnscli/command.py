@@ -82,14 +82,17 @@ def show(args):
 # Retrieve records
 def get(args):
     import processing
-    domain = args.domain
     password = getPassword(args)
     t = token(args.username, password, args.server)
     if args.search:
         keyword = args.search
     else:
         keyword = ''
-    processing.getZone(args.server, t, domain, keyword)
+    if args.domain:
+        domain = args.domain
+        processing.getZone(args.server, t, domain, keyword)
+    else:
+        processing.getAllZone(args.server, t)
 
 
 # Create records
@@ -148,7 +151,7 @@ def parse_options():
     elif server and username:
         parser_get.set_defaults(server=server, username=username)
 
-    parser_get.add_argument('--domain', action='store', required=True,
+    parser_get.add_argument('--domain', action='store',
                             help='specify domain FQDN')
     if not server:
         parser_get.add_argument(
@@ -164,7 +167,7 @@ def parse_options():
         group_get.add_argument('-P', action='store_true',
                                help='TonicDNS password prompt')
     parser_get.add_argument('--search', action='store',
-                            help='pertial match search')
+                            help='partial match search')
     parser_get.set_defaults(func=get)
 
     # Create records
