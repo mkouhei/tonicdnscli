@@ -56,6 +56,40 @@ class JSONConvert(object):
                     "ttl": self.checkkey(line, 3)
                     })
 
+    def generateTemplate(self, domain, ipaddr, desc):
+        from datetime import date
+        serial = date.strftime(date.today(), '%Y%m%d') + '01'
+        ns = 'ns.' + domain
+        ttl = 86400
+        soa = ns + ' hostmaster.' + domain + \
+            ' ' + serial + ' 900 ' + str(ttl) + ' 3600'
+
+        self.records.append({
+                'identifier': domain,
+                'description': desc,
+                'entries': [
+                    {
+                        'name': domain,
+                        'type': 'SOA',
+                        'content': serial,
+                        'ttl': ttl
+                        },
+                    {
+                        'name': domain,
+                        'type': 'NS',
+                        'content': ns,
+                        'ttl': ttl
+                        },
+                    {
+                        'name': ns,
+                        'type': 'A',
+                        'content': ipaddr,
+                        'ttl': ttl
+                        }
+                    ]
+                })
+
+
     def checkkey(self, key, index):
         import re
         length = len(re.split('\s*', key))

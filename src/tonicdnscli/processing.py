@@ -150,12 +150,12 @@ def deleteDomain():
     unprovide()
 
 
-def createTemplate():
+def createTemplate(server, token, domain, template):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: PUT
-    # uri: /template/:template
-    unprovide()
+    method = 'PUT'
+    uri = 'https://' + server + '/template/' + domain
+    tonicDNSClient(uri, method, token, data=template)
 
 
 def updateTemplate():
