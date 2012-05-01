@@ -168,11 +168,11 @@ def updateTemplate():
     unprovide()
 
 
-def deleteTemplate():
+def deleteTemplate(server, token, template):
     # x-authentication-token: token
-    # method: DELETE
-    # uri: /template/:template
-    unprovide()
+    method = 'DELETE'
+    uri = 'https://' + server + '/template/' + template
+    tonicDNSClient(uri, method, token, data=False)
 
 
 def getTemplate(server, token, template):

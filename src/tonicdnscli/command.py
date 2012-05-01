@@ -312,6 +312,35 @@ def parse_options():
                                            help='TonicDNS password prompt')
     parser_template_create.set_defaults(func=template_create)
 
+    # delete template
+    parser_template_delete = subparsers.add_parser(
+        'template_delete', help='delete template')
+
+    if server and username and password:
+        parser_template_delete.set_defaults(
+            server=server, username=username, password=password)
+    elif server and username:
+        parser_template_delete.set_defaults(
+            server=server, username=username)
+
+    parser_template_delete.add_argument('--domain', dest='domain',
+                                        required=True,
+                                        help='domain name')
+    if not server:
+        parser_template_delete.add_argument('-s', dest='server', required=True,
+                                   help='specify TonicDNS hostname|IP address')
+    if not username:
+        parser_template_create.add_argument('-u', dest='username',
+                                   required=True, help='TonicDNS username')
+    if not password:
+        group_template_delete = \
+            parser_template_delete.add_mutually_exclusive_group(required=True)
+        group_template_delete.add_argument('-p', dest='password',
+                                           help='TonicDNS password')
+        group_template_delete.add_argument('-P', action='store_true',
+                                           help='TonicDNS password prompt')
+    parser_template_delete.set_defaults(func=template_delete)
+
     args = parser.parse_args()
     return args
 
