@@ -89,7 +89,6 @@ class JSONConvert(object):
                     ]
                 })
 
-
     def checkkey(self, key, index):
         import re
         length = len(re.split('\s*', key))

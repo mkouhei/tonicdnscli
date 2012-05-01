@@ -126,6 +126,7 @@ def template_get(args):
     else:
         processing.getAllTemplates(args.server, t)
 
+
 # Create template
 def template_create(args):
     import processing
@@ -138,6 +139,7 @@ def template_create(args):
     t = token(args.username, password, args.server)
     processing.createTemplate(args.server, t, domain,
                               o.generateTemplate(domain, ipaddr, desc=''))
+
 
 # Define sub-commands and command line options
 def parse_options():
@@ -285,7 +287,7 @@ def parse_options():
     elif server and username:
         parser_template_create.set_defaults(
             server=server, username=username)
-        
+
     parser_template_create.add_argument('--domain', dest='domain',
                                         required=True,
                                         help='domain name')
@@ -298,8 +300,8 @@ def parse_options():
         parser_template_create.add_argument('-s', dest='server', required=True,
                                    help='specify TonicDNS hostname|IP address')
     if not username:
-        parser_template_create.add_argument('-u', dest='username', required=True,
-                                   help='TonicDNS username')
+        parser_template_create.add_argument('-u', dest='username',
+                                   required=True, help='TonicDNS username')
     if not password:
         group_template_create = \
             parser_template_create.add_mutually_exclusive_group(required=True)
