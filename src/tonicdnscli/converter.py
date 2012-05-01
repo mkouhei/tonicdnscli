@@ -60,18 +60,22 @@ class JSONConvert(object):
         from datetime import date
         serial = date.strftime(date.today(), '%Y%m%d') + '01'
         ns = 'ns.' + domain
-        ttl = 86400
-        soa = ns + ' hostmaster.' + domain + \
-            ' ' + serial + ' 900 ' + str(ttl) + ' 3600'
+        refresh = 3600
+        retry = 900
+        expire = 86400
+        ttl = 3600
 
-        self.records.append({
-                'identifier': domain,
+        soa = ns + ' hostmaster.' + domain + \
+            ' ' + serial + ' ' + str(refresh) + ' ' + str(retry) + \
+            ' ' + str(expire) + ' ' + str(ttl)
+        self.record = {
+                'identifier': domain.replace('.', '_'),
                 'description': desc,
                 'entries': [
                     {
                         'name': domain,
                         'type': 'SOA',
-                        'content': serial,
+                        'content': soa,
                         'ttl': ttl
                         },
                     {
@@ -87,7 +91,7 @@ class JSONConvert(object):
                         'ttl': ttl
                         }
                     ]
-                })
+                }
 
     def checkkey(self, key, index):
         import re

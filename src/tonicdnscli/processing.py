@@ -32,7 +32,6 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
         import urllib.request as urllib
 
     encoded = json.JSONEncoder().encode(data)
-
     o = urllib.build_opener(urllib.HTTPHandler)
     r = urllib.Request(uri, data=encoded.encode('utf-8'))
 
@@ -150,11 +149,11 @@ def deleteDomain():
     unprovide()
 
 
-def createTemplate(server, token, domain, template):
+def createTemplate(server, token, identifier, template):
     # ContentType: application/json
     # x-authentication-token: token
     method = 'PUT'
-    uri = 'https://' + server + '/template/' + domain
+    uri = 'https://' + server + '/template/' + identifier
     tonicDNSClient(uri, method, token, data=template)
 
 

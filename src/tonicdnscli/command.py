@@ -132,13 +132,14 @@ def template_create(args):
     import processing
     import converter
     domain = args.domain
+    identifier = domain.replace('.', '_')
     o = converter.JSONConvert(domain)
     ipaddr = args.ipaddr
     desc = args.desc
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    processing.createTemplate(args.server, t, domain,
-                              o.generateTemplate(domain, ipaddr, desc=''))
+    o.generateTemplate(domain, ipaddr, desc='')
+    processing.createTemplate(args.server, t, identifier, o.record)
 
 
 # Define sub-commands and command line options
