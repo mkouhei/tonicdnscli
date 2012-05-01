@@ -24,6 +24,11 @@ Setup
 History
 -------
 
+0.4.4 (2012-05-01)
+~~~~~~~~~~~~~~~~~~
+
+* not distribute util3.py (alternative print for python3)
+
 0.4.3 (2012-05-01)
 ~~~~~~~~~~~~~~~~~~
 
