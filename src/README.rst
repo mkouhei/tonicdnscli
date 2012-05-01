@@ -24,6 +24,12 @@ Setup
 History
 -------
 
+0.4.3 (2012-05-01)
+~~~~~~~~~~~~~~~~~~
+
+* search target conent and type
+* retrieve all zone
+
 0.4.2 (2012-04-28)
 ~~~~~~~~~~~~~~~~~~
 
@@ -141,25 +147,20 @@ Retrieve records
 ::
 
    $ tonicdnscli get -s ns.example.org -d example.org -u tonicusername -P
-   {
-     "name": "example.org", 
-     "notified_serial": "2012021402", 
-     "records": [
-       {
-         "content": "ns.example.org hostmaster.example.org 2012021402", 
-         "name": "example.org", 
-         "priority": null, 
-         "ttl": "86400", 
-         "type": "SOA"
-       }, 
-       {
-         "content": "ns.example.org", 
-         "name": "example.org", 
-         "priority": null, 
-         "ttl": "86400", 
-         "type": "NS"
-       }, 
-   (snip)
+   domain: example.org
+   serial: 2012042403
+   DNS   : MASTER
+   ==============================================================================
+   name                              type  content                   ttl   prio
+   ==============================================================================
+   example.org                       SOA  
+   >            ns.example.org hostmaster.example.org 2012042403  86400 
+   example.org                       NS    ns.example.org            86400 
+   example.org                       NS    ns2.example.org           86400 
+   ns.example.org                    A     192.168.0.100             86400 
+   ns2.example.org                   A     192.168.0.101             86400 
+   www.example.org                   A     192.168.0.1               86400 
+   ==============================================================================
 
 
 Create records
