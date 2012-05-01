@@ -54,7 +54,8 @@ class processingTests(unittest.TestCase):
         dumpout = StringIO.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
-        processing.tonicDNSClient(self.uri,
+        uri = self.uri + '/zone/example.org'
+        processing.tonicDNSClient(uri,
                                   'GET', self.token, self.data)
         sys.stdout = ostdout
         dumpout.seek(0)
