@@ -55,7 +55,10 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
         if keyword:
             records = searchRecord(datas, keyword)
             datas.update({"records": records})
-        formattedPrint(datas)
+        if uri.split('/')[3] == 'template':
+            print(datas)
+        else:
+            formattedPrint(datas)
     else:
         data = url.read()
         print(data)
