@@ -142,6 +142,17 @@ def template_create(args):
     processing.createTemplate(args.server, t, identifier, o.record)
 
 
+# Delete template
+def template_delete(args):
+    import processing
+    import converter
+    password = getPassword(args)
+    if args.template:
+        template = args.template
+    t = token(args.username, password, args.server)
+    processing.deleteTemplate(args.server, t, template)
+
+
 # Define sub-commands and command line options
 def parse_options():
     import argparse
@@ -323,9 +334,9 @@ def parse_options():
         parser_template_delete.set_defaults(
             server=server, username=username)
 
-    parser_template_delete.add_argument('--domain', dest='domain',
-                                        required=True,
-                                        help='domain name')
+    parser_template_delete.add_argument('--template', action='store',
+                            required=True, help='specify template')
+
     if not server:
         parser_template_delete.add_argument('-s', dest='server', required=True,
                                    help='specify TonicDNS hostname|IP address')
