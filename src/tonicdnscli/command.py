@@ -334,8 +334,8 @@ def parse_options():
         parser_template_delete.set_defaults(
             server=server, username=username)
 
-    parser_template_delete.add_argument('--template', action='store',
-                            required=True, help='specify template')
+    parser_template_delete.add_argument('template', action='store',
+                                        help='specify template identifier')
 
     if not server:
         parser_template_delete.add_argument('-s', dest='server', required=True,
