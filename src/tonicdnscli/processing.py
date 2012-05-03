@@ -160,12 +160,12 @@ def createTemplate(server, token, identifier, template):
     tonicDNSClient(uri, method, token, data=template)
 
 
-def updateTemplate():
+def updateTemplate(server, token, identifier, template):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: POST
-    # uri: /template
-    unprovide()
+    method = 'POST'
+    uri = 'https://' + server + '/template/' + identifier
+    tonicDNSClient(uri, method, token, data=template)
 
 
 def deleteTemplate(server, token, template):

@@ -127,19 +127,25 @@ def template_get(args):
         processing.getAllTemplates(args.server, t)
 
 
-# Create template
-def template_create(args):
+# Create or update template
+def template_create_or_update(args):
     import processing
     import converter
     domain = args.domain
-    identifier = domain.replace('.', '_')
+    if args.template:
+        identifier = args.template
+    else:
+        identifier = domain.replace('.', '_')
     o = converter.JSONConvert(domain)
-    ipaddr = args.ipaddr
-    desc = args.desc
+    dnsaddr = args.dnsaddr
+    desc = args.desc if args.desc else ''
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    o.generateTemplate(domain, ipaddr, desc='')
-    processing.createTemplate(args.server, t, identifier, o.record)
+    o.generateTemplate(domain, dnsaddr, desc=desc)
+    if args.template:
+        processing.updateTemplate(args.server, t, identifier, o.record)
+    else:
+        processing.createTemplate(args.server, t, identifier, o.record)
 
 
 # Delete template
@@ -264,7 +270,7 @@ def parse_options():
 
     # Retrieve template
     parser_template_get = subparsers.add_parser(
-        'template_get', help='retrieve templates')
+        'tmpl_get', help='retrieve templates')
     if server and username and password:
         parser_template_get.set_defaults(server=server,
                             username=username, password=password)
@@ -272,7 +278,7 @@ def parse_options():
         parser_template_get.set_defaults(server=server, username=username)
 
     parser_template_get.add_argument('--template', action='store',
-                            help='specify template')
+                            help='specify template identifier')
     if not server:
         parser_template_get.add_argument(
             '-s', dest='server', required=True,
@@ -289,43 +295,48 @@ def parse_options():
                                help='TonicDNS password prompt')
     parser_template_get.set_defaults(func=template_get)
 
-    # create template
-    parser_template_create = subparsers.add_parser(
-        'template_create', help='create template')
+    # create or update template
+    parser_tmpl_create_update = subparsers.add_parser(
+        'tmpl_create_update', help='create or update template')
 
     if server and username and password:
-        parser_template_create.set_defaults(
+        parser_tmpl_create_update.set_defaults(
             server=server, username=username, password=password)
     elif server and username:
-        parser_template_create.set_defaults(
+        parser_tmpl_create_update.set_defaults(
             server=server, username=username)
 
-    parser_template_create.add_argument('--domain', dest='domain',
-                                        required=True,
-                                        help='domain name')
-    parser_template_create.add_argument('--ip', dest='ipaddr',
-                                        required=True,
-                                        help='NS record IP addr')
-    parser_template_create.add_argument('--desc', dest='desc',
-                                        help='description')
+    parser_tmpl_create_update.add_argument(
+        '--domain', action='store', required=True,
+        help='create template with specify domain')
+    parser_tmpl_create_update.add_argument(
+        '--template', action='store',
+        help='update template with specify identifier')
+    parser_tmpl_create_update.add_argument(
+        '--dnsaddr', action='store', required=True,
+        help='specify IP address of NS record')
+    parser_tmpl_create_update.add_argument(
+        '--desc', action='store', help='description')
     if not server:
-        parser_template_create.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname|IP address')
+        parser_tmpl_create_update.add_argument(
+            '-s', dest='server', required=True,
+            help='specify TonicDNS hostname|IP address')
     if not username:
-        parser_template_create.add_argument('-u', dest='username',
-                                   required=True, help='TonicDNS username')
+        parser_tmpl_create_update.add_argument(
+            '-u', dest='username', required=True,
+            help='TonicDNS username')
     if not password:
-        group_template_create = \
-            parser_template_create.add_mutually_exclusive_group(required=True)
-        group_template_create.add_argument('-p', dest='password',
-                                           help='TonicDNS password')
-        group_template_create.add_argument('-P', action='store_true',
-                                           help='TonicDNS password prompt')
-    parser_template_create.set_defaults(func=template_create)
+        group_tmpl_create_update = \
+            parser_tmpl_create_update.add_mutually_exclusive_group(required=True)
+        group_tmpl_create_update.add_argument(
+            '-p', dest='password', help='TonicDNS password')
+        group_tmpl_create_update.add_argument(
+            '-P', action='store_true', help='TonicDNS password prompt')
+    parser_tmpl_create_update.set_defaults(func=template_create_or_update)
 
     # delete template
     parser_template_delete = subparsers.add_parser(
-        'template_delete', help='delete template')
+        'tmpl_delete', help='delete template')
 
     if server and username and password:
         parser_template_delete.set_defaults(
@@ -341,7 +352,7 @@ def parse_options():
         parser_template_delete.add_argument('-s', dest='server', required=True,
                                    help='specify TonicDNS hostname|IP address')
     if not username:
-        parser_template_create.add_argument('-u', dest='username',
+        parser_template_delete.add_argument('-u', dest='username',
                                    required=True, help='TonicDNS username')
     if not password:
         group_template_delete = \
