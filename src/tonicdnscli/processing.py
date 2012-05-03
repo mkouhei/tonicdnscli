@@ -56,7 +56,11 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
             records = searchRecord(datas, keyword)
             datas.update({"records": records})
         if uri.split('/')[3] == 'template':
-            print(datas)
+            if len(uri.split('/')) == 5:
+                formattedPrint(datas)
+            else:
+                for data in datas:
+                    formattedPrint(data)
         else:
             formattedPrint(datas)
     else:
@@ -73,25 +77,47 @@ def formattedPrint(datas):
     if not datas:
         print("No data")
         exit(1)
-    print("domain: %(name)s" % datas)
-    print("serial: %(notified_serial)s" % datas)
-    print("DNS   : %(type)s" % datas)
-    hr()
-    if datas['records']:
+    if datas.get('records'):
+        print("domain: %(name)s" % datas)
+        print("serial: %(notified_serial)s" % datas)
+        print("DNS   : %(type)s" % datas)
+        hr()
         print('%-33s %-5s %-25s %-5s %-3s'
               % ('name', 'type', 'content', 'ttl', 'prio'))
         hr()
-        for record in datas['records']:
+        for record in datas.get('records'):
             utils.print_inline("%(name)-33s" % record)
-            if record['type'] == 'SOA':
+            if record.get('type') == 'SOA':
                 print("%(type)-5s" % record)
             else:
                 utils.print_inline("%(type)-5s" % record)
-            if record['type'] == 'SOA':
+            if record.get('type') == 'SOA':
                 utils.print_inline(">\t\t%(content)-25s " % record)
             else:
                 utils.print_inline("%(content)-25s" % record)
-            if record['priority']:
+            if record.get('priority'):
+                utils.print_inline("%(ttl)5s" % record)
+                print("%(priority)2s" % record)
+            else:
+                print("%(ttl)5s " % record)
+        hr()
+    elif datas.get('identifier'):
+        print("identifier : %(identifier)s" % datas)
+        print("description: %(description)s" % datas)
+        hr()
+        print('%-33s %-5s %-25s %-5s %-3s'
+              % ('name', 'type', 'content', 'ttl', 'prio'))
+        for record in datas.get('entries'):
+            utils.print_inline("%(name)-33s" % record)
+            if record.get('type') == 'SOA':
+                print("%(type)-5s" % record)
+            else:
+                utils.print_inline("%(type)-5s" % record)
+            if record.get('type') == 'SOA':
+                utils.print_inline("> %(content)-25s " % record)
+            else:
+                utils.print_inline("%(content)-24s" % record)
+            if record.get('priority') != None:
                 utils.print_inline("%(ttl)5s" % record)
                 print("%(priority)2s" % record)
             else:
