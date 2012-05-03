@@ -159,7 +159,7 @@ def template_delete(args):
     processing.deleteTemplate(args.server, t, template)
 
 
-def setoption(obj, keyword, prefix=False):
+def setoption(obj, keyword, prefix=False, required=False):
     if keyword == 'server':
         obj.add_argument(
             '-s', dest='server', required=True,
@@ -180,11 +180,30 @@ def setoption(obj, keyword, prefix=False):
         msg = 'specify template identifier'
         if prefix:
             msg = prefix + msg
-        obj.add_argument('--template', action='store',
-                         help=msg)
+        if required:
+            obj.add_argument('--template', action='store',
+                             required=True, help=msg)
+        else:
+            obj.add_argument('--template', action='store',
+                             help=msg)
     if keyword == 'search':
         obj.add_argument('--search', action='store',
                          help='partial match search')
+
+
+def conn_options(obj, server=False, username=False, password=False):
+    if server and username and password:
+        obj.set_defaults(server=server, username=username,
+                         password=password)
+    elif server and username:
+        obj.set_defaults(server=server, username=username)
+
+    if not server:
+        setoption(obj, 'server')
+    if not username:
+        setoption(obj, 'username')
+    if not password:
+        setoption(obj, 'password')
 
 
 # Define sub-commands and command line options
@@ -216,89 +235,36 @@ def parse_options():
     # Retrieve records
     prs_get = subprs.add_parser(
         'get', help='retrieve records of specific zone')
-    if server and username and password:
-        prs_get.set_defaults(server=server, username=username,
-                                password=password)
-    elif server and username:
-        prs_get.set_defaults(server=server, username=username)
-
     prs_get.add_argument('--domain', action='store',
                             help='specify domain FQDN')
-    if not server:
-        setoption(prs_get, 'server')
-    if not username:
-        setoption(prs_get, 'username')
-    if not password:
-        setoption(prs_get, 'password')
+    conn_options(prs_get, server, username, password)
     setoption(prs_get, 'search')
     prs_get.set_defaults(func=get)
 
     # Create records
     prs_create = subprs.add_parser(
         'create', help='create records of specific zone')
-
-    if server and username and password:
-        prs_create.set_defaults(server=server, username=username,
-                                password=password)
-    elif server and username:
-        prs_create.set_defaults(server=server, username=username)
-
     setoption(prs_create, 'infile')
-    if not server:
-        setoption(prs_create, 'server')
-    if not username:
-        setoption(prs_create, 'username')
-    if not password:
-        setoption(prs_create, 'password')
+    conn_options(prs_create, server, username, password)
     prs_create.set_defaults(func=create)
 
     # Delete records
     prs_delete = subprs.add_parser(
         'delete', help='delete records of specific zone')
-
-    if server and username and password:
-        setoption(prs_delete, 'server')
-    elif server and username:
-        prs_delete.set_defaults(server=server, username=username)
-
     setoption(prs_delete, 'infile')
-    if not server:
-        setoption(prs_delete, 'server')
-    if not username:
-        setoption(prs_delete, 'username')
-    if not password:
-        setoption(prs_delete, 'password')
+    conn_options(prs_delete, server, username, password)
     prs_delete.set_defaults(func=delete)
 
     # Retrieve template
     prs_tmpl_get = subprs.add_parser(
         'tmpl_get', help='retrieve templates')
-    if server and username and password:
-        prs_tmpl_get.set_defaults(server=server,
-                            username=username, password=password)
-    elif server and username:
-        prs_tmpl_get.set_defaults(server=server, username=username)
-
     setoption(prs_tmpl_get, 'template')
-    if not server:
-        setoption(prs_tmpl_get, 'server')
-    if not username:
-        setoption(prs_tmpl_get, 'username')
-    if not password:
-        setoption(prs_tmpl_get, 'password')
+    conn_options(prs_tmpl_get, server, username, password)
     prs_tmpl_get.set_defaults(func=template_get)
 
     # create or update template
     prs_tmpl_create_update = subprs.add_parser(
         'tmpl_create_update', help='create or update template')
-
-    if server and username and password:
-        prs_tmpl_create_update.set_defaults(
-            server=server, username=username, password=password)
-    elif server and username:
-        prs_tmpl_create_update.set_defaults(
-            server=server, username=username)
-
     prs_tmpl_create_update.add_argument(
         '--domain', action='store', required=True,
         help='create template with specify domain')
@@ -308,31 +274,14 @@ def parse_options():
         help='specify IP address of NS record')
     prs_tmpl_create_update.add_argument(
         '--desc', action='store', help='description')
-    if not server:
-        setoption(prs_tmpl_create_update, 'server')
-    if not username:
-        setoption(prs_tmpl_create_update, 'username')
-    if not password:
-        setoption(prs_tmpl_create_update, 'password')
+    conn_options(prs_tmpl_create_update, server, username, password)
     prs_tmpl_create_update.set_defaults(func=template_create_or_update)
 
     # delete template
     prs_tmpl_delete = subprs.add_parser(
         'tmpl_delete', help='delete template')
-
-    if server and username and password:
-        prs_tmpl_delete.set_defaults(
-            server=server, username=username, password=password)
-    elif server and username:
-        prs_tmpl_delete.set_defaults(
-            server=server, username=username)
-
-    if not server:
-        setoption(prs_tmpl_delete, 'server')
-    if not username:
-        setoption(prs_tmpl_delete, 'username')
-    if not password:
-        setoption(prs_tmpl_delete, 'password')
+    setoption(prs_tmpl_delete, 'template', required=True)
+    conn_options(prs_tmpl_delete, server, username, password)
     prs_tmpl_delete.set_defaults(func=template_delete)
 
     args = prs.parse_args()
