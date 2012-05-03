@@ -32,7 +32,6 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
         import urllib.request as urllib
 
     encoded = json.JSONEncoder().encode(data)
-
     o = urllib.build_opener(urllib.HTTPHandler)
     r = urllib.Request(uri, data=encoded.encode('utf-8'))
 
@@ -56,7 +55,14 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
         if keyword:
             records = searchRecord(datas, keyword)
             datas.update({"records": records})
-        formattedPrint(datas)
+        if uri.split('/')[3] == 'template':
+            if len(uri.split('/')) == 5:
+                formattedPrint(datas)
+            else:
+                for data in datas:
+                    formattedPrint(data)
+        else:
+            formattedPrint(datas)
     else:
         data = url.read()
         print(data)
@@ -68,26 +74,50 @@ def formattedPrint(datas):
         import utils2 as utils
     elif sys.version_info > (3, 0):
         import utils3 as utils
-
-    print("domain: %(name)s" % datas)
-    print("serial: %(notified_serial)s" % datas)
-    print("DNS   : %(type)s" % datas)
-    hr()
-    if datas['records']:
+    if not datas:
+        print("No data")
+        exit(1)
+    if datas.get('records'):
+        print("domain: %(name)s" % datas)
+        print("serial: %(notified_serial)s" % datas)
+        print("DNS   : %(type)s" % datas)
+        hr()
         print('%-33s %-5s %-25s %-5s %-3s'
               % ('name', 'type', 'content', 'ttl', 'prio'))
         hr()
-        for record in datas['records']:
+        for record in datas.get('records'):
             utils.print_inline("%(name)-33s" % record)
-            if record['type'] == 'SOA':
+            if record.get('type') == 'SOA':
                 print("%(type)-5s" % record)
             else:
                 utils.print_inline("%(type)-5s" % record)
-            if record['type'] == 'SOA':
+            if record.get('type') == 'SOA':
                 utils.print_inline(">\t\t%(content)-25s " % record)
             else:
                 utils.print_inline("%(content)-25s" % record)
-            if record['priority']:
+            if record.get('priority'):
+                utils.print_inline("%(ttl)5s" % record)
+                print("%(priority)2s" % record)
+            else:
+                print("%(ttl)5s " % record)
+        hr()
+    elif datas.get('identifier'):
+        print("identifier : %(identifier)s" % datas)
+        print("description: %(description)s" % datas)
+        hr()
+        print('%-33s %-5s %-25s %-5s %-3s'
+              % ('name', 'type', 'content', 'ttl', 'prio'))
+        for record in datas.get('entries'):
+            utils.print_inline("%(name)-33s" % record)
+            if record.get('type') == 'SOA':
+                print("%(type)-5s" % record)
+            else:
+                utils.print_inline("%(type)-5s" % record)
+            if record.get('type') == 'SOA':
+                utils.print_inline("> %(content)-25s " % record)
+            else:
+                utils.print_inline("%(content)-24s" % record)
+            if record.get('priority') != None:
                 utils.print_inline("%(ttl)5s" % record)
                 print("%(priority)2s" % record)
             else:
@@ -148,41 +178,41 @@ def deleteDomain():
     unprovide()
 
 
-def createTemplate():
+def createTemplate(server, token, identifier, template):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: PUT
-    # uri: /template/:template
-    unprovide()
+    method = 'PUT'
+    uri = 'https://' + server + '/template/' + identifier
+    tonicDNSClient(uri, method, token, data=template)
 
 
-def updateTemplate():
+def updateTemplate(server, token, identifier, template):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: POST
-    # uri: /template
-    unprovide()
+    method = 'POST'
+    uri = 'https://' + server + '/template/' + identifier
+    tonicDNSClient(uri, method, token, data=template)
 
 
-def deleteTemplate():
+def deleteTemplate(server, token, template):
     # x-authentication-token: token
-    # method: DELETE
-    # uri: /template/:template
-    unprovide()
+    method = 'DELETE'
+    uri = 'https://' + server + '/template/' + template
+    tonicDNSClient(uri, method, token, data=False)
 
 
-def getTemplate():
+def getTemplate(server, token, template):
     # x-authentication-token: token
-    # method: GET
-    # uri: /template/:template
-    unprovide()
+    method = 'GET'
+    uri = 'https://' + server + '/template/' + template
+    tonicDNSClient(uri, method, token, data=False)
 
 
-def getAllTemplates():
+def getAllTemplates(server, token):
     # x-authentication-token: token
-    # method: GET
-    # uri: /template
-    unprovide()
+    method = 'GET'
+    uri = 'https://' + server + '/template'
+    tonicDNSClient(uri, method, token, data=False)
 
 
 def searchRecord(datas, keyword):
