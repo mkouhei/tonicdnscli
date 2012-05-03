@@ -159,6 +159,34 @@ def template_delete(args):
     processing.deleteTemplate(args.server, t, template)
 
 
+def setoption(obj, keyword, prefix=False):
+    if keyword == 'server':
+        obj.add_argument(
+            '-s', dest='server', required=True,
+            help='specify TonicDNS Server hostname or IP address')
+    if keyword == 'username':
+        obj.add_argument('-u', dest='username', required=True,
+                         help='TonicDNS username')
+    if keyword == 'password':
+        group = obj.add_mutually_exclusive_group(required=True)
+        group.add_argument('-p', dest='password',
+                           help='TonicDNS password')
+        group.add_argument('-P', action='store_true',
+                           help='TonicDNS password prompt')
+    if keyword == 'infile':
+        obj.add_argument('infile', action='store',
+                         help='pre-converted text file')
+    if keyword == 'template':
+        msg = 'specify template identifier'
+        if prefix:
+            msg = prefix + msg
+        obj.add_argument('--template', action='store',
+                         help=msg)
+    if keyword == 'search':
+        obj.add_argument('--search', action='store',
+                         help='partial match search')
+
+
 # Define sub-commands and command line options
 def parse_options():
     import argparse
@@ -171,199 +199,143 @@ def parse_options():
     if os.path.isfile(CONFIGFILE):
         server, username, password = checkConfig(CONFIGFILE)
 
-    parser = argparse.ArgumentParser(description='usage')
-    parser.add_argument('-v', '--version', action='version',
+    prs = argparse.ArgumentParser(description='usage')
+    prs.add_argument('-v', '--version', action='version',
                         version=__version__)
-    parser.add_argument('--config', action='store',
+    prs.add_argument('--config', action='store',
                         help='config file path')
 
-    subparsers = parser.add_subparsers(help='commands')
+    subprs = prs.add_subparsers(help='commands')
 
     # Convert and print JSON
-    parser_show = subparsers.add_parser('show',
-                                         help='show converted JSON')
-    parser_show.add_argument('infile', action='store',
-                               help='pre-converted text file')
-    parser_show.set_defaults(func=show)
+    prs_show = subprs.add_parser('show',
+                                    help='show converted JSON')
+    setoption(prs_show, 'infile')
+    prs_show.set_defaults(func=show)
 
     # Retrieve records
-    parser_get = subparsers.add_parser(
+    prs_get = subprs.add_parser(
         'get', help='retrieve records of specific zone')
     if server and username and password:
-        parser_get.set_defaults(server=server, username=username,
+        prs_get.set_defaults(server=server, username=username,
                                 password=password)
     elif server and username:
-        parser_get.set_defaults(server=server, username=username)
+        prs_get.set_defaults(server=server, username=username)
 
-    parser_get.add_argument('--domain', action='store',
+    prs_get.add_argument('--domain', action='store',
                             help='specify domain FQDN')
     if not server:
-        parser_get.add_argument(
-            '-s', dest='server', required=True,
-            help='specify TonicDNS Server hostname or IP address')
+        setoption(prs_get, 'server')
     if not username:
-        parser_get.add_argument('-u', dest='username', required=True,
-                                help='TonicDNS username')
+        setoption(prs_get, 'username')
     if not password:
-        group_get = parser_get.add_mutually_exclusive_group(required=True)
-        group_get.add_argument('-p', dest='password',
-                               help='TonicDNS password')
-        group_get.add_argument('-P', action='store_true',
-                               help='TonicDNS password prompt')
-    parser_get.add_argument('--search', action='store',
-                            help='partial match search')
-    parser_get.set_defaults(func=get)
+        setoption(prs_get, 'password')
+    setoption(prs_get, 'search')
+    prs_get.set_defaults(func=get)
 
     # Create records
-    parser_create = subparsers.add_parser(
+    prs_create = subprs.add_parser(
         'create', help='create records of specific zone')
 
     if server and username and password:
-        parser_create.set_defaults(server=server, username=username,
+        prs_create.set_defaults(server=server, username=username,
                                 password=password)
     elif server and username:
-        parser_create.set_defaults(server=server, username=username)
+        prs_create.set_defaults(server=server, username=username)
 
-    parser_create.add_argument('infile', action='store',
-                                 help='pre-converted text file')
+    setoption(prs_create, 'infile')
     if not server:
-        parser_create.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname|IP address')
+        setoption(prs_create, 'server')
     if not username:
-        parser_create.add_argument('-u', dest='username', required=True,
-                                   help='TonicDNS username')
+        setoption(prs_create, 'username')
     if not password:
-        group_create = \
-            parser_create.add_mutually_exclusive_group(required=True)
-        group_create.add_argument('-p', dest='password',
-                               help='TonicDNS password')
-        group_create.add_argument('-P', action='store_true',
-                               help='TonicDNS password prompt')
-    parser_create.set_defaults(func=create)
+        setoption(prs_create, 'password')
+    prs_create.set_defaults(func=create)
 
     # Delete records
-    parser_delete = subparsers.add_parser(
+    prs_delete = subprs.add_parser(
         'delete', help='delete records of specific zone')
 
     if server and username and password:
-        parser_delete.set_defaults(server=server, username=username,
-                                password=password)
+        setoption(prs_delete, 'server')
     elif server and username:
-        parser_delete.set_defaults(server=server, username=username)
+        prs_delete.set_defaults(server=server, username=username)
 
-    parser_delete.add_argument('infile', action='store',
-                                 help='pre-converted text file')
+    setoption(prs_delete, 'infile')
     if not server:
-        parser_delete.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname|IP address')
+        setoption(prs_delete, 'server')
     if not username:
-        parser_delete.add_argument('-u', dest='username', required=True,
-                                   help='TonicDNS username')
+        setoption(prs_delete, 'username')
     if not password:
-        group_delete = \
-            parser_delete.add_mutually_exclusive_group(required=True)
-        group_delete.add_argument('-p', dest='password',
-                                  help='TonicDNS password')
-        group_delete.add_argument('-P', action='store_true',
-                                  help='TonicDNS password prompt')
-    parser_delete.set_defaults(func=delete)
+        setoption(prs_delete, 'password')
+    prs_delete.set_defaults(func=delete)
 
     # Retrieve template
-    parser_template_get = subparsers.add_parser(
+    prs_tmpl_get = subprs.add_parser(
         'tmpl_get', help='retrieve templates')
     if server and username and password:
-        parser_template_get.set_defaults(server=server,
+        prs_tmpl_get.set_defaults(server=server,
                             username=username, password=password)
     elif server and username:
-        parser_template_get.set_defaults(server=server, username=username)
+        prs_tmpl_get.set_defaults(server=server, username=username)
 
-    parser_template_get.add_argument('--template', action='store',
-                            help='specify template identifier')
+    setoption(prs_tmpl_get, 'template')
     if not server:
-        parser_template_get.add_argument(
-            '-s', dest='server', required=True,
-            help='specify TonicDNS Server hostname or IP address')
+        setoption(prs_tmpl_get, 'server')
     if not username:
-        parser_template_get.add_argument('-u', dest='username',
-                                  required=True, help='TonicDNS username')
+        setoption(prs_tmpl_get, 'username')
     if not password:
-        group_template_get = \
-            parser_template_get.add_mutually_exclusive_group(required=True)
-        group_template_get.add_argument('-p', dest='password',
-                               help='TonicDNS password')
-        group_template_get.add_argument('-P', action='store_true',
-                               help='TonicDNS password prompt')
-    parser_template_get.set_defaults(func=template_get)
+        setoption(prs_tmpl_get, 'password')
+    prs_tmpl_get.set_defaults(func=template_get)
 
     # create or update template
-    parser_tmpl_create_update = subparsers.add_parser(
+    prs_tmpl_create_update = subprs.add_parser(
         'tmpl_create_update', help='create or update template')
 
     if server and username and password:
-        parser_tmpl_create_update.set_defaults(
+        prs_tmpl_create_update.set_defaults(
             server=server, username=username, password=password)
     elif server and username:
-        parser_tmpl_create_update.set_defaults(
+        prs_tmpl_create_update.set_defaults(
             server=server, username=username)
 
-    parser_tmpl_create_update.add_argument(
+    prs_tmpl_create_update.add_argument(
         '--domain', action='store', required=True,
         help='create template with specify domain')
-    parser_tmpl_create_update.add_argument(
-        '--template', action='store',
-        help='update template with specify identifier')
-    parser_tmpl_create_update.add_argument(
+    setoption(prs_tmpl_create_update, 'template', 'update template with ')
+    prs_tmpl_create_update.add_argument(
         '--dnsaddr', action='store', required=True,
         help='specify IP address of NS record')
-    parser_tmpl_create_update.add_argument(
+    prs_tmpl_create_update.add_argument(
         '--desc', action='store', help='description')
     if not server:
-        parser_tmpl_create_update.add_argument(
-            '-s', dest='server', required=True,
-            help='specify TonicDNS hostname|IP address')
+        setoption(prs_tmpl_create_update, 'server')
     if not username:
-        parser_tmpl_create_update.add_argument(
-            '-u', dest='username', required=True,
-            help='TonicDNS username')
+        setoption(prs_tmpl_create_update, 'username')
     if not password:
-        group_tmpl_create_update = \
-            parser_tmpl_create_update.add_mutually_exclusive_group(required=True)
-        group_tmpl_create_update.add_argument(
-            '-p', dest='password', help='TonicDNS password')
-        group_tmpl_create_update.add_argument(
-            '-P', action='store_true', help='TonicDNS password prompt')
-    parser_tmpl_create_update.set_defaults(func=template_create_or_update)
+        setoption(prs_tmpl_create_update, 'password')
+    prs_tmpl_create_update.set_defaults(func=template_create_or_update)
 
     # delete template
-    parser_template_delete = subparsers.add_parser(
+    prs_tmpl_delete = subprs.add_parser(
         'tmpl_delete', help='delete template')
 
     if server and username and password:
-        parser_template_delete.set_defaults(
+        prs_tmpl_delete.set_defaults(
             server=server, username=username, password=password)
     elif server and username:
-        parser_template_delete.set_defaults(
+        prs_tmpl_delete.set_defaults(
             server=server, username=username)
 
-    parser_template_delete.add_argument('template', action='store',
-                                        help='specify template identifier')
-
     if not server:
-        parser_template_delete.add_argument('-s', dest='server', required=True,
-                                   help='specify TonicDNS hostname|IP address')
+        setoption(prs_tmpl_delete, 'server')
     if not username:
-        parser_template_delete.add_argument('-u', dest='username',
-                                   required=True, help='TonicDNS username')
+        setoption(prs_tmpl_delete, 'username')
     if not password:
-        group_template_delete = \
-            parser_template_delete.add_mutually_exclusive_group(required=True)
-        group_template_delete.add_argument('-p', dest='password',
-                                           help='TonicDNS password')
-        group_template_delete.add_argument('-P', action='store_true',
-                                           help='TonicDNS password prompt')
-    parser_template_delete.set_defaults(func=template_delete)
+        setoption(prs_tmpl_delete, 'password')
+    prs_tmpl_delete.set_defaults(func=template_delete)
 
-    args = parser.parse_args()
+    args = prs.parse_args()
     return args
 
 
