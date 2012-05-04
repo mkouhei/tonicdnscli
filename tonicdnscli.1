@@ -33,8 +33,6 @@ commands.
 \fBtonicdnscli\fP is a program that command line tool for TonicDNS API.
 TonicDNS is  RESTful API for PowerDNS.
 Convert readble text record to JSON, and create or delete zone records with TonicDNS.
-.SH INFILE
-One record per one line with delimiter of space or tab.
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
@@ -46,6 +44,9 @@ Show summary of options.
 .TP
 .B \-v, \-\-version
 Show program's version number.
+.TP
+.B \-\-config CONFIG
+Specify config file path.
 .SH SUB COMMANDS
 .B show
 Print json format.
@@ -54,10 +55,28 @@ Print json format.
 Retrieve records.
 .TP
 .B create
-Create records.
+Create record.
+.TP
+.B bulk_create
+Create bulk records.
 .TP
 .B delete
-Delete records.
+Delete record.
+.TP
+.B bulk_delete
+Delete bulk records.
+.TP
+.B tmpl_get
+Retrieve template(s).
+.TP
+.B tmpl_create_update
+Create or update template.
+.TP
+.B tmpl_delete
+Delete template.
+
+.SH INFILE
+One record per one line with delimiter of space or tab.
 
 .SH SUB COMMAND OPTIONS
 These programs follow the usual GNU command line syntax, with long
@@ -72,15 +91,42 @@ Specify TonicDNS server. When not `get' command only.
 Specify TonicDNS username.
 .TP
 .B \-d DOMAIN
-Specify zone domain. When `get' command only.
+Specify zone domain.
 .TP
 .B \-P | \-p PASSWORD
 Specify TonicDNS password.
 .TP
+.B \-\-search keyword
+search keyword from retrieve records with partial match word. When `get' command only.
+.TP
+.B \-\-name NAME
+specify record name with domain option.
+.TP
+.B \-\-rtype TYPE
+specify record type with domain option.
+.TP
+.B \-\-content CONTENT
+specify record content with domain option.
+.TP
+.B \-\-ttl TTL
+specify record TTL with domain option.
+.TP
+.B \-\-priority PRIORITY
+specify record priority with domain option.
+.TP
+.B \-\-template TEMPLATE
+specify template identifier with template option.
+.TP
+.B \-\-dnsaddr DNSADDR
+specify TonicDNS server IP address with template option.
+.TP
+.B \-\-desc DESC
+specify template description with template option.
+.TP
 .SH SEE ALSO
 .br
 The programs are documented fully by
-.IR "README.rst" ,
+.IR "README" ,
 available via the Info system.
 .SH AUTHOR
 tonicdnscli was written by Kouhei Maeda <mkouhei@palmtb.net>.
