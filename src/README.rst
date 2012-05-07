@@ -24,6 +24,11 @@ Setup
 History
 -------
 
+0.5.1 (2012-05-07)
+~~~~~~~~~~~~~~~~~~
+
+* Fix bug get fail when resolver is SLAVE
+
 0.5 (2012-05-04)
 ~~~~~~~~~~~~~~~~
 
