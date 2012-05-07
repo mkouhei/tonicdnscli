@@ -15,3 +15,8 @@ Improvement
 * Add creating single record.
 * Update SOA serial.
 * Validation input data.
+
+Known bug
+---------
+
+* When using in preference --config option than $HOME/.tdclirc.
