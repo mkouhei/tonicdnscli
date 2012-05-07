@@ -79,7 +79,8 @@ def formattedPrint(datas):
         exit(1)
     if datas.get('records'):
         print("domain: %(name)s" % datas)
-        print("serial: %(notified_serial)s" % datas)
+        if datas.get('type') == 'MASTER':
+            print("serial: %(notified_serial)s" % datas)
         print("DNS   : %(type)s" % datas)
         hr()
         print('%-33s %-5s %-25s %-5s %-3s'
