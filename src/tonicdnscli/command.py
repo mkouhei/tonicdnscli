@@ -48,8 +48,8 @@ def setJSON(domain, act, filename=False, record=False):
 
 # get token
 def token(username, password, server):
-    from tdauth import authInfo
-    a = authInfo(username, password, server)
+    from tdauth import Auth
+    a = Auth(username, password, server)
     a.getToken()
     return a.token
 
