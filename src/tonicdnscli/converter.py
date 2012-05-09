@@ -49,9 +49,9 @@ class JSONConvert(object):
         for line in listitems:
             # Ignore number(#) at begining of a line.
             if not re.search('^#', line):
-                self.generateDict(line)
+                self.generateRecords(line)
 
-    def generateDict(self, line):
+    def generateRecords(self, line):
         if self.checkkey(line, 4):
             self.records.append({
                     "name": self.checkkey(line, 0),
