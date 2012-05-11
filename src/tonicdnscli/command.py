@@ -31,13 +31,17 @@ def checkInfile(filename):
 
 
 # Convert text file to JSON
-def getJSON(domain, filename, act):
+def setJSON(domain, act, filename=False, record=False):
     import converter
     o = converter.JSONConvert(domain)
-    with open(filename, 'r') as f:
-        o.separateInputFile(f)
-    for listitem in o.separated_list:
-        o.readRecords(listitem.splitlines())
+    if filename:
+        with open(filename, 'r') as f:
+            o.separateInputFile(f)
+            for listitem in o.separated_list:
+                o.readRecords(listitem.splitlines())
+                o.genData(act)
+    elif record:
+        o.readRecords(record)
         o.genData(act)
     return o.dict_records
 
@@ -53,9 +57,9 @@ def token(username, password, server):
 # get password
 def getPassword(args):
     password = ''
-    if args.password:
+    if args.__dict__.get('password'):
         password = args.password
-    elif args.P:
+    elif args.__dict__.get('P'):
         while True:
             if password:
                 break
@@ -71,7 +75,7 @@ def show(args):
     import json
     domain = checkInfile(args.infile)
     try:
-        print(json.dumps(getJSON(domain, args.infile, True),
+        print(json.dumps(setJSON(domain, True, filename=args.infile),
                          sort_keys=True, indent=2))
     except UnicodeDecodeError as e:
         sys.stderr.write("ERROR: \"%s\" is invalid format file.\n"
@@ -84,11 +88,11 @@ def get(args):
     import processing
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    if args.search:
+    if args.__dict__.get('search'):
         keyword = args.search
     else:
         keyword = ''
-    if args.domain:
+    if args.__dict__.get('domain'):
         domain = args.domain
         processing.getZone(args.server, t, domain, keyword)
     else:
@@ -98,21 +102,40 @@ def get(args):
 # Create records
 def create(args):
     import processing
-    domain = checkInfile(args.infile)
+    if args.__dict__.get('domain'):
+        domain = args.domain
+        from converter import JSONConvert
+        o = JSONConvert(domain)
+        name, rtype, content, ttl, priority = args.name, args.rtype, \
+            args.content, args.ttl, args.priority
+        record_dict = o.setRecord(name, rtype, content,
+                                  ttl, priority)
+        json = setJSON(domain, True, record=record_dict)
+    else:
+        domain = checkInfile(args.infile)
+        json = setJSON(domain, True, filename=args.infile)
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    processing.createRecords(args.server, t, domain,
-                             getJSON(domain, args.infile, True))
+    processing.createRecords(args.server, t, domain, json)
 
 
 # Delete records
 def delete(args):
     import processing
-    domain = checkInfile(args.infile)
+    if args.__dict__.get('domain'):
+        domain = args.domain
+        from converter import JSONConvert
+        o = JSONConvert(domain)
+        name, rtype, content, ttl, priority = args.name, args.rtype, \
+            args.content, args.ttl, args.priority
+        record_dict = o.setRecord(name, rtype, content, ttl, priority)
+        json = setJSON(domain, False, record=record_dict)
+    else:
+        domain = checkInfile(args.infile)
+        json = setJSON(domain, False, filename=args.infile)
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    processing.deleteRecords(args.server, t,
-                             getJSON(domain, args.infile, False))
+    processing.deleteRecords(args.server, t, json)
 
 
 # Retrieve template
@@ -120,7 +143,7 @@ def template_get(args):
     import processing
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    if args.template:
+    if args.__dict__.get('template'):
         template = args.template
         processing.getTemplate(args.server, t, template)
     else:
@@ -132,17 +155,17 @@ def template_create_or_update(args):
     import processing
     import converter
     domain = args.domain
-    if args.template:
+    if args.__dict__.get('template'):
         identifier = args.template
     else:
         identifier = domain.replace('.', '_')
     o = converter.JSONConvert(domain)
     dnsaddr = args.dnsaddr
-    desc = args.desc if args.desc else ''
+    desc = args.desc if args.__dict__.get('desc') else ''
     password = getPassword(args)
     t = token(args.username, password, args.server)
     o.generateTemplate(domain, dnsaddr, desc=desc)
-    if args.template:
+    if args.__dict__.get('template'):
         processing.updateTemplate(args.server, t, identifier, o.record)
     else:
         processing.createTemplate(args.server, t, identifier, o.record)
@@ -153,7 +176,7 @@ def template_delete(args):
     import processing
     import converter
     password = getPassword(args)
-    if args.template:
+    if args.__dict__.get('template'):
         template = args.template
     t = token(args.username, password, args.server)
     processing.deleteTemplate(args.server, t, template)
@@ -175,7 +198,21 @@ def setoption(obj, keyword, prefix=False, required=False):
                            help='TonicDNS password prompt')
     if keyword == 'infile':
         obj.add_argument('infile', action='store',
-                         help='pre-converted text file')
+                           help='pre-converted text file')
+    if keyword == 'domain':
+        obj.add_argument('--domain', action='store', required=True,
+                           help='create record with specify domain')
+        obj.add_argument('--name', action='store', required=True,
+                         help='specify with domain option')
+        obj.add_argument('--rtype', action='store', required=True,
+                         help='specify with domain option')
+        obj.add_argument('--content', action='store', required=True,
+                         help='specify with domain option')
+        obj.add_argument('--ttl', action='store', default='3600',
+                     help='specify with domain option, default 3600')
+        obj.add_argument('--priority', action='store', default=False,
+            help='specify with domain and rtype options as MX|SRV')
+
     if keyword == 'template':
         msg = 'specify template identifier'
         if prefix:
@@ -241,16 +278,30 @@ def parse_options():
     setoption(prs_get, 'search')
     prs_get.set_defaults(func=get)
 
-    # Create records
+    # Create record
     prs_create = subprs.add_parser(
-        'create', help='create records of specific zone')
+        'create', help='create record of specific zone')
+    setoption(prs_create, 'domain')
+    conn_options(prs_create, server, username, password)
+    prs_create.set_defaults(func=create)
+
+    # Create bulk_records
+    prs_create = subprs.add_parser(
+        'bulk_create', help='create bulk records of specific zone')
     setoption(prs_create, 'infile')
     conn_options(prs_create, server, username, password)
     prs_create.set_defaults(func=create)
 
-    # Delete records
+    # Delete record
     prs_delete = subprs.add_parser(
-        'delete', help='delete records of specific zone')
+        'delete', help='delete a record of specific zone')
+    setoption(prs_delete, 'domain')
+    conn_options(prs_delete, server, username, password)
+    prs_delete.set_defaults(func=delete)
+
+    # Delete bulk_records
+    prs_delete = subprs.add_parser(
+        'bulk_delete', help='delete bulk records of specific zone')
     setoption(prs_delete, 'infile')
     conn_options(prs_delete, server, username, password)
     prs_delete.set_defaults(func=delete)

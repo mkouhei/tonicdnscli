@@ -32,6 +32,13 @@ class JSONConvert(object):
         self.delta = False
         self.dict_records = []
 
+    def setRecord(self, name, rtype, content, ttl=3600, priority=False):
+        line = name + ' ' + rtype + ' ' + content + ' ' + ttl
+        if priority:
+            line += ' ' + priority
+        record = [line]
+        return record
+
     def readRecords(self, listitems):
         import re
         for line in listitems:
