@@ -31,11 +31,16 @@ class JSONConvert(object):
         self.separated_list = []
         self.delta = False
         self.dict_records = []
+        self.zone = ''
+        self.refresh = '3600'
+        self.retry = '900'
+        self.expire = '86400'
+        self.ttl = 3600
 
     def setRecord(self, name, rtype, content, ttl=3600, priority=False):
-        line = name + ' ' + rtype + ' ' + content + ' ' + ttl
+        line = name + ' ' + rtype + ' ' + content + ' ' + str(ttl)
         if priority:
-            line += ' ' + priority
+            line += ' ' + str(priority)
         record = [line]
         return record
 
@@ -52,29 +57,24 @@ class JSONConvert(object):
                     "name": self.checkkey(line, 0),
                     "type": self.checkkey(line, 1),
                     "content": self.checkkey(line, 2),
-                    "ttl": self.checkkey(line, 3),
-                    "priority": self.checkkey(line, 4)
+                    "ttl": int(self.checkkey(line, 3)),
+                    "priority": int(self.checkkey(line, 4))
                     })
         else:
             self.records.append({
                     "name": self.checkkey(line, 0),
                     "type": self.checkkey(line, 1),
                     "content": self.checkkey(line, 2),
-                    "ttl": self.checkkey(line, 3)
+                    "ttl": int(self.checkkey(line, 3))
                     })
 
     def generateTemplate(self, domain, ipaddr, desc):
         from datetime import date
         serial = date.strftime(date.today(), '%Y%m%d') + '01'
         ns = 'ns.' + domain
-        refresh = 3600
-        retry = 900
-        expire = 86400
-        ttl = 3600
-
         soa = ns + ' hostmaster.' + domain + \
-            ' ' + serial + ' ' + str(refresh) + ' ' + str(retry) + \
-            ' ' + str(expire) + ' ' + str(ttl)
+            ' ' + serial + ' ' + self.refresh + ' ' + self.retry + \
+            ' ' + self.expire + ' ' + str(self.ttl)
         self.record = {
                 'identifier': domain.replace('.', '_'),
                 'description': desc,
@@ -83,22 +83,37 @@ class JSONConvert(object):
                         'name': domain,
                         'type': 'SOA',
                         'content': soa,
-                        'ttl': ttl
+                        'ttl': self.ttl
                         },
                     {
                         'name': domain,
                         'type': 'NS',
                         'content': ns,
-                        'ttl': ttl
+                        'ttl': self.ttl
                         },
                     {
                         'name': ns,
                         'type': 'A',
                         'content': ipaddr,
-                        'ttl': ttl
+                        'ttl': self.ttl
                         }
                     ]
                 }
+
+    def generateZone(self, domain, template, records):
+        import json
+        # If there is a SOA record in records,
+        # add self SOA records.
+        self.zone = {
+            "name": domain,
+            "type": "MASTER",
+            "master": None,
+            "templates": [
+                {"identifier": template}
+                ],
+            "records": records.get('records')
+            }
+        return json.JSONEncoder().encode(self.zone)
 
     def checkkey(self, key, index):
         import re
@@ -139,3 +154,17 @@ class JSONConvert(object):
     def decodeJSON(self, data):
         import json
         json.load(data, 'utf-8')
+
+    def getSOA(self, record):
+        new_record = record.copy()
+        mname = record.get('content').split(' ')[0]
+        rname = record.get('content').split(' ')[1]
+        serial = str(int(record.get('content').split(' ')[2]) + 1)
+        new_record['content'] = mname + ' ' + rname + ' ' + \
+            serial + ' ' + self.refresh + ' ' + self.retry + ' ' + \
+            self.expire + ' ' + str(self.ttl)
+        '''
+        new_record['content'] = mname + ' ' + rname + ' ' + \
+            serial
+            '''
+        return new_record

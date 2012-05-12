@@ -182,6 +182,15 @@ def template_delete(args):
     processing.deleteTemplate(args.server, t, template)
 
 
+# Update SOA serial
+def updateSOASerial(args):
+    import processing
+    password = getPassword(args)
+    t = token(args.username, password, args.server)
+    domain = args.domain
+    processing.updateSerial(args.server, t, domain)
+
+
 def setoption(obj, keyword, prefix=False, required=False):
     if keyword == 'server':
         obj.add_argument(
@@ -334,6 +343,14 @@ def parse_options():
     setoption(prs_tmpl_delete, 'template', required=True)
     conn_options(prs_tmpl_delete, server, username, password)
     prs_tmpl_delete.set_defaults(func=template_delete)
+
+    # update SOA serial
+    prs_soa = subprs.add_parser(
+        'soa', help='increase SOA serial')
+    prs_soa.add_argument('--domain', action='store', required=True,
+                            help='specify domain FQDN')
+    conn_options(prs_soa, server, username, password)
+    prs_soa.set_defaults(func=updateSOASerial)
 
     args = prs.parse_args()
     return args

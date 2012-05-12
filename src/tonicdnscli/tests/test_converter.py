@@ -35,28 +35,43 @@ mx.example.org A 10.10.11.10 3600\n""",
 'mx2.example.org A\t\t10.10.11.10 3600\n']
 
         self.list3 = [{'name': 'test0.example.org', 'type': 'A',
-                       'content': '10.10.10.10', 'ttl': '86400'}]
+                       'content': '10.10.10.10', 'ttl': 86400}]
         self.list4 = [{'name': 'example.org', 'type': 'MX',
                        'content': 'mx.example.org',
-                       'ttl': '86400', 'priority': '0'}]
+                       'ttl': 86400, 'priority': 0}]
 
         self.dicts1 = [{'content': '10.10.10.10', 'name': 'test0.example.org',
-                        'ttl': '86400', 'type': 'A'},
+                        'ttl': 86400, 'type': 'A'},
                        {'content': '10.10.10.11', 'name': 'test1.example.org',
-                        'ttl': '86400', 'type': 'A'},
+                        'ttl': 86400, 'type': 'A'},
                        {'content': '10.10.10.12', 'name': 'test2.example.org',
-                        'ttl': '86400', 'type': 'A'},
+                        'ttl': 86400, 'type': 'A'},
                        {'content': 'mx.example.org', 'name': 'example.org',
-                        'priority': '0', 'ttl': '86400', 'type': 'MX'},
+                        'priority': 0, 'ttl': 86400, 'type': 'MX'},
                        {'content': 'mx2.example.org', 'name': 'example.org',
-                        'priority': '10', 'ttl': '86400', 'type': 'MX'},
+                        'priority': 10, 'ttl': 86400, 'type': 'MX'},
                        {'content': '10.10.11.10', 'name': 'mx.example.org',
-                        'ttl': '3600', 'type': 'A'},
+                        'ttl': 3600, 'type': 'A'},
                        {'content': '10.10.11.10', 'name': 'mx2.example.org',
-                        'ttl': '3600', 'type': 'A'}]
+                        'ttl': 3600, 'type': 'A'}]
         self.line1 = "test0.example.org A 10.10.10.10 86400"
         self.line2 = "example.org MX mx.example.org 86400 0"
         self.line3 = "mx2.example.org A\t\t10.10.11.10 3600"
+        self.cur_soa = {
+            'name': 'example.org',
+            'type': 'SOA',
+            'content': 'ns.example.org postmaster.example.org 20120513',
+            'ttl': 86400,
+            'priority': None
+            }
+        self.new_soa = {
+            'name': 'example.org',
+            'type': 'SOA',
+            'content': 'ns.example.org postmaster.example.org \
+20120514 3600 900 86400 3600',
+            'ttl': 86400,
+            'priority': None
+            }
 
     def test__init__(self):
         o = JSONConvert('example.org')
@@ -113,6 +128,10 @@ mx.example.org A 10.10.11.10 3600\n""",
         with open(sample, 'r') as f2:
             o2.separateInputFile(f2)
         self.assertListEqual(self.list2, o2.separated_list)
+
+    def test_getSOA(self):
+        o = JSONConvert('exmaple.org')
+        self.assertEquals(self.new_soa, o.getSOA(self.cur_soa))
 
 if __name__ == '__main__':
     unittest.main()

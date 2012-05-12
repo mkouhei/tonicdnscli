@@ -23,7 +23,7 @@ def unprovide():
     exit(10)
 
 
-def tonicDNSClient(uri, method, token, data, keyword=''):
+def tonicDNSClient(uri, method, token, data, keyword='', domain=''):
     import sys
     import json
     if sys.version_info > (2, 6) and sys.version_info < (2, 8):
@@ -52,7 +52,15 @@ def tonicDNSClient(uri, method, token, data, keyword=''):
     if method == 'GET':
         datas = json.loads(url.read().decode('utf-8'))
         # filtering with keyword
-        if keyword:
+        if keyword == 'serial':
+            from converter import JSONConvert
+            record = searchRecord(datas, 'SOA')[0]
+            del record['priority']
+            record['ttl'] = int(record['ttl'])
+            c = JSONConvert(domain)
+            new_record = c.getSOA(record)
+            return record, new_record
+        elif keyword:
             records = searchRecord(datas, keyword)
             datas.update({"records": records})
         if uri.split('/')[3] == 'template':
@@ -132,12 +140,26 @@ def hr():
     print('=' * 78)
 
 
-def createZoneRecords():
+# `data' is list.
+# item of list is dictionary as
+# 1) {"records": records}
+# 2) {"name": domain, "records": records}
+#This is work around, see also commit 7571109.
+def createZoneRecords(server, token, domain, data, identifier):
     # ContentType: application/json
     # x-authentication-token: token
-    # method: PUT
-    # uri: /zone
-    unprovide()
+    method = 'PUT'
+    uri = 'https://' + server + '/zone'
+    for i, v in enumerate(data):
+        if i == 0:
+            from converter import JSONConvert
+            o = JSONConvert(domain)
+            zone = o.generateZone(domain, identifier, v)
+            tonicDNSClient(uri, method, token, zone)
+        else:
+            # method: PUT
+            uri = 'https://' + server + '/zone/' + domain
+            tonicDNSClient(uri, method, token, v)
 
 
 def createRecords(server, token, domain, data):
@@ -214,6 +236,28 @@ def getAllTemplates(server, token):
     method = 'GET'
     uri = 'https://' + server + '/template'
     tonicDNSClient(uri, method, token, data=False)
+
+
+def updateSerial(server, token, domain):
+    # x-authentication-token: token
+
+    # Get SOA record
+    # `cur_soa` is current SOA record.
+    # `new_soa` is incremental serial SOA record.
+    method = 'GET'
+    uri = 'https://' + server + '/zone/' + domain
+    cur_soa, new_soa = tonicDNSClient(uri, method, token, data=False,
+                                      keyword='serial', domain=domain)
+
+    # Delete current SOA record why zone has only one SOA record.
+    method = 'DELETE'
+    uri = 'https://' + server + '/zone'
+    tonicDNSClient(uri, method, token, cur_soa)
+
+    # Create new SOA record
+    uri = 'https://' + server + '/zone/' + domain
+    method = 'PUT'
+    tonicDNSClient(uri, method, token, new_soa)
 
 
 def searchRecord(datas, keyword):
