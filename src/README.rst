@@ -24,6 +24,21 @@ Setup
 History
 -------
 
+0.5.2 (2012-05-11)
+~~~~~~~~~~~~~~~~~~
+
+* create or delete a specific record
+
+0.5.1 (2012-05-07)
+~~~~~~~~~~~~~~~~~~
+
+* Fix bug get fail when resolver is SLAVE
+
+0.5 (2012-05-04)
+~~~~~~~~~~~~~~~~
+
+* templates CRUD
+
 0.4.4 (2012-05-01)
 ~~~~~~~~~~~~~~~~~~
 
