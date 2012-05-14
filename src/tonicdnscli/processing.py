@@ -248,16 +248,24 @@ def updateSerial(server, token, domain):
     uri = 'https://' + server + '/zone/' + domain
     cur_soa, new_soa = tonicDNSClient(uri, method, token, data=False,
                                       keyword='serial', domain=domain)
-
-    # Delete current SOA record why zone has only one SOA record.
-    method = 'DELETE'
-    uri = 'https://' + server + '/zone'
-    tonicDNSClient(uri, method, token, cur_soa)
+    # set JSON
+    from converter import JSONConvert
+    cur_o = JSONConvert(domain)
+    new_o = JSONConvert(domain)
+    cur_o.records = [cur_soa]
+    new_o.records = [new_soa]
+    cur_o.genData(False)
+    new_o.genData(True)
 
     # Create new SOA record
     uri = 'https://' + server + '/zone/' + domain
     method = 'PUT'
-    tonicDNSClient(uri, method, token, new_soa)
+    tonicDNSClient(uri, method, token, new_o.dict_records[0])
+
+    # Delete current SOA record why zone has only one SOA record.
+    method = 'DELETE'
+    uri = 'https://' + server + '/zone'
+    tonicDNSClient(uri, method, token, cur_o.dict_records[0])
 
 
 def searchRecord(datas, keyword):

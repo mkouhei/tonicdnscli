@@ -163,8 +163,4 @@ class JSONConvert(object):
         new_record['content'] = mname + ' ' + rname + ' ' + \
             serial + ' ' + self.refresh + ' ' + self.retry + ' ' + \
             self.expire + ' ' + str(self.ttl)
-        '''
-        new_record['content'] = mname + ' ' + rname + ' ' + \
-            serial
-            '''
         return new_record
