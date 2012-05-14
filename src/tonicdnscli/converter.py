@@ -156,10 +156,18 @@ class JSONConvert(object):
         json.load(data, 'utf-8')
 
     def getSOA(self, record):
+        from datetime import date
         new_record = record.copy()
         mname = record.get('content').split(' ')[0]
         rname = record.get('content').split(' ')[1]
-        serial = str(int(record.get('content').split(' ')[2]) + 1)
+
+        today = date.strftime(date.today(), '%Y%m%d')
+        cur_serial = record.get('content').split(' ')[2]
+        if int(cur_serial[:-2]) < int(today):
+            serial = today + '01'
+        else:
+            serial = str(int(cur_serial) + 1)
+
         new_record['content'] = mname + ' ' + rname + ' ' + \
             serial + ' ' + self.refresh + ' ' + self.retry + ' ' + \
             self.expire + ' ' + str(self.ttl)

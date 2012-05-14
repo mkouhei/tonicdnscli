@@ -6,6 +6,7 @@ Tests of converter.py
 """
 import unittest
 from tonicdnscli.converter import JSONConvert
+from datetime import date
 
 
 class JSONConvertTests(unittest.TestCase):
@@ -57,18 +58,28 @@ mx.example.org A 10.10.11.10 3600\n""",
         self.line1 = "test0.example.org A 10.10.10.10 86400"
         self.line2 = "example.org MX mx.example.org 86400 0"
         self.line3 = "mx2.example.org A\t\t10.10.11.10 3600"
-        self.cur_soa = {
+
+        self.older_cur_soa = {
             'name': 'example.org',
             'type': 'SOA',
-            'content': 'ns.example.org postmaster.example.org 20120513',
+            'content': 'ns.example.org postmaster.example.org 2012040501',
+            'ttl': 86400,
+            'priority': None
+            }
+        today = date.strftime(date.today(), '%Y%m%d')
+        self.today_cur_soa = {
+            'name': 'example.org',
+            'type': 'SOA',
+            'content': 'ns.example.org postmaster.example.org ' + \
+                today + '01',
             'ttl': 86400,
             'priority': None
             }
         self.new_soa = {
             'name': 'example.org',
             'type': 'SOA',
-            'content': 'ns.example.org postmaster.example.org \
-20120514 3600 900 86400 3600',
+            'content': 'ns.example.org postmaster.example.org ' + \
+                today + '01 3600 900 86400 3600',
             'ttl': 86400,
             'priority': None
             }
@@ -131,7 +142,8 @@ mx.example.org A 10.10.11.10 3600\n""",
 
     def test_getSOA(self):
         o = JSONConvert('exmaple.org')
-        self.assertEquals(self.new_soa, o.getSOA(self.cur_soa))
+        self.assertEquals(self.new_soa, o.getSOA(self.older_cur_soa))
+        self.assertNotEquals(self.new_soa, o.getSOA(self.today_cur_soa))
 
 if __name__ == '__main__':
     unittest.main()
