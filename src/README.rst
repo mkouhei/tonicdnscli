@@ -1,3 +1,4 @@
+======================================
 `tonicdnscli` is TonicDNS Client tool.
 ======================================
 
@@ -23,6 +24,11 @@ Setup
    
 History
 -------
+
+0.6 (2012-05-15)
+~~~~~~~~~~~~~~~~
+
+* Update SOA
 
 0.5.2 (2012-05-11)
 ~~~~~~~~~~~~~~~~~~
@@ -133,7 +139,6 @@ Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password
    password: tonicpw
 
 
-
 Print converted JSON
 ~~~~~~~~~~~~~~~~~~~~
 ::
@@ -183,20 +188,47 @@ Retrieve records
    ==============================================================================
 
 
+Create single record
+~~~~~~~~~~~~~~~~~~~~
+::
+
+   $ tonicdnscli create -s ns.example.org -u tonicusername -P \
+   create --domain example.org --name www2.example.org --rtype A \
+   --content 10.10.10.10
+   true
+
 Create records
 ~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli create -s ns.example.org -u tonicusername -P sample/example.org.txt
-   True
+   $ tonicdnscli create -s ns.example.org -u tonicusername -P \
+   examples/example.org.txt
+   true
 
+
+Delete single records
+~~~~~~~~~~~~~~~~~~~~~
+::
+
+   $ tonicdnscli delete -s ns.example.org -u tonicusername -P \
+   create --domain example.org --name www2.example.org --rtype A \
+   --content 10.10.10.10
+   true
 
 Delete records
 ~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli delete -s ns.example.org -u tonicusername -P sample/example.org.txt
-   True
+   $ tonicdnscli delete -s ns.example.org -u tonicusername -P examples/example.org.txt
+   true
+
+Update SOA
+~~~~~~~~~~
+::
+
+   $ tonicdnscli soa -s ns.example.org -u tonicusername --domain example.org
+   true
+   true
 
 
 See also
