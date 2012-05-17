@@ -260,15 +260,13 @@ def parse_options():
 
     server, username, password = False, False, False
 
-    CONFIGFILE = os.environ['HOME'] + '/.tdclirc'
-    if os.path.isfile(CONFIGFILE):
-        server, username, password = checkConfig(CONFIGFILE)
-
     prs = argparse.ArgumentParser(description='usage')
     prs.add_argument('-v', '--version', action='version',
                         version=__version__)
-    prs.add_argument('--config', action='store',
-                        help='config file path')
+    if os.environ.get('HOME'):
+        CONFIGFILE = os.environ.get('HOME') + '/.tdclirc'
+        if os.path.isfile(CONFIGFILE):
+            server, username, password = checkConfig(CONFIGFILE)
 
     subprs = prs.add_subparsers(help='commands')
 
