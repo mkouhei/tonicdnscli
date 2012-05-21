@@ -75,9 +75,9 @@ class JSONConvert(object):
                 'identifier': domain.replace('.', '_'),
                 'description': desc,
                 'entries': [
-                record(domain, 'SOA', soa),
-                record(domain, 'NS', ns),
-                record(ns, 'A', ipaddr)
+                self.record(domain, 'SOA', soa),
+                self.record(domain, 'NS', ns),
+                self.record(ns, 'A', ipaddr)
                 ]}
 
     def record(self, name, rtype, content):
