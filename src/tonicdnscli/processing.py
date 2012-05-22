@@ -93,7 +93,7 @@ def tonicDNSClient(uri, method, token, data, keyword='', domain=''):
 
     # response non JSON data
     else:
-        data = url.read()
+        data = res.read()
         print(data)
 
 
