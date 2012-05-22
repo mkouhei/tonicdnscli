@@ -108,12 +108,12 @@ mx.example.org A 10.10.11.10 3600\n""",
         self.assertFalse(o.checkkey(self.line2, 5))
         self.assertEquals("10.10.11.10", o.checkkey(self.line3, 2))
 
-    def test_generateDict(self):
+    def test_generateRecords(self):
         o = JSONConvert('example.org')
-        o.generateDict(self.line1)
+        o.generateRecords(self.line1)
         self.assertListEqual(self.list3, o.records)
         o2 = JSONConvert('example.org')
-        o2.generateDict(self.line2)
+        o2.generateRecords(self.line2)
         self.assertListEqual(self.list4, o2.records)
 
     def test_genData(self):

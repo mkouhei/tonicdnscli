@@ -31,25 +31,32 @@ def checkInfile(filename):
 
 
 # Convert text file to JSON
-def setJSON(domain, act, filename=False, record=False):
+# action: True  is for PUT/POST HTTP method
+#         False is for DELETE HTTP method
+def setJSON(domain, action, filename=False, record=False):
     import converter
     o = converter.JSONConvert(domain)
+
+    # for 'bulk_create/bulk_delete'
     if filename:
         with open(filename, 'r') as f:
             o.separateInputFile(f)
-            for listitem in o.separated_list:
-                o.readRecords(listitem.splitlines())
-                o.genData(act)
+            for item in o.separated_list:
+                o.readRecords(item.splitlines())
+                o.genData(action)
+
+    # for 'create/delete'
     elif record:
         o.readRecords(record)
-        o.genData(act)
+        o.genData(action)
+
     return o.dict_records
 
 
 # get token
 def token(username, password, server):
-    from tdauth import authInfo
-    a = authInfo(username, password, server)
+    from tdauth import Auth
+    a = Auth(username, password, server)
     a.getToken()
     return a.token
 
@@ -57,16 +64,32 @@ def token(username, password, server):
 # get password
 def getPassword(args):
     password = ''
+
+    # for -p option
     if args.__dict__.get('password'):
         password = args.password
+
+    # for -P option
     elif args.__dict__.get('P'):
+
         while True:
+            # When setting password in $HOME/.tdclirc, using it.
             if password:
                 break
+
+            # not set in $HOME/.tdclirc, attempt input prompt
             else:
                 from getpass import getpass
                 password = getpass(prompt='TonicDNS user password: ')
+
     return password
+
+
+# get record parameters from command options
+def getRecordParameters(obj):
+    name, rtype, content, ttl, priority = \
+        obj.name, obj.rtype, obj.content, obj.ttl, obj.priority
+    return name, rtype, content, ttl, priority
 
 
 # Convert and print JSON
@@ -74,8 +97,9 @@ def show(args):
     import sys
     import json
     domain = checkInfile(args.infile)
+    action = True
     try:
-        print(json.dumps(setJSON(domain, True, filename=args.infile),
+        print(json.dumps(setJSON(domain, action, filename=args.infile),
                          sort_keys=True, indent=2))
     except UnicodeDecodeError as e:
         sys.stderr.write("ERROR: \"%s\" is invalid format file.\n"
@@ -88,13 +112,20 @@ def get(args):
     import processing
     password = getPassword(args)
     t = token(args.username, password, args.server)
+
+    # When using '--search' option
     if args.__dict__.get('search'):
         keyword = args.search
+
     else:
         keyword = ''
+
+    # When specified zone
     if args.__dict__.get('domain'):
         domain = args.domain
         processing.getZone(args.server, t, domain, keyword)
+
+    # When get all zones
     else:
         processing.getAllZone(args.server, t)
 
@@ -102,18 +133,28 @@ def get(args):
 # Create records
 def create(args):
     import processing
+
+    # for PUT HTTP method
+    action = True
+
+    # for create sub-command
     if args.__dict__.get('domain'):
-        domain = args.domain
+
         from converter import JSONConvert
+        domain = args.domain
         o = JSONConvert(domain)
-        name, rtype, content, ttl, priority = args.name, args.rtype, \
-            args.content, args.ttl, args.priority
-        record_dict = o.setRecord(name, rtype, content,
-                                  ttl, priority)
-        json = setJSON(domain, True, record=record_dict)
+
+        name, rtype, content, ttl, priority = getRecordParameters(args)
+        record_dict = o.setRecord(name, rtype, content, ttl, priority)
+
+        json = setJSON(domain, action, record=record_dict)
+
+    # for bulk_create sub-command
     else:
+
         domain = checkInfile(args.infile)
-        json = setJSON(domain, True, filename=args.infile)
+        json = setJSON(domain, action, filename=args.infile)
+
     password = getPassword(args)
     t = token(args.username, password, args.server)
     processing.createRecords(args.server, t, domain, json)
@@ -122,17 +163,28 @@ def create(args):
 # Delete records
 def delete(args):
     import processing
+
+    # for DELETE HTTP method
+    action = False
+
+    # for delete sub-command
     if args.__dict__.get('domain'):
-        domain = args.domain
+
         from converter import JSONConvert
+        domain = args.domain
         o = JSONConvert(domain)
-        name, rtype, content, ttl, priority = args.name, args.rtype, \
-            args.content, args.ttl, args.priority
+
+        name, rtype, content, ttl, priority = getRecordParameters(args)
         record_dict = o.setRecord(name, rtype, content, ttl, priority)
-        json = setJSON(domain, False, record=record_dict)
+
+        json = setJSON(domain, action, record=record_dict)
+
+    # for bulk_delete sub-command
     else:
+
         domain = checkInfile(args.infile)
-        json = setJSON(domain, False, filename=args.infile)
+        json = setJSON(domain, action, filename=args.infile)
+
     password = getPassword(args)
     t = token(args.username, password, args.server)
     processing.deleteRecords(args.server, t, json)
@@ -143,9 +195,13 @@ def template_get(args):
     import processing
     password = getPassword(args)
     t = token(args.username, password, args.server)
+
+    # When specified template identifier
     if args.__dict__.get('template'):
         template = args.template
         processing.getTemplate(args.server, t, template)
+
+    # When get all templates
     else:
         processing.getAllTemplates(args.server, t)
 
@@ -154,19 +210,29 @@ def template_get(args):
 def template_create_or_update(args):
     import processing
     import converter
+
     domain = args.domain
+
+    # When specify '--template' option
     if args.__dict__.get('template'):
         identifier = args.template
+
     else:
         identifier = domain.replace('.', '_')
+
     o = converter.JSONConvert(domain)
     dnsaddr = args.dnsaddr
     desc = args.desc if args.__dict__.get('desc') else ''
+
     password = getPassword(args)
     t = token(args.username, password, args.server)
     o.generateTemplate(domain, dnsaddr, desc=desc)
+
+    # When update template
     if args.__dict__.get('template'):
         processing.updateTemplate(args.server, t, identifier, o.record)
+
+    # When create template
     else:
         processing.createTemplate(args.server, t, identifier, o.record)
 
@@ -175,9 +241,11 @@ def template_create_or_update(args):
 def template_delete(args):
     import processing
     import converter
-    password = getPassword(args)
+
     if args.__dict__.get('template'):
         template = args.template
+
+    password = getPassword(args)
     t = token(args.username, password, args.server)
     processing.deleteTemplate(args.server, t, template)
 
@@ -185,6 +253,7 @@ def template_delete(args):
 # Update SOA serial
 def updateSOASerial(args):
     import processing
+
     password = getPassword(args)
     t = token(args.username, password, args.server)
     domain = args.domain
@@ -196,18 +265,22 @@ def setoption(obj, keyword, prefix=False, required=False):
         obj.add_argument(
             '-s', dest='server', required=True,
             help='specify TonicDNS Server hostname or IP address')
+
     if keyword == 'username':
         obj.add_argument('-u', dest='username', required=True,
                          help='TonicDNS username')
+
     if keyword == 'password':
         group = obj.add_mutually_exclusive_group(required=True)
         group.add_argument('-p', dest='password',
                            help='TonicDNS password')
         group.add_argument('-P', action='store_true',
                            help='TonicDNS password prompt')
+
     if keyword == 'infile':
         obj.add_argument('infile', action='store',
                            help='pre-converted text file')
+
     if keyword == 'domain':
         obj.add_argument('--domain', action='store', required=True,
                            help='create record with specify domain')
@@ -232,6 +305,7 @@ def setoption(obj, keyword, prefix=False, required=False):
         else:
             obj.add_argument('--template', action='store',
                              help=msg)
+
     if keyword == 'search':
         obj.add_argument('--search', action='store',
                          help='partial match search')
@@ -241,6 +315,7 @@ def conn_options(obj, server=False, username=False, password=False):
     if server and username and password:
         obj.set_defaults(server=server, username=username,
                          password=password)
+
     elif server and username:
         obj.set_defaults(server=server, username=username)
 
@@ -260,15 +335,13 @@ def parse_options():
 
     server, username, password = False, False, False
 
-    CONFIGFILE = os.environ['HOME'] + '/.tdclirc'
-    if os.path.isfile(CONFIGFILE):
-        server, username, password = checkConfig(CONFIGFILE)
-
     prs = argparse.ArgumentParser(description='usage')
     prs.add_argument('-v', '--version', action='version',
                         version=__version__)
-    prs.add_argument('--config', action='store',
-                        help='config file path')
+    if os.environ.get('HOME'):
+        CONFIGFILE = os.environ.get('HOME') + '/.tdclirc'
+        if os.path.isfile(CONFIGFILE):
+            server, username, password = checkConfig(CONFIGFILE)
 
     subprs = prs.add_subparsers(help='commands')
 
@@ -282,7 +355,7 @@ def parse_options():
     prs_get = subprs.add_parser(
         'get', help='retrieve records of specific zone')
     prs_get.add_argument('--domain', action='store',
-                            help='specify domain FQDN')
+                         help='specify domain FQDN')
     conn_options(prs_get, server, username, password)
     setoption(prs_get, 'search')
     prs_get.set_defaults(func=get)
@@ -383,6 +456,7 @@ def checkConfig(filename):
 def main():
     import sys
 
+    '''
     try:
         args = parse_options()
         args.func(args)
@@ -392,6 +466,9 @@ def main():
     except UnboundLocalError as e:
         sys.stderr.write("ERROR: %s\n" % e)
         return
+        '''
+    args = parse_options()
+    args.func(args)
 
 if __name__ == "__main__":
     main()

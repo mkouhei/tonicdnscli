@@ -25,6 +25,12 @@ Setup
 History
 -------
 
+0.6.1 (2012-05-23)
+~~~~~~~~~~~~~~~~~~
+
+* Fix issue#2
+* Refactoring
+
 0.6 (2012-05-15)
 ~~~~~~~~~~~~~~~~
 
@@ -204,7 +210,19 @@ Create records
    $ tonicdnscli create -s ns.example.org -u tonicusername -P \
    examples/example.org.txt
    true
+<<<<<<< HEAD
 
+
+Delete single records
+~~~~~~~~~~~~~~~~~~~~~
+::
+=======
+>>>>>>> devel
+
+   $ tonicdnscli delete -s ns.example.org -u tonicusername -P \
+   create --domain example.org --name www2.example.org --rtype A \
+   --content 10.10.10.10
+   true
 
 Delete single records
 ~~~~~~~~~~~~~~~~~~~~~
