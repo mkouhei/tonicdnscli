@@ -49,24 +49,20 @@ class JSONConvert(object):
         for line in listitems:
             # Ignore number(#) at begining of a line.
             if not re.search('^#', line):
-                self.generateDict(line)
+                self.generateRecords(line)
 
-    def generateDict(self, line):
+    def generateRecords(self, line):
+        d = {
+            "name": self.checkkey(line, 0),
+            "type": self.checkkey(line, 1),
+            "content": self.checkkey(line, 2),
+            "ttl": int(self.checkkey(line, 3))
+            }
         if self.checkkey(line, 4):
-            self.records.append({
-                    "name": self.checkkey(line, 0),
-                    "type": self.checkkey(line, 1),
-                    "content": self.checkkey(line, 2),
-                    "ttl": int(self.checkkey(line, 3)),
-                    "priority": int(self.checkkey(line, 4))
-                    })
-        else:
-            self.records.append({
-                    "name": self.checkkey(line, 0),
-                    "type": self.checkkey(line, 1),
-                    "content": self.checkkey(line, 2),
-                    "ttl": int(self.checkkey(line, 3))
-                    })
+            d.update(
+                {"priority": int(self.checkkey(line, 4))}
+                )
+        self.records.append(d)
 
     def generateTemplate(self, domain, ipaddr, desc):
         from datetime import date
@@ -79,26 +75,19 @@ class JSONConvert(object):
                 'identifier': domain.replace('.', '_'),
                 'description': desc,
                 'entries': [
-                    {
-                        'name': domain,
-                        'type': 'SOA',
-                        'content': soa,
-                        'ttl': self.ttl
-                        },
-                    {
-                        'name': domain,
-                        'type': 'NS',
-                        'content': ns,
-                        'ttl': self.ttl
-                        },
-                    {
-                        'name': ns,
-                        'type': 'A',
-                        'content': ipaddr,
-                        'ttl': self.ttl
-                        }
-                    ]
-                }
+                self.record(domain, 'SOA', soa),
+                self.record(domain, 'NS', ns),
+                self.record(ns, 'A', ipaddr)
+                ]}
+
+    def record(self, name, rtype, content):
+        record_d = {
+            'name': name,
+            'type': rtype,
+            'content': content,
+            'ttl': self.ttl
+            }
+        return record_d
 
     def generateZone(self, domain, template, records):
         import json

@@ -6,10 +6,10 @@ Tests of tdauth.py
 """
 import unittest
 from minimock import mock, Mock, restore
-from tonicdnscli.tdauth import authInfo
+from tonicdnscli.tdauth import Auth
 
 
-class authInfoTests(unittest.TestCase):
+class AuthTests(unittest.TestCase):
     def setUp(self):
         import sys
         from StringIO import StringIO
@@ -21,7 +21,7 @@ class authInfoTests(unittest.TestCase):
 "valid_until": 1327146727,
 "hash": "efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041",
 "token": "efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041"}'''
-        self.o = authInfo('tonicuser', 'tonicpw', 'tonic.example.org')
+        self.o = Auth('tonicuser', 'tonicpw', 'tonic.example.org')
         self.token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
 
         urllib.build_opener = Mock('build_opener',
