@@ -41,15 +41,26 @@ class Auth(object):
             import urllib2 as urllib
         elif sys.version_info > (3, 0):
             import urllib.request as urllib
-        authjson = json.JSONEncoder().encode(self.setInfo())
-        o = urllib.build_opener(urllib.HTTPHandler)
-        r = urllib.Request(self.uri, data=authjson.encode('utf-8'))
-        r.add_header('Content-Type', 'application/json')
-        r.get_method = lambda: 'PUT'
+
+        authjson = json.JSONEncoder(object).encode(self.setInfo())
+
+        # create HTTP opener object
+        obj = urllib.build_opener(urllib.HTTPHandler)
+
+        # Request method defined
+        req = urllib.Request(self.uri, data=authjson.encode('utf-8'))
+        req.add_header('Content-Type', 'application/json')
+        req.get_method = lambda: 'PUT'
+
         try:
-            self.token = json.loads(o.open(r).read().decode('utf-8'))["hash"]
+            res = obj.open(req)
+            data = res.read()
+            data_utf8 = data.decode('utf-8')
+            self.token = json.loads(data_utf8)["hash"]
+
         except urllib.HTTPError as e:
             sys.stderr.write("ERROR: %s\n" % e)
+
         except urllib.URLError as e:
             sys.stderr.write("ERROR: %s\n" % e)
             exit(1)
