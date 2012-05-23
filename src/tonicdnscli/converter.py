@@ -48,7 +48,8 @@ class JSONConvert(object):
         import re
         for line in listitems:
             # Ignore number(#) at begining of a line.
-            if not re.search('^#', line):
+            # and ignore blank lines.
+            if not re.search('^#|^$', line):
                 self.generateRecords(line)
 
     def generateRecords(self, line):
@@ -130,7 +131,7 @@ class JSONConvert(object):
             delta = self.maxdata
 
         for line in file:
-            if not re.search('^#', line):
+            if not re.search('^#|^$', line):
                 if line_index > delta:
                     line_index = 1
                     self.split_index += 1
