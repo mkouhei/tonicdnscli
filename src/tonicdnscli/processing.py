@@ -108,7 +108,25 @@ def formattedPrint(datas):
         print("No data")
         exit(1)
 
-    if datas.get('records'):
+    # get all zones
+    # API /zone without :identifier
+    if isinstance(datas, list):
+        hr()
+        print('%-20s %-8s %-12s'
+              % ('name', 'type', 'notified_serial'))
+        hr()
+        for record in datas:
+            # print 'NAME'
+            utils.print_inline("%(name)-20s" % record)
+
+            # print 'TYPE' of SOA record
+            utils.print_inline("%(type)-8s" % record)
+
+            print("%(notified_serial)s" % record)
+
+        exit(0)
+
+    elif datas.get('records'):
         print("domain: %(name)s" % datas)
 
         if datas.get('type') == 'MASTER':
