@@ -177,6 +177,17 @@ Print converted JSON
        }, 
    (snip)
 
+Retrieve all zones
+~~~~~~~~~~~~~~~~~~
+::
+
+   $ tonicdnscli get -u tonicusername -P
+   ==============================================================================
+   name                 type     notified_serial
+   ==============================================================================
+   example.org          MASTER   2012052201
+   example.net          MASTER   2012060502
+
 
 Retrieve records
 ~~~~~~~~~~~~~~~~

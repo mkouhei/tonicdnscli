@@ -353,7 +353,7 @@ def parse_options():
 
     # Retrieve records
     prs_get = subprs.add_parser(
-        'get', help='retrieve records of specific zone')
+        'get', help='retrieve all zones without a specific zone, or records with a specific zone')
     prs_get.add_argument('--domain', action='store',
                          help='specify domain FQDN')
     conn_options(prs_get, server, username, password)
