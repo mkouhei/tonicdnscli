@@ -252,6 +252,22 @@ Update SOA
    true
 
 
+Contribute
+----------
+
+Firstly copy pre-commit hook script.
+::
+
+   $ cp -f utils/pre-commit.txt .git/hooks/pre-commit
+
+Next install python2.7 later, and nosetests. Below in Debian GNU/Linux Sid system,
+::
+
+   $ sudo apt-get install python python-nose
+
+Then checkout 'devel' branch for development, commit your changes. Before pull request, execute git rebase.
+
+
 See also
 --------
 
