@@ -11,6 +11,7 @@ import tonicdnscli.command as c
 class commandTests(unittest.TestCase):
     def setUp(self):
         import os.path
+        self.maxDiff = None
         self.sample = os.path.dirname(__file__) + \
             '/../../../examples/example.org.txt'
         self.domain = 'example.org'
@@ -18,46 +19,60 @@ class commandTests(unittest.TestCase):
                          [{'content': '10.10.10.10',
                            'type': 'A',
                            'name': 'test0.example.org',
-                           'ttl': '86400'},
+                           'ttl': 86400},
                           {'content': '10.10.10.11',
                            'type': 'A',
                            'name': 'test1.example.org',
-                           'ttl': '86400'},
+                           'ttl': 86400},
                           {'content': '10.10.10.12',
                            'type': 'A',
                            'name': 'test2.example.org',
-                           'ttl': '86400'},
+                           'ttl': 86400},
                           {'content': 'mx.example.org',
-                           'priority': '0',
+                           'priority': 0,
                            'type': 'MX',
                            'name': 'example.org',
-                           'ttl': '86400'},
+                           'ttl': 86400},
                           {'content': 'mx2.example.org',
-                           'priority': '10',
+                           'priority': 10,
                            'type': 'MX',
                            'name': 'example.org',
-                           'ttl': '86400'},
+                           'ttl': 86400},
                           {'content': '10.10.11.10',
                            'type': 'A',
                            'name': 'mx.example.org',
-                           'ttl': '3600'},
+                           'ttl': 3600},
                           {'content': '10.10.11.10',
                            'type': 'A',
                            'name': 'mx2.example.org',
-                           'ttl': '3600'}]
+                           'ttl': 3600}]
                          }]
         self.r_records = [{'name': 'example.org',
                            'records': self.cu_records[0].get('records')}]
+        self.record = ['test3.example.org A 10.10.20.10 3600']
+        self.d_cu_record = [{'records': [{'name': 'test3.example.org',
+                         'type': 'A',
+                         'content': '10.10.20.10',
+                         'ttl': 3600}]}]
+        self.d_r_record = [{'name': self.domain,
+                            'records': [{'name': 'test3.example.org',
+                                         'type': 'A',
+                                         'content': '10.10.20.10',
+                                         'ttl': 3600}]}]
 
     def test_checkInfile(self):
         self.assertEquals(self.domain, c.checkInfile(
                 self.sample))
 
-    def test_getJSON(self):
+    def test_setJSON(self):
         self.assertEquals(self.cu_records,
-                     c.getJSON(self.domain, self.sample, True))
+                     c.setJSON(self.domain, True, filename=self.sample))
         self.assertEquals(self.r_records,
-                     c.getJSON(self.domain, self.sample, False))
+                     c.setJSON(self.domain, False, filename=self.sample))
+        self.assertEquals(self.d_cu_record,
+                     c.setJSON(self.domain, True, record=self.record))
+        self.assertEquals(self.d_r_record,
+                     c.setJSON(self.domain, False, record=self.record))
 
 if __name__ == '__main__':
     unittest.main()
