@@ -25,6 +25,14 @@ Setup
 History
 -------
 
+0.6.2 (2012-06-17)
+~~~~~~~~~~~~~~~~~~~~
+
+* New feature of getting all zones
+* Add pre-commit hook script
+* Rename method name that test_getJSON to test_setJSON
+* Refactoring of http connect
+
 0.6.1.1 (2012-05-23)
 ~~~~~~~~~~~~~~~~~~~~
 
