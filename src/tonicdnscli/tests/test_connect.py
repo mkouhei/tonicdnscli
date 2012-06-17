@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Tests of processing.py
+Tests of connect.py
 """
 import unittest
 from minimock import mock, Mock, restore
-import tonicdnscli.processing as processing
+import tonicdnscli.connect as conn
 
 
-class processingTests(unittest.TestCase):
+class connectTests(unittest.TestCase):
     def setUp(self):
         import sys
         from StringIO import StringIO
@@ -47,6 +47,30 @@ class processingTests(unittest.TestCase):
 
     def tearDown(self):
         restore()
+
+    def test_tonicDNSClient(self):
+        import sys
+        import StringIO
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        uri = self.uri + '/zone/example.org'
+        conn.tonicDNSClient(uri,
+                            'GET', self.token, self.data)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        self.assert_(dumpout.getvalue())
+
+    def test_formattedPrint(self):
+        import sys
+        import StringIO
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        conn.formattedPrint(self.datadict)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        self.assert_(dumpout.getvalue())
 
 if __name__ == '__main__':
     unittest.main()

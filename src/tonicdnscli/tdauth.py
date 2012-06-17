@@ -35,32 +35,7 @@ class Auth(object):
         return authinfo
 
     def getToken(self):
-        import json
-        import sys
-        if sys.version_info > (2, 6) and sys.version_info < (2, 8):
-            import urllib2 as urllib
-        elif sys.version_info > (3, 0):
-            import urllib.request as urllib
-
-        authjson = json.JSONEncoder(object).encode(self.setInfo())
-
-        # create HTTP opener object
-        obj = urllib.build_opener(urllib.HTTPHandler)
-
-        # Request method defined
-        req = urllib.Request(self.uri, data=authjson.encode('utf-8'))
-        req.add_header('Content-Type', 'application/json')
-        req.get_method = lambda: 'PUT'
-
-        try:
-            res = obj.open(req)
-            data = res.read()
-            data_utf8 = data.decode('utf-8')
-            self.token = json.loads(data_utf8)["hash"]
-
-        except urllib.HTTPError as e:
-            sys.stderr.write("ERROR: %s\n" % e)
-
-        except urllib.URLError as e:
-            sys.stderr.write("ERROR: %s\n" % e)
-            exit(1)
+        method = 'PUT'
+        import connect as conn
+        self.token = conn.tonicDNSClient(self.uri, method,
+                                         self.token, data=self.setInfo())
