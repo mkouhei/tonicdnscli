@@ -5,50 +5,39 @@
 Tests of tdauth.py
 """
 import unittest
-from minimock import mock, Mock, restore
 from tonicdnscli.tdauth import Auth
+from mock import Mock
 
 
 class AuthTests(unittest.TestCase):
     def setUp(self):
-        import sys
-        from StringIO import StringIO
-        if sys.version_info > (2, 6) and sys.version_info < (2, 8):
-            import urllib2 as urllib
-        elif sys.version_info > (3, 0):
-            import urllib.request as urllib
-        self.authjson = '''{"username": "tonicuser",
-"valid_until": 1327146727,
-"hash": "efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041",
-"token": "efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041"}'''
-        self.o = Auth('tonicuser', 'tonicpw', 'tonic.example.org')
-        self.token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
-
-        urllib.build_opener = Mock('build_opener',
-            returns=Mock('opener',
-                open=Mock('opener.open',
-                    returns=Mock('opener.open',
-                        read=Mock('opener.open.read',
-                            returns=self.authjson)))))
-
-        self.authinfo = {'username': 'tonicuser', 'password': 'tonicpw',
-                         'local_user': 'tonicuser'}
-
-    def tearDown(self):
-        restore()
+        self.username = 'tonicuser'
+        self.password = 'tonicpw'
+        self.server = 'tonic.example.org'
+        self.token0 = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
+        self.token1 = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd042'
+        self.a = Auth(self.username, self.password, self.server)
+        self.authinfo = {"username": self.username,
+                         "password": self.password,
+                         "local_user": self.username}
 
     def test__init__(self):
-        self.assertEquals('tonicuser', self.o.username)
-        self.assertEquals('tonicpw', self.o.password)
-        self.assertEquals('', self.o.token)
-        self.assertEquals('https://tonic.example.org/authenticate', self.o.uri)
+        self.assertEquals(self.username, self.a.username)
+        self.assertEquals(self.password, self.a.password)
+        self.assertEquals('', self.a.token)
+        self.assertEquals('https://tonic.example.org/authenticate',
+                          self.a.uri)
 
     def test_setInfo(self):
-        self.assertDictEqual(self.authinfo, self.o.setInfo())
+        self.assertDictEqual(self.authinfo, self.a.setInfo())
 
     def test_getToken(self):
-        self.o.getToken()
-        self.assertEquals(self.o.token, self.token)
+        from tonicdnscli import connect as conn
+        a_mock = Auth(self.username, self.password, self.server)
+        a_mock.tonicDNSClient = Mock(return_value=self.token0)
+        token = a_mock.tonicDNSClient()
+        self.assertEquals(self.token0, token)
+        self.assertNotEquals(self.token1, token)
 
 if __name__ == '__main__':
     unittest.main()
