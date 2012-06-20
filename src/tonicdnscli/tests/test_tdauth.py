@@ -32,7 +32,6 @@ class AuthTests(unittest.TestCase):
         self.assertDictEqual(self.authinfo, self.a.setInfo())
 
     def test_getToken(self):
-        from tonicdnscli import connect as conn
         a_mock = Auth(self.username, self.password, self.server)
         a_mock.tonicDNSClient = Mock(return_value=self.token0)
         token = a_mock.tonicDNSClient()
