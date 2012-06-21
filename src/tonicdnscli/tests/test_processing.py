@@ -33,6 +33,28 @@ class processingTests(unittest.TestCase):
         self.dict0 = {'records': self.list0}
         self.dict1 = {'name': self.domain,
                       'records': self.list0}
+        self.dict2 = {'identifier': self.identifier,
+                      'description': 'example',
+                      'entries': [
+                {'name': self.domain,
+                 'type': 'SOA',
+                 'content': 'ns.example.org hostmaster.example.org \
+2012020501 3600 900 86400 3600',
+                 'ttl': 86400},
+                {'name': self.domain,
+                 'type': 'NS',
+                 'content': 'ns' + self.domain,
+                 'ttl': 86400},
+                {'name': self.domain,
+                 'type': 'A',
+                 'content': '10.0.0.100',
+                 'ttl': 86400},
+                {'name': self.domain,
+                 'type': 'MX',
+                 'content': 'mx.' + self.domain,
+                 'ttl': 86400,
+                 'priority': 10},
+                ]}
 
     def test_createRecords(self):
         conn.tonicDNSClient = Mock(return_value='true')
@@ -53,6 +75,45 @@ class processingTests(unittest.TestCase):
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
         p.deleteRecords(self.server, self.token, self.dict1)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        dumpout.getvalue()
+        self.assertEquals('true\n', dumpout.getvalue())
+
+    def test_createTemplate(self):
+        conn.tonicDNSClient = Mock(return_value='true')
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        print(conn.tonicDNSClient())
+        p.createTemplate(self.server, self.token,
+                         self.identifier, self.dict2)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        dumpout.getvalue()
+        self.assertEquals('true\n', dumpout.getvalue())
+
+    def test_updateTemplate(self):
+        conn.tonicDNSClient = Mock(return_value='true')
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        print(conn.tonicDNSClient())
+        p.updateTemplate(self.server, self.token,
+                         self.identifier, self.dict2)
+        sys.stdout = ostdout
+        dumpout.seek(0)
+        dumpout.getvalue()
+        self.assertEquals('true\n', dumpout.getvalue())
+
+    def test_deleteTemplate(self):
+        conn.tonicDNSClient = Mock(return_value='true')
+        dumpout = StringIO.StringIO()
+        ostdout = sys.stdout
+        sys.stdout = dumpout
+        print(conn.tonicDNSClient())
+        p.deleteTemplate(self.server, self.token,
+                         self.identifier)
         sys.stdout = ostdout
         dumpout.seek(0)
         dumpout.getvalue()
