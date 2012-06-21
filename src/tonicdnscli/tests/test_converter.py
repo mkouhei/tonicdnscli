@@ -70,16 +70,15 @@ mx.example.org A 10.10.11.10 3600\n""",
         self.today_cur_soa = {
             'name': 'example.org',
             'type': 'SOA',
-            'content': 'ns.example.org postmaster.example.org ' + \
-                today + '01',
+            'content': 'ns.example.org postmaster.example.org ' + today + '01',
             'ttl': 86400,
             'priority': None
             }
         self.new_soa = {
             'name': 'example.org',
             'type': 'SOA',
-            'content': 'ns.example.org postmaster.example.org ' + \
-                today + '01 3600 900 86400 3600',
+            'content': 'ns.example.org postmaster.example.org '
+            + today + '01 3600 900 86400 3600',
             'ttl': 86400,
             'priority': None
             }

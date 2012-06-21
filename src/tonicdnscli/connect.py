@@ -247,7 +247,7 @@ def formattedPrint(datas):
                 utils.print_inline("%(content)-24s" % record)
 
             # print 'TTL', and 'PRIORITY'
-            if record.get('priority') != None:
+            if record.get('priority') is not None:
                 utils.print_inline("%(ttl)5s" % record)
                 print("%(priority)2s" % record)
 
