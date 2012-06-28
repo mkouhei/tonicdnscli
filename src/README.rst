@@ -25,6 +25,13 @@ Setup
 History
 -------
 
+0.7 (2012-06-29)
+~~~~~~~~~~~~~~~~
+
+* Add default timeout
+* Update unit tests
+* Tool of adding user account of TonicDNS
+
 0.6.2 (2012-06-17)
 ~~~~~~~~~~~~~~~~~~~~
 
