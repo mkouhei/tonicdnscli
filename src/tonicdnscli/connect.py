@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __init__ import __timeout__
 
 
 def tonicDNSClient(uri, method, token='', data='', keyword='', domain=''):
@@ -39,6 +40,8 @@ def request(uri, method, data, token=''):
         import urllib2 as urllib
     elif sys.version_info > (3, 0):
         import urllib.request as urllib
+    import socket
+    socket.setdefaulttimeout(__timeout__)
 
     obj = urllib.build_opener(urllib.HTTPHandler)
 
