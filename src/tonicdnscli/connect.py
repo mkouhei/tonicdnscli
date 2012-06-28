@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from __init__ import __timeout__
+from tonicdnscli.__init__ import __timeout__
 
 
 def tonicDNSClient(uri, method, token='', data='', keyword='', domain=''):

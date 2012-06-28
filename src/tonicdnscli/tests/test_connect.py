@@ -7,16 +7,20 @@ Tests of connect.py
 import unittest
 from minimock import mock, Mock, restore
 import tonicdnscli.connect as conn
+import sys
+if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+    import StringIO as io
+elif sys.version_info > (3, 0):
+    import io as io
+
+if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+    import urllib2 as urllib
+elif sys.version_info > (3, 0):
+    import urllib.request as urllib
 
 
 class connectTests(unittest.TestCase):
     def setUp(self):
-        import sys
-        from StringIO import StringIO
-        if sys.version_info > (2, 6) and sys.version_info < (2, 8):
-            import urllib2 as urllib
-        elif sys.version_info > (3, 0):
-            import urllib.request as urllib
 
         self.datajson = '''{"name": "example.org", "type": "MASTER",
 "notified_serial": "2012042701",
@@ -35,12 +39,12 @@ class connectTests(unittest.TestCase):
 "ttl": "86400", "priority": False, "change_date":"1328449038"}]}
 
         urllib.build_opener = Mock('build_opener',
-            returns=Mock('opener',
-                open=Mock('opener.open',
-                    returns=Mock('opener.open',
-                        read=Mock('opener.open.read',
-                            returns=self.datajson)))))
-
+                                   returns=Mock('opener',
+                                                open=Mock('opener.open',
+                                                          returns=Mock('opener.open',
+                                                                       read=Mock('opener.open.read',
+                                                                                 returns=self.datajson)))))
+        
         self.uri = 'https://ns.example.org'
         self.token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
         self.data = ''
@@ -49,9 +53,7 @@ class connectTests(unittest.TestCase):
         restore()
 
     def test_tonicDNSClient(self):
-        import sys
-        import StringIO
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         uri = self.uri + '/zone/example.org'
@@ -62,9 +64,7 @@ class connectTests(unittest.TestCase):
         self.assert_(dumpout.getvalue())
 
     def test_formattedPrint(self):
-        import sys
-        import StringIO
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         conn.formattedPrint(self.datadict)

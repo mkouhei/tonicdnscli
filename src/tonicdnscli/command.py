@@ -34,7 +34,7 @@ def checkInfile(filename):
 # action: True  is for PUT/POST HTTP method
 #         False is for DELETE HTTP method
 def setJSON(domain, action, filename=False, record=False):
-    import converter
+    import tonicdnscli.converter as converter
     o = converter.JSONConvert(domain)
 
     # for 'bulk_create/bulk_delete'

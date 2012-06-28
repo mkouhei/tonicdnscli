@@ -6,7 +6,10 @@ Tests of processing.py
 """
 import unittest
 import sys
-import StringIO
+if sys.version_info > (2, 6) and sys.version_info < (2, 8): 
+    import StringIO as io
+elif sys.version_info > (3, 0): 
+    import io as io
 from mock import Mock
 import tonicdnscli.connect as conn
 import tonicdnscli.processing as p
@@ -58,7 +61,7 @@ class processingTests(unittest.TestCase):
 
     def test_createRecords(self):
         conn.tonicDNSClient = Mock(return_value='true')
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
@@ -70,7 +73,7 @@ class processingTests(unittest.TestCase):
 
     def test_deleteRecords(self):
         conn.tonicDNSClient = Mock(return_value='true')
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
@@ -82,7 +85,7 @@ class processingTests(unittest.TestCase):
 
     def test_createTemplate(self):
         conn.tonicDNSClient = Mock(return_value='true')
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
@@ -95,7 +98,7 @@ class processingTests(unittest.TestCase):
 
     def test_updateTemplate(self):
         conn.tonicDNSClient = Mock(return_value='true')
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
@@ -108,7 +111,7 @@ class processingTests(unittest.TestCase):
 
     def test_deleteTemplate(self):
         conn.tonicDNSClient = Mock(return_value='true')
-        dumpout = StringIO.StringIO()
+        dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         print(conn.tonicDNSClient())
