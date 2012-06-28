@@ -61,6 +61,10 @@ def request(uri, method, data, token=''):
         res = obj.open(req)
         return res
 
+    except urllib.URLError as e:
+        sys.stderr.write("ERROR: %s\n" % e)
+        exit(1)
+
     except urllib.HTTPError as e:
         sys.stderr.write("ERROR: %s\n" % e)
         exit(1)
