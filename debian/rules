@@ -15,3 +15,8 @@
 override_dh_auto_test:
 	set -e; \
 	PYTHONPATH=$(CURDIR)/src nosetests -d
+
+override_dh_install:
+	dh_install
+	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/share/pyshared/tonicdnscli/tests
+	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/lib/python2.7/dist-packages/tonicdnscli/tests
