@@ -22,6 +22,9 @@ from datetime import date as d
 import argparse
 from getpass import getpass
 
+# For Debian and Ubuntu
+# install python-mysqldb.
+# and python-argparse if using python2.6
 
 prs = argparse.ArgumentParser(description='usage')
 prs.add_argument('-u', dest='user', help='mysql dbuser', required=True)
@@ -46,6 +49,7 @@ db = args.__dict__.get('db')
 email = args.__dict__.get('email')
 passmd5 = args.__dict__.get('passmd5')
 username = email.split('@')[0]
+# username format is 'lastname_firstname'.
 fullname = username.split('_')[0].title() +\
     ' ' + username.split('_')[1].title()
 comment = 'add ' + d.today().isoformat()
