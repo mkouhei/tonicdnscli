@@ -231,7 +231,7 @@ Create records
 ~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli create -s ns.example.org -u tonicusername -P \
+   $ tonicdnscli bulk_create -s ns.example.org -u tonicusername -P \
    examples/example.org.txt
    true
 
@@ -248,7 +248,7 @@ Delete records
 ~~~~~~~~~~~~~~~
 ::
 
-   $ tonicdnscli delete -s ns.example.org -u tonicusername -P examples/example.org.txt
+   $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P examples/example.org.txt
    true
 
 Update SOA
