@@ -176,6 +176,8 @@ def formattedPrint(datas):
 
             if record.get('notified_serial'):
                 print("%(notified_serial)s" % record)
+            else:
+                print('')
 
         exit(0)
 
