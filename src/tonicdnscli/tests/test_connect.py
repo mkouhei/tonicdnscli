@@ -39,12 +39,12 @@ class connectTests(unittest.TestCase):
 "ttl": "86400", "priority": False, "change_date":"1328449038"}]}
 
         urllib.build_opener = Mock('build_opener',
-                                   returns=Mock('opener',
-                                                open=Mock('opener.open',
-                                                          returns=Mock('opener.open',
-                                                                       read=Mock('opener.open.read',
-                                                                                 returns=self.datajson)))))
-        
+            returns=Mock('opener',
+                open=Mock('opener.open',
+                    returns=Mock('opener.open',
+                        read=Mock('opener.open.read',
+                            returns=self.datajson)))))
+
         self.uri = 'https://ns.example.org'
         self.token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
         self.data = ''

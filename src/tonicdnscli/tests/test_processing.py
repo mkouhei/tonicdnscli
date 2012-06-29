@@ -6,9 +6,9 @@ Tests of processing.py
 """
 import unittest
 import sys
-if sys.version_info > (2, 6) and sys.version_info < (2, 8): 
+if sys.version_info > (2, 6) and sys.version_info < (2, 8):
     import StringIO as io
-elif sys.version_info > (3, 0): 
+elif sys.version_info > (3, 0):
     import io as io
 from mock import Mock
 import tonicdnscli.connect as conn
