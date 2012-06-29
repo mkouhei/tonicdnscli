@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from tonicdnscli.__init__ import __timeout__
+from . import __timeout__
 
 
 def tonicDNSClient(uri, method, token='', data='', keyword='', domain=''):
@@ -167,6 +167,7 @@ def formattedPrint(datas):
               % ('name', 'type', 'notified_serial'))
         hr()
         for record in datas:
+
             # print 'NAME'
             utils.print_inline("%(name)-20s" % record)
 
