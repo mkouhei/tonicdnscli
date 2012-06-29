@@ -181,7 +181,7 @@ def formattedPrint(datas):
     elif datas.get('records'):
         print("domain: %(name)s" % datas)
 
-        if datas.get('type') == 'MASTER':
+        if datas.get('type') == 'MASTER' and datas.get('notified_serial'):
             print("serial: %(notified_serial)s" % datas)
 
         print("DNS   : %(type)s" % datas)
