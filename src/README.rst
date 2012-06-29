@@ -25,6 +25,12 @@ Setup
 History
 -------
 
+0.7.1 (2012-06-29)
+~~~~~~~~~~~~~~~~~~
+
+* Fix bug module import
+* Fix bug that assert is always true of test_pep8
+
 0.7 (2012-06-29)
 ~~~~~~~~~~~~~~~~
 
