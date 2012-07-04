@@ -19,11 +19,6 @@
 import connect as conn
 
 
-def unprovide():
-    print("ERROR: This feature does not provide")
-    exit(10)
-
-
 # `data' is list.
 # item of list is dictionary as
 # 1) {"records": records}
@@ -81,11 +76,11 @@ def getAllZone(server, token):
     conn.tonicDNSClient(uri, method, token, data=False)
 
 
-def deleteDomain():
+def deleteZone(server, token, domain):
     # x-authentication-token: token
-    # method: DELETE
-    # uri: /zone/:domain
-    unprovide()
+    method = 'DELETE'
+    uri = 'https://' + server + '/zone/' + domain
+    conn.tonicDNSClient(uri, method, token, data=False)
 
 
 def createTemplate(server, token, identifier, template):

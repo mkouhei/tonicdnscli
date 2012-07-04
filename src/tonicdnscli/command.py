@@ -277,6 +277,19 @@ def createZone(args):
         args.server, t, domain, data, template)
 
 
+# Delete zone
+def zone_delete(args):
+    import processing
+    import converter
+
+    if args.__dict__.get('domain'):
+        domain = args.domain
+
+    password = getPassword(args)
+    t = token(args.username, password, args.server)
+    processing.deleteZone(args.server, t, domain)
+
+
 def setoption(obj, keyword, prefix=False, required=False):
     if keyword == 'server':
         obj.add_argument(
@@ -452,6 +465,15 @@ or records with a specific zone')
     setoption(prs_zone_create, 'infile')
     conn_options(prs_zone_create, server, username, password)
     prs_zone_create.set_defaults(func=createZone)
+
+    # delete zone
+    prs_zone_delete = subprs.add_parser(
+        'zone_delete', help='delete zone')
+    prs_zone_delete.add_argument(
+        '--domain', action='store', required=True,
+        help='specify zone')
+    conn_options(prs_zone_delete, server, username, password)
+    prs_zone_delete.set_defaults(func=zone_delete)
 
     args = prs.parse_args()
     return args
