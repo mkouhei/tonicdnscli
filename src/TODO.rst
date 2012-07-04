@@ -6,12 +6,16 @@ Features
 
 * Checking existing records When create or delete records.
 * Updating records.
+* Create and delete zone.
+* Validation input data.
 
 Improvement
 -----------
 
 * Add unittest.
-* Validation input data.
+* Use option '--domain' when bulk_create and bulk_delete.
+* Specify timeout value.
+* Change minimock to Mock for being compatible Python2.7 and Python3.2.
 
 Known bug
 ---------
