@@ -484,7 +484,6 @@ def checkConfig(filename):
 def main():
     import sys
 
-    '''
     try:
         args = parse_options()
         args.func(args)
@@ -494,9 +493,6 @@ def main():
     except UnboundLocalError as e:
         sys.stderr.write("ERROR: %s\n" % e)
         return
-        '''
-    args = parse_options()
-    args.func(args)
 
 if __name__ == "__main__":
     main()

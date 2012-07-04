@@ -69,9 +69,9 @@ class JSONConvert(object):
         from datetime import date
         serial = date.strftime(date.today(), '%Y%m%d') + '01'
         ns = 'ns.' + domain
-        soa = ns + ' hostmaster.' + domain + \
-            ' ' + serial + ' ' + self.refresh + ' ' + self.retry + \
-            ' ' + self.expire + ' ' + str(self.ttl)
+        soa = (ns + ' hostmaster.' + domain +
+            ' ' + serial + ' ' + self.refresh + ' ' + self.retry +
+            ' ' + self.expire + ' ' + str(self.ttl))
         self.record = {
                 'identifier': domain.replace('.', '_'),
                 'description': desc,
@@ -156,7 +156,7 @@ class JSONConvert(object):
         else:
             serial = str(int(cur_serial) + 1)
 
-        new_record['content'] = mname + ' ' + rname + ' ' + \
-            serial + ' ' + self.refresh + ' ' + self.retry + ' ' + \
-            self.expire + ' ' + str(self.ttl)
+        new_record['content'] = (mname + ' ' + rname + ' ' +
+            serial + ' ' + self.refresh + ' ' + self.retry + ' ' +
+            self.expire + ' ' + str(self.ttl))
         return new_record
