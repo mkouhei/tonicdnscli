@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from . import __timeout__
+from __init__ import __timeout__
 
 
 def tonicDNSClient(uri, method, token='', data='', keyword='', domain=''):
@@ -47,6 +47,7 @@ def request(uri, method, data, token=''):
 
     # encoding json
     encoded = json.JSONEncoder(object).encode(data)
+
     # encoding utf8
     data_utf8 = encoded.encode('utf-8')
     req = urllib.Request(uri, data=data_utf8)

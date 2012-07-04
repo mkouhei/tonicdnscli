@@ -91,7 +91,6 @@ class JSONConvert(object):
         return record_d
 
     def generateZone(self, domain, template, records):
-        import json
         # If there is a SOA record in records,
         # add self SOA records.
         self.zone = {
@@ -103,7 +102,6 @@ class JSONConvert(object):
                 ],
             "records": records.get('records')
             }
-        return json.JSONEncoder().encode(self.zone)
 
     def checkkey(self, key, index):
         import re

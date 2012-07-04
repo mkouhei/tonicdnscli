@@ -260,6 +260,23 @@ def updateSOASerial(args):
     processing.updateSerial(args.server, t, domain)
 
 
+# Create zone
+def createZone(args):
+    import processing
+    from converter import JSONConvert
+
+    action = True
+
+    password = getPassword(args)
+    t = token(args.username, password, args.server)
+    template = args.template
+    domain = args.template.replace('_', '.')
+    data = setJSON(domain, action, filename=args.infile)
+
+    processing.createZoneRecords(
+        args.server, t, domain, data, template)
+
+
 def setoption(obj, keyword, prefix=False, required=False):
     if keyword == 'server':
         obj.add_argument(
@@ -425,6 +442,16 @@ or records with a specific zone')
                             help='specify domain FQDN')
     conn_options(prs_soa, server, username, password)
     prs_soa.set_defaults(func=updateSOASerial)
+
+    # create zone
+    prs_zone_create = subprs.add_parser(
+        'zone_create', help='create zone')
+    prs_zone_create.add_argument(
+        '--template', action='store', required=True,
+        help='specify zone from template identifier')
+    setoption(prs_zone_create, 'infile')
+    conn_options(prs_zone_create, server, username, password)
+    prs_zone_create.set_defaults(func=createZone)
 
     args = prs.parse_args()
     return args

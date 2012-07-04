@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from . import connect as conn
+import connect as conn
 
 
 def unprovide():
@@ -40,8 +40,8 @@ def createZoneRecords(server, token, domain, data, identifier):
         if i == 0:
             from converter import JSONConvert
             obj = JSONConvert(domain)
-            zone = obj.generateZone(domain, identifier, v)
-            conn.tonicDNSClient(uri, method, token, zone)
+            obj.generateZone(domain, identifier, v)
+            conn.tonicDNSClient(uri, method, token, obj.zone)
 
         else:
             # method: PUT
