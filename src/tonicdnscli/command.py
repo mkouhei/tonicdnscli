@@ -472,7 +472,7 @@ or records with a specific zone')
         help='specify zone from template identifier')
     group_zone_create = prs_zone_create.add_mutually_exclusive_group()
     group_zone_create.add_argument(
-        '-s', dest='dnsaddr', action='store',
+        '--slave', dest='dnsaddr', action='store',
         help='create zone to SLAVE with master DNS IP address')
     group_zone_create.add_argument('-n', action='store_true',
                                    help='create zone to NATIVE')

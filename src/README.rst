@@ -1,6 +1,6 @@
-======================================
-`tonicdnscli` is TonicDNS Client tool.
-======================================
+====================================
+tonicdnscli is TonicDNS Client tool.
+====================================
 
 This command line tool for TonicDNS API.
 TonicDNS is  RESTful API for PowerDNS.
@@ -26,20 +26,20 @@ History
 -------
 
 0.7.1 (2012-06-29)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Fix bug module import
 * Fix bug that assert is always true of test_pep8
 
 0.7 (2012-06-29)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * Add default timeout
 * Update unit tests
 * Tool of adding user account of TonicDNS
 
 0.6.2 (2012-06-17)
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * New feature of getting all zones
 * Add pre-commit hook script
@@ -47,66 +47,66 @@ History
 * Refactoring of http connect
 
 0.6.1.1 (2012-05-23)
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 * Fix README
 
 0.6.1 (2012-05-23)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Fix issue#2
 * Refactoring
 
 0.6 (2012-05-15)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * Update SOA
 
 0.5.2 (2012-05-11)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * create or delete a specific record
 
 0.5.1 (2012-05-07)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Fix bug get fail when resolver is SLAVE
 
 0.5 (2012-05-04)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * templates CRUD
 
 0.4.4 (2012-05-01)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * not distribute util3.py (alternative print for python3)
 
 0.4.3 (2012-05-01)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * search target conent and type
 * retrieve all zone
 
 0.4.2 (2012-04-28)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Add search records
 * Format of stdout of retrieve records
 
 0.4.1 (2012-04-27)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Fix bug processing last data only, when separate file
 
 0.4 (2012-04-26)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * default option config file $HOME/.tdclirc
 
 
 0.3.2 (2012-04-25)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Add unittest of pep8, converter.py, tdauth.py (partially) 
 * Add exception error handling
@@ -114,13 +114,13 @@ History
 
 
 0.3.1 (2012-04-23)
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 * Add manpage
 
 
 0.3 (2012-04-21)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * New command line style, add sub-command, change options
 
@@ -129,7 +129,7 @@ History
 
 
 0.2 (2012-04-20)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 * Support Python3
 * Add option `-P` as password prompt with echo turned off
@@ -143,7 +143,7 @@ Usage
 -----
 
 Input file (example.org.txt)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
    # name type content ttl priority
@@ -157,7 +157,7 @@ Input file (example.org.txt)
 
 
 Setting default options to config file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 An alternative method of command options that use the config file.
 Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password in plain text, it is recommended that you remove this line, `-P` option is used.
@@ -172,7 +172,7 @@ Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password
 
 
 Print converted JSON
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli show sample/example.org.txt
@@ -199,7 +199,7 @@ Print converted JSON
    (snip)
 
 Retrieve all zones
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli get -u tonicusername -P
@@ -211,7 +211,7 @@ Retrieve all zones
 
 
 Retrieve records
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli get -s ns.example.org -d example.org -u tonicusername -P
@@ -232,7 +232,7 @@ Retrieve records
 
 
 Create single record
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli create -s ns.example.org -u tonicusername -P \
@@ -241,7 +241,7 @@ Create single record
    true
 
 Create records
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli bulk_create -s ns.example.org -u tonicusername -P \
@@ -249,7 +249,7 @@ Create records
    true
 
 Delete single records
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli delete -s ns.example.org -u tonicusername -P \
@@ -258,18 +258,89 @@ Delete single records
    true
 
 Delete records
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 ::
 
    $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P examples/example.org.txt
    true
 
 Update SOA
-~~~~~~~~~~
+^^^^^^^^^^
 ::
 
    $ tonicdnscli soa -s ns.example.org -u tonicusername --domain example.org
    true
+   true
+
+Template & zone
+^^^^^^^^^^^^^^^
+
+Firstly create template. Then use this template.
+Used template is unable to reuse. You update that template or recreate template.
+
+Create template
+"""""""""""""""
+::
+   $ tonicdnscli tmpl_create_update --domain example.net --dnsaddr 192.168.0.100
+   true
+
+Retrieve templates
+""""""""""""""""""
+::
+   $ tonicdnscli tmpl_get
+   identifier : example_net
+   description: 
+   ==============================================================================
+   name                              type  content                   ttl   prio
+   example.net                       SOA  
+   > ns.example.net hostmaster.example.net 2012070501 3600 900 86400 3600   3600 
+   example.net                       NS    ns.example.net            3600 
+   ns.example.net                    A     192.168.0.100             3600 
+   ==============================================================================
+   identifier : example2_net
+   description:
+   (snip)
+
+Create zone for MASTER
+""""""""""""""""""""""
+::
+   $ tonicdnscli zone_create --template example_net 
+   true
+
+Create zone for SLAVE
+""""""""""""""""""""""
+
+Require `--slave` option and Master DNS server IP address as argument.
+::
+   $ tonicdnscli zone_create --template example_net --slave 192.168.0.100
+   true
+
+Create zone for NATIVE
+""""""""""""""""""""""
+
+Require `-n` option.
+::
+   $ tonicdnscli zone_create --template example_net -n
+   true
+
+Delete zone
+"""""""""""
+::
+   $ tonicdnscli zone_delete --domain example.com
+   true
+
+Update template
+"""""""""""""""
+
+Require `--domain` option and new zone name as using new template name.
+::
+   $ tonicdnscli --domain example.com --template example_net --dnsaddr 192.168.0.100
+   true
+
+Delete template
+"""""""""""""""
+::
+   $ tonicdnscli tmpl_delete --template example_com
    true
 
 

@@ -77,6 +77,13 @@ Delete template.
 .TP
 .B soa
 Update SOA record.
+.TP
+.B zone_create
+Create zone.
+.TP
+.B zone_delete
+Delete zone.
+.TP
 
 .SH INFILE
 One record per one line with delimiter of space or tab.
@@ -125,6 +132,12 @@ specify TonicDNS server IP address with template option.
 .TP
 .B \-\-desc DESC
 specify template description with template option.
+.TP
+.B \-\-slave DNSADDR
+specify DNS master server IP address with create zone for SLAVE.
+.TP
+.B \-n
+create zone for NATIVE.
 .TP
 .SH SEE ALSO
 .br
