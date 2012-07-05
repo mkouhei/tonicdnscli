@@ -34,7 +34,7 @@ def checkInfile(filename):
 # action: True  is for PUT/POST HTTP method
 #         False is for DELETE HTTP method
 def setJSON(domain, action, filename=False, record=False):
-    import tonicdnscli.converter as converter
+    import converter
     o = converter.JSONConvert(domain)
 
     # for 'bulk_create/bulk_delete'
@@ -269,12 +269,20 @@ def createZone(args):
 
     password = getPassword(args)
     t = token(args.username, password, args.server)
+
     template = args.template
     domain = args.template.replace('_', '.')
-    data = setJSON(domain, action, filename=args.infile)
+    master = None
+    if args.__dict__.get('dnsaddr'):
+        dtype = 'SLAVE'
+        master = args.__dict__.get('dnsaddr')
+    elif args.__dict__.get('n'):
+        dtype = 'NATIVE'
+    else:
+        dtype = 'MASTER'
 
     processing.createZoneRecords(
-        args.server, t, domain, data, template)
+        args.server, t, domain, template, dtype, master)
 
 
 # Delete zone
@@ -462,7 +470,12 @@ or records with a specific zone')
     prs_zone_create.add_argument(
         '--template', action='store', required=True,
         help='specify zone from template identifier')
-    setoption(prs_zone_create, 'infile')
+    group_zone_create = prs_zone_create.add_mutually_exclusive_group()
+    group_zone_create.add_argument(
+        '-s', dest='dnsaddr', action='store',
+        help='create zone to SLAVE with master DNS IP address')
+    group_zone_create.add_argument('-n', action='store_true',
+                                   help='create zone to NATIVE')
     conn_options(prs_zone_create, server, username, password)
     prs_zone_create.set_defaults(func=createZone)
 

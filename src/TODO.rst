@@ -6,7 +6,6 @@ Features
 
 * Checking existing records When create or delete records.
 * Updating records.
-* Create and delete zone.
 * Validation input data.
 
 Improvement

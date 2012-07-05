@@ -24,24 +24,19 @@ import connect as conn
 # 1) {"records": records}
 # 2) {"name": domain, "records": records}
 #This is work around, see also commit 7571109.
-def createZoneRecords(server, token, domain, data, identifier):
+def createZoneRecords(server, token, domain, identifier,
+                      dtype, master=None):
     # ContentType: application/json
     # x-authentication-token: token
+    # dtype: MASTER|SLAVE|NATIVE (default: MASTER)
+    # master: master server ip address when dtype is SLAVE (default: None)
     method = 'PUT'
     uri = 'https://' + server + '/zone'
 
-    for i, v in enumerate(data):
-
-        if i == 0:
-            from converter import JSONConvert
-            obj = JSONConvert(domain)
-            obj.generateZone(domain, identifier, v)
-            conn.tonicDNSClient(uri, method, token, obj.zone)
-
-        else:
-            # method: PUT
-            uri = 'https://' + server + '/zone/' + domain
-            conn.tonicDNSClient(uri, method, token, v)
+    from converter import JSONConvert
+    obj = JSONConvert(domain)
+    obj.generateZone(domain, identifier, dtype, master)
+    conn.tonicDNSClient(uri, method, token, obj.zone)
 
 
 def createRecords(server, token, domain, data):

@@ -90,17 +90,16 @@ class JSONConvert(object):
             }
         return record_d
 
-    def generateZone(self, domain, template, records):
+    def generateZone(self, domain, template, dtype, master=None):
         # If there is a SOA record in records,
         # add self SOA records.
         self.zone = {
             "name": domain,
-            "type": "MASTER",
-            "master": None,
+            "type": dtype,
+            "master": master,
             "templates": [
                 {"identifier": template}
-                ],
-            "records": records.get('records')
+                ]
             }
 
     def checkkey(self, key, index):
