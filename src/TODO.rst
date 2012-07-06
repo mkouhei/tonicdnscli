@@ -20,3 +20,4 @@ Known bug
 ---------
 
 * When using in preference --config option than $HOME/.tdclirc.
+* Unable to change MNAME,RNAME in SOA record.
