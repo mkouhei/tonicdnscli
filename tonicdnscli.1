@@ -118,10 +118,10 @@ specify record type with domain option.
 .B \-\-content CONTENT
 specify record content with domain option.
 .TP
-.B \-\-ttl TTL
+.B \-\-ttl \fIint
 specify record TTL with domain option.
 .TP
-.B \-\-priority PRIORITY
+.B \-\-priority \fIint
 specify record priority with domain option.
 .TP
 .B \-\-template TEMPLATE
@@ -135,6 +135,24 @@ specify template description with template option.
 .TP
 .B \-\-slave DNSADDR
 specify DNS master server IP address with create zone for SLAVE.
+.TP
+.B \-\-mname MNAME
+specify MNAME of SOA record.
+.TP
+.B \-\-rname RNAME
+specify RNAME of SOA record.
+.TP
+.B \-\-refresh \fIint
+specify refresh of SOA record.
+.TP
+.B \-\-retry \fIint
+specify retry of SOA record.
+.TP
+.B \-\-expire \fIint
+specify expire of SOA record.
+.TP
+.B \-\-minimum \fIint
+specify minimum of SOA record. aka. negative cache ttl.
 .TP
 .B \-n
 create zone for NATIVE.
