@@ -256,8 +256,20 @@ def updateSOASerial(args):
 
     password = getPassword(args)
     t = token(args.username, password, args.server)
-    domain = args.domain
-    processing.updateSerial(args.server, t, domain)
+    soa_content = dict(domain=args.domain)
+    if args.__dict__.get('mname'):
+        soa_content['mname'] = args.mname
+    if args.__dict__.get('rname'):
+        soa_content['rname'] = args.rname
+    if args.__dict__.get('refresh'):
+        soa_content['refresh'] = args.refresh
+    if args.__dict__.get('retry'):
+        soa_content['retry'] = args.retry
+    if args.__dict__.get('expire'):
+        soa_content['expire'] = args.expire
+    if args.__dict__.get('minimum'):
+        soa_content['minimum'] = args.minimum
+    processing.updateSerial(args.server, t, soa_content)
 
 
 # Create zone
@@ -461,6 +473,18 @@ or records with a specific zone')
         'soa', help='increase SOA serial')
     prs_soa.add_argument('--domain', action='store', required=True,
                             help='specify domain FQDN')
+    prs_soa.add_argument('--mname', action='store',
+                         help='specify MNAME of SOA record')
+    prs_soa.add_argument('--rname', action='store',
+                         help='specify RNAME of SOA record')
+    prs_soa.add_argument('--refresh', action='store', type=int,
+                         help='specify REFRESH of SOA record')
+    prs_soa.add_argument('--retry', action='store', type=int,
+                         help='specify RETRY of SOA record')
+    prs_soa.add_argument('--expire', action='store', type=int,
+                         help='specify EXPIRE of SOA record')
+    prs_soa.add_argument('--minimum', action='store', type=int,
+                         help='specify MINIMUM of SOA record')
     conn_options(prs_soa, server, username, password)
     prs_soa.set_defaults(func=updateSOASerial)
 

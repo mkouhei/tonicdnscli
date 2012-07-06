@@ -142,11 +142,31 @@ class JSONConvert(object):
         import json
         json.load(data, 'utf-8')
 
-    def getSOA(self, record):
+    def getSOA(self, record, content):
         from datetime import date
         new_record = record.copy()
-        mname = record.get('content').split(' ')[0]
-        rname = record.get('content').split(' ')[1]
+
+        if content.get('mname'):
+            mname = content.get('mname')
+        else:
+            mname = record.get('content').split(' ')[0]
+
+        if content.get('rname'):
+            rname = content.get('rname')
+        else:
+            rname = record.get('content').split(' ')[1]
+
+        if content.get('refresh'):
+            self.refresh = str(content.get('refresh'))
+
+        if content.get('retry'):
+            self.retry = str(content.get('retry'))
+
+        if content.get('expire'):
+            self.expire = str(content.get('expire'))
+
+        if content.get('minimum'):
+            self.ttl = str(content.get('minimum'))
 
         today = date.strftime(date.today(), '%Y%m%d')
         cur_serial = record.get('content').split(' ')[2]

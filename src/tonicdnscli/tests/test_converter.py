@@ -82,6 +82,15 @@ mx.example.org A 10.10.11.10 3600\n""",
             'ttl': 86400,
             'priority': None
             }
+        self.content = {
+            'domain': 'example.org',
+            'mname': 'ns.example.org',
+            'rname': 'postmaster.example.org',
+            'refresh': 3600,
+            'retry': 900,
+            'expire': 86400,
+            'minimum': 3600
+            }
 
     def test__init__(self):
         o = JSONConvert('example.org')
@@ -141,8 +150,10 @@ mx.example.org A 10.10.11.10 3600\n""",
 
     def test_getSOA(self):
         o = JSONConvert('exmaple.org')
-        self.assertEquals(self.new_soa, o.getSOA(self.older_cur_soa))
-        self.assertNotEquals(self.new_soa, o.getSOA(self.today_cur_soa))
+        self.assertEquals(self.new_soa,
+                          o.getSOA(self.older_cur_soa, self.content))
+        self.assertNotEquals(self.new_soa,
+                             o.getSOA(self.today_cur_soa, self.content))
 
 if __name__ == '__main__':
     unittest.main()

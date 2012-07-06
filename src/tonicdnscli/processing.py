@@ -115,18 +115,19 @@ def getAllTemplates(server, token):
     conn.tonicDNSClient(uri, method, token, data=False)
 
 
-def updateSerial(server, token, domain):
+def updateSerial(server, token, soa_content):
     # x-authentication-token: token
 
     # Get SOA record
     # `cur_soa` is current SOA record.
     # `new_soa` is incremental serial SOA record.
     method = 'GET'
-    uri = 'https://' + server + '/zone/' + domain
-    cur_soa, new_soa = conn.tonicDNSClient(uri, method, token, data=False,
-                                           keyword='serial', domain=domain)
+    uri = 'https://' + server + '/zone/' + soa_content.get('domain')
+    cur_soa, new_soa = conn.tonicDNSClient(
+        uri, method, token, data=False, keyword='serial', content=soa_content)
     # set JSON
     from converter import JSONConvert
+    domain = soa_content.get('domain')
     cur_o = JSONConvert(domain)
     new_o = JSONConvert(domain)
     cur_o.records = [cur_soa]

@@ -19,17 +19,23 @@
 from __init__ import __timeout__
 
 
-def tonicDNSClient(uri, method, token='', data='', keyword='', domain=''):
+def tonicDNSClient(uri, method, token='', data='', keyword='', content=''):
     res = request(uri, method, data, token)
     if token:
         if keyword == 'serial':
             cur_soa, new_soa = response(uri, method,
-                                        res, token, keyword, domain)
+                                        res, token, keyword, content)
             return cur_soa, new_soa
+
         else:
-            response(uri, method, res, token, keyword, domain)
+            if content is None:
+                response(uri, method, res, token, keyword,
+                         content.get('domain'))
+            else:
+                response(uri, method, res, token, keyword)
+
     else:
-        token = response(uri, method, res, token, keyword, domain)
+        token = response(uri, method, res, token, keyword)
         return token
 
 
@@ -75,7 +81,7 @@ def request(uri, method, data, token=''):
 
 
 # separated from request (tonicDNSClient)
-def response(uri, method, res, token='', keyword='', domain=''):
+def response(uri, method, res, token='', keyword='', content=''):
     import json
 
     # response body
@@ -100,8 +106,8 @@ def response(uri, method, res, token='', keyword='', domain=''):
             # override ttl
             record['ttl'] = int(record['ttl'])
 
-            c = JSONConvert(domain)
-            new_record = c.getSOA(record)
+            c = JSONConvert(content['domain'])
+            new_record = c.getSOA(record, content)
             return record, new_record
 
         # '--search' option of 'get' subcommand
