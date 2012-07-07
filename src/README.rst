@@ -283,11 +283,8 @@ Update SOA record or speficie zone.::
    true
 
 
-Zone
-^^^^
-
 Create zone for MASTER
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Master DNS server IP address with `--dnsaddr` option.::
 
@@ -299,7 +296,7 @@ Master DNS server IP address with `--dnsaddr` option.::
 
 
 Create zone for SLAVE
-"""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^
 
 Require `-S` option.::
 
@@ -310,7 +307,7 @@ Require `-S` option.::
    true
 
 Create zone for NATIVE
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Require `-N` option.::
 
@@ -321,7 +318,7 @@ Require `-N` option.::
    true
 
 Delete zone
-"""""""""""
+^^^^^^^^^^^
 
 Delete specific zone.::
 
@@ -330,11 +327,8 @@ Delete specific zone.::
    true
 
 
-Template
-^^^^^^^^
-
 Retrieve templates
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
 
 Get tepmlates and print.::
 
@@ -354,7 +348,7 @@ Get tepmlates and print.::
 
 
 Delete template
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 Delete specific template.::
 
