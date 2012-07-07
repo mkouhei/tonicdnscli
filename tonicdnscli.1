@@ -66,15 +66,6 @@ Delete record.
 .B bulk_delete
 Delete bulk records.
 .TP
-.B tmpl_get
-Retrieve template(s).
-.TP
-.B tmpl_create_update
-Create or update template.
-.TP
-.B tmpl_delete
-Delete template.
-.TP
 .B soa
 Update SOA record.
 .TP
@@ -83,6 +74,12 @@ Create zone.
 .TP
 .B zone_delete
 Delete zone.
+.TP
+.B tmpl_get
+Retrieve template(s).
+.TP
+.B tmpl_delete
+Delete template.
 .TP
 
 .SH INFILE
@@ -124,18 +121,6 @@ specify record TTL with domain option.
 .B \-\-priority \fIint
 specify record priority with domain option.
 .TP
-.B \-\-template TEMPLATE
-specify template identifier with template option.
-.TP
-.B \-\-dnsaddr DNSADDR
-specify TonicDNS server IP address with template option.
-.TP
-.B \-\-desc DESC
-specify template description with template option.
-.TP
-.B \-\-slave DNSADDR
-specify DNS master server IP address with create zone for SLAVE.
-.TP
 .B \-\-mname MNAME
 specify MNAME of SOA record.
 .TP
@@ -154,8 +139,17 @@ specify expire of SOA record.
 .B \-\-minimum \fIint
 specify minimum of SOA record. aka. negative cache ttl.
 .TP
-.B \-n
+.B \-\-dnsaddr DNSADDR
+specify TonicDNS server IP address with creating zone.
+.TP
+.B \-S
+create zone for SLAVE.
+.TP
+.B \-N
 create zone for NATIVE.
+.TP
+.B \-\-template TEMPLATE
+specify template identifier with template option.
 .TP
 .SH SEE ALSO
 .br

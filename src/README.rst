@@ -144,7 +144,8 @@ Usage
 
 Input file (example.org.txt)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-::
+
+examples/example.org.txt::
 
    # name type content ttl priority
    test0.example.org A 10.10.10.10 86400
@@ -160,8 +161,7 @@ Setting default options to config file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 An alternative method of command options that use the config file.
-Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password in plain text, it is recommended that you remove this line, `-P` option is used.
-::
+Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password in plain text, it is recommended that you remove this line, `-P` option is used.::
 
    [global]
    server: ns.example.org
@@ -173,7 +173,8 @@ Copy examples/tdclirc.sample to `$HOME/.tdclirc`. `password` key to set password
 
 Print converted JSON
 ^^^^^^^^^^^^^^^^^^^^
-::
+
+Convert to JSON and print.::
 
    $ tonicdnscli show sample/example.org.txt
    {
@@ -200,7 +201,8 @@ Print converted JSON
 
 Retrieve all zones
 ^^^^^^^^^^^^^^^^^^
-::
+
+Get all zones and print.::
 
    $ tonicdnscli get -u tonicusername -P
    ==============================================================================
@@ -212,7 +214,8 @@ Retrieve all zones
 
 Retrieve records
 ^^^^^^^^^^^^^^^^
-::
+
+Get records of specific zone and print.::
 
    $ tonicdnscli get -s ns.example.org -d example.org -u tonicusername -P
    domain: example.org
@@ -233,7 +236,8 @@ Retrieve records
 
 Create single record
 ^^^^^^^^^^^^^^^^^^^^
-::
+
+Create single record with specific zone.::
 
    $ tonicdnscli create -s ns.example.org -u tonicusername -P \
    create --domain example.org --name www2.example.org --rtype A \
@@ -242,7 +246,8 @@ Create single record
 
 Create records
 ^^^^^^^^^^^^^^
-::
+
+Create multi records with specific zone.::
 
    $ tonicdnscli bulk_create -s ns.example.org -u tonicusername -P \
    examples/example.org.txt
@@ -250,44 +255,90 @@ Create records
 
 Delete single records
 ^^^^^^^^^^^^^^^^^^^^^
-::
+
+Delete single record with specific zone.::
 
    $ tonicdnscli delete -s ns.example.org -u tonicusername -P \
-   create --domain example.org --name www2.example.org --rtype A \
+   --domain example.org --name www2.example.org --rtype A \
    --content 10.10.10.10
    true
 
 Delete records
 ^^^^^^^^^^^^^^
-::
 
-   $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P examples/example.org.txt
+Delete multi records with specific zone.::
+
+   $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P \
+   examples/example.org.txt
    true
 
 Update SOA
 ^^^^^^^^^^
-::
 
-   $ tonicdnscli soa -s ns.example.org -u tonicusername --domain example.org
+Update SOA record or speficie zone.::
+
+   $ tonicdnscli soa -s ns.example.org -u tonicusername -P \
+   --domain example.org
    true
    true
 
-Template & zone
-^^^^^^^^^^^^^^^
 
-Firstly create template. Then use this template.
-Used template is unable to reuse. You update that template or recreate template.
+Zone
+^^^^
 
-Create template
-"""""""""""""""
-::
-   $ tonicdnscli tmpl_create_update --domain example.net --dnsaddr 192.168.0.100
+Create zone for MASTER
+""""""""""""""""""""""
+
+Master DNS server IP address with `--dnsaddr` option.::
+
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
+   --domain example.net --dnsaddr 192.168.0.100
    true
+   true
+   true
+
+
+Create zone for SLAVE
+"""""""""""""""""""""
+
+Require `-S` option.::
+
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
+   --domain example.net --dnsaddr 192.168.0.100 -S
+   true
+   true
+   true
+
+Create zone for NATIVE
+""""""""""""""""""""""
+
+Require `-N` option.::
+
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
+   --domain example.net --dnsaddr 192.168.0.100 -N
+   true
+   true
+   true
+
+Delete zone
+"""""""""""
+
+Delete specific zone.::
+
+   $ tonicdnscli zone_delete -s ns.example.org -u tonicusername -P \
+   --domain example.com
+   true
+
+
+Template
+^^^^^^^^
 
 Retrieve templates
 """"""""""""""""""
-::
-   $ tonicdnscli tmpl_get
+
+Get tepmlates and print.::
+
+   $ tonicdnscli tmpl_get -s ns.example.org -u tonicusername -P
    identifier : example_net
    description: 
    ==============================================================================
@@ -301,66 +352,32 @@ Retrieve templates
    description:
    (snip)
 
-Create zone for MASTER
-""""""""""""""""""""""
-::
-   $ tonicdnscli zone_create --template example_net 
-   true
-
-Create zone for SLAVE
-""""""""""""""""""""""
-
-Require `--slave` option and Master DNS server IP address as argument.
-::
-   $ tonicdnscli zone_create --template example_net --slave 192.168.0.100
-   true
-
-Create zone for NATIVE
-""""""""""""""""""""""
-
-Require `-n` option.
-::
-   $ tonicdnscli zone_create --template example_net -n
-   true
-
-Delete zone
-"""""""""""
-::
-   $ tonicdnscli zone_delete --domain example.com
-   true
-
-Update template
-"""""""""""""""
-
-Require `--domain` option and new zone name as using new template name.
-::
-   $ tonicdnscli --domain example.com --template example_net --dnsaddr 192.168.0.100
-   true
 
 Delete template
 """""""""""""""
-::
-   $ tonicdnscli tmpl_delete --template example_com
+
+Delete specific template.::
+
+   $ tonicdnscli tmpl_delete -s ns.example.org -u tonicusername -P \
+   --template example_com
    true
 
 
 Contribute
 ----------
 
-Firstly copy pre-commit hook script.
-::
+Firstly copy pre-commit hook script.::
 
    $ cp -f utils/pre-commit.txt .git/hooks/pre-commit
 
-Next install python2.7 later, and nosetests. Below in Debian GNU/Linux Sid system,
-::
+Next install python2.7 later, and nosetests. Below in Debian GNU/Linux Sid system,::
 
    $ sudo apt-get install python python-nose
 
 Then checkout 'devel' branch for development, commit your changes. Before pull request, execute git rebase.
 
 
-See also
+SeeP also
 --------
 
 * `TonicDNS <https://github.com/Cysource/TonicDNS>`_
