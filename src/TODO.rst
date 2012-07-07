@@ -12,7 +12,6 @@ Improvement
 -----------
 
 * Add unittest.
-* Use option '--domain' when bulk_create and bulk_delete.
 * Specify timeout value.
 * Change minimock to Mock for being compatible Python2.7 and Python3.2.
 * Check specifying priority with creating MX|SRV record.

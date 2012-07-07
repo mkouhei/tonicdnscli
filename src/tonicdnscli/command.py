@@ -138,7 +138,8 @@ def create(args):
     action = True
 
     # for create sub-command
-    if args.__dict__.get('domain'):
+    if (args.__dict__.get('domain') and args.__dict__.get('name')
+        and args.__dict__.get('rtype') and args.__dict__.get('content')):
 
         from converter import JSONConvert
         domain = args.domain
@@ -151,8 +152,10 @@ def create(args):
 
     # for bulk_create sub-command
     else:
-
-        domain = checkInfile(args.infile)
+        if args.__dict__.get('domain'):
+            domain = args.domain
+        else:
+            domain = checkInfile(args.infile)
         json = setJSON(domain, action, filename=args.infile)
 
     password = getPassword(args)
@@ -168,7 +171,8 @@ def delete(args):
     action = False
 
     # for delete sub-command
-    if args.__dict__.get('domain'):
+    if (args.__dict__.get('domain') and args.__dict__.get('name')
+        and args.__dict__.get('rtype') and args.__dict__.get('content')):
 
         from converter import JSONConvert
         domain = args.domain
@@ -181,8 +185,10 @@ def delete(args):
 
     # for bulk_delete sub-command
     else:
-
-        domain = checkInfile(args.infile)
+        if args.__dict__.get('domain'):
+            domain = args.domain
+        else:
+            domain = checkInfile(args.infile)
         json = setJSON(domain, action, filename=args.infile)
 
     password = getPassword(args)
@@ -450,6 +456,8 @@ def prsBulkCreate(obj, conn):
         'bulk_create', help='create bulk records of specific zone')
     setoption(prs_create, 'infile')
     conn_options(prs_create, conn)
+    prs_create.add_argument('--domain', action='store',
+                            help='create records with specify zone')
     prs_create.set_defaults(func=create)
 
 
@@ -468,6 +476,8 @@ def prsBulkDelete(obj, conn):
         'bulk_delete', help='delete bulk records of specific zone')
     setoption(prs_delete, 'infile')
     conn_options(prs_delete, conn)
+    prs_delete.add_argument('--domain', action='store',
+                            help='delete records with specify zone')
     prs_delete.set_defaults(func=delete)
 
 
