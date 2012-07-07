@@ -341,19 +341,21 @@ def setoption(obj, keyword, required=False):
                          help='partial match search')
 
 
-def conn_options(obj, server=False, username=False, password=False):
-    if server and username and password:
-        obj.set_defaults(server=server, username=username,
-                         password=password)
+def conn_options(obj, conn):
+    if conn.get('server') and conn.get('username') and conn.get('password'):
+        obj.set_defaults(server=conn.get('server'),
+                         username=conn.get('username'),
+                         password=conn.get('password'))
 
-    elif server and username:
-        obj.set_defaults(server=server, username=username)
+    elif conn.get('server') and conn.get('username'):
+        obj.set_defaults(server=conn.get('server'),
+                         username=conn.get('username'))
 
-    if not server:
+    if not conn.get('server'):
         setoption(obj, 'server')
-    if not username:
+    if not conn.get('username'):
         setoption(obj, 'username')
-    if not password:
+    if not conn.get('password'):
         setoption(obj, 'password')
 
 
@@ -373,84 +375,123 @@ def parse_options():
         if os.path.isfile(CONFIGFILE):
             server, username, password = checkConfig(CONFIGFILE)
 
+    conn = dict(server=server, username=username, password=password)
+
     subprs = prs.add_subparsers(help='commands')
 
     # Convert and print JSON
-    prs_show = subprs.add_parser('show',
+    prsShow(subprs)
+
+    # Retrieve records
+    prsGet(subprs, conn)
+
+    # Create record
+    prsCreate(subprs, conn)
+
+    # Create bulk_records
+    prsBulkCreate(subprs, conn)
+
+    # Delete record
+    prsDelete(subprs, conn)
+
+    # Delete bulk_records
+    prsBulkDelete(subprs, conn)
+
+    # Update SOA serial
+    prsSOAUpdate(subprs, conn)
+
+    # Create zone
+    prsZoneCreate(subprs, conn)
+
+    # Delete zone
+    prsZoneDelete(subprs, conn)
+
+    # Retrieve template
+    prsTmplGet(subprs, conn)
+
+    # Delete template
+    prsTmplDelete(subprs, conn)
+
+    args = prs.parse_args()
+    return args
+
+
+# Convert and print JSON
+def prsShow(obj):
+    prs_show = obj.add_parser('show',
                                     help='show converted JSON')
     setoption(prs_show, 'infile')
     prs_show.set_defaults(func=show)
 
-    # Retrieve records
-    prs_get = subprs.add_parser(
-        'get', help='retrieve all zones without a specific zone,\
-or records with a specific zone')
+
+# Retrieve records
+def prsGet(obj, conn):
+    prs_get = obj.add_parser(
+        'get', help='retrieve all zones or records with a specific zone')
     prs_get.add_argument('--domain', action='store',
                          help='specify domain FQDN')
-    conn_options(prs_get, server, username, password)
+    conn_options(prs_get, conn)
     setoption(prs_get, 'search')
     prs_get.set_defaults(func=get)
 
-    # Create record
-    prs_create = subprs.add_parser(
+
+# Create record
+def prsCreate(obj, conn):
+    prs_create = obj.add_parser(
         'create', help='create record of specific zone')
     setoption(prs_create, 'domain')
-    conn_options(prs_create, server, username, password)
+    conn_options(prs_create, conn)
     prs_create.set_defaults(func=create)
 
-    # Create bulk_records
-    prs_create = subprs.add_parser(
+
+# Create bulk_records
+def prsBulkCreate(obj, conn):
+    prs_create = obj.add_parser(
         'bulk_create', help='create bulk records of specific zone')
     setoption(prs_create, 'infile')
-    conn_options(prs_create, server, username, password)
+    conn_options(prs_create, conn)
     prs_create.set_defaults(func=create)
 
-    # Delete record
-    prs_delete = subprs.add_parser(
+
+# Delete record
+def prsDelete(obj, conn):
+    prs_delete = obj.add_parser(
         'delete', help='delete a record of specific zone')
     setoption(prs_delete, 'domain')
-    conn_options(prs_delete, server, username, password)
+    conn_options(prs_delete, conn)
     prs_delete.set_defaults(func=delete)
 
-    # Delete bulk_records
-    prs_delete = subprs.add_parser(
+
+# Delete bulk_records
+def prsBulkDelete(obj, conn):
+    prs_delete = obj.add_parser(
         'bulk_delete', help='delete bulk records of specific zone')
     setoption(prs_delete, 'infile')
-    conn_options(prs_delete, server, username, password)
+    conn_options(prs_delete, conn)
     prs_delete.set_defaults(func=delete)
 
-    # Retrieve template
-    prs_tmpl_get = subprs.add_parser(
+
+# Retrieve template
+def prsTmplGet(obj, conn):
+    prs_tmpl_get = obj.add_parser(
         'tmpl_get', help='retrieve templates')
     setoption(prs_tmpl_get, 'template')
-    conn_options(prs_tmpl_get, server, username, password)
+    conn_options(prs_tmpl_get, conn)
     prs_tmpl_get.set_defaults(func=template_get)
 
-    # create or update template
-    prs_tmpl_create_update = subprs.add_parser(
-        'tmpl_create_update', help='create or update template')
-    prs_tmpl_create_update.add_argument(
-        '--domain', action='store', required=True,
-        help='create template with specify domain')
-    setoption(prs_tmpl_create_update, 'template', 'update template with ')
-    prs_tmpl_create_update.add_argument(
-        '--dnsaddr', action='store', required=True,
-        help='specify IP address of NS record')
-    prs_tmpl_create_update.add_argument(
-        '--desc', action='store', help='description')
-    conn_options(prs_tmpl_create_update, server, username, password)
-    prs_tmpl_create_update.set_defaults(func=template_create_or_update)
 
-    # delete template
-    prs_tmpl_delete = subprs.add_parser(
+# Delete template
+def prsTmplDelete(obj, conn):
+    prs_tmpl_delete = obj.add_parser(
         'tmpl_delete', help='delete template')
     setoption(prs_tmpl_delete, 'template', required=True)
-    conn_options(prs_tmpl_delete, server, username, password)
+    conn_options(prs_tmpl_delete, conn)
     prs_tmpl_delete.set_defaults(func=template_delete)
 
-    # update SOA serial
-    prs_soa = subprs.add_parser(
-        'soa', help='increase SOA serial')
+
+# Update SOA serial
+def prsSOAUpdate(obj, conn):
+    prs_soa = obj.add_parser('soa', help='update SOA record')
     prs_soa.add_argument('--domain', action='store', required=True,
                             help='specify domain FQDN')
     prs_soa.add_argument('--mname', action='store',
@@ -465,35 +506,33 @@ or records with a specific zone')
                          help='specify EXPIRE of SOA record')
     prs_soa.add_argument('--minimum', action='store', type=int,
                          help='specify MINIMUM of SOA record')
-    conn_options(prs_soa, server, username, password)
+    conn_options(prs_soa, conn)
     prs_soa.set_defaults(func=updateSOASerial)
 
-    # create zone
-    prs_zone_create = subprs.add_parser(
-        'zone_create', help='create zone')
+
+# Create zone
+def prsZoneCreate(obj, conn):
+    prs_zone_create = obj.add_parser('zone_create', help='create zone')
     prs_zone_create.add_argument(
-        '--template', action='store', required=True,
-        help='specify zone from template identifier')
+        '--domain', action='store', required=True, help='specify zone')
+    prs_zone_create.add_argument('--dnsaddr', action='store', required=True,
+        help='specify IP address of DNS master')
     group_zone_create = prs_zone_create.add_mutually_exclusive_group()
-    group_zone_create.add_argument(
-        '--slave', dest='dnsaddr', action='store',
-        help='create zone to SLAVE with master DNS IP address')
-    group_zone_create.add_argument('-n', action='store_true',
+    group_zone_create.add_argument('-S', action='store_true',
+                                   help='create zone to SLAVE')
+    group_zone_create.add_argument('-N', action='store_true',
                                    help='create zone to NATIVE')
-    conn_options(prs_zone_create, server, username, password)
+    conn_options(prs_zone_create, conn)
     prs_zone_create.set_defaults(func=createZone)
 
-    # delete zone
-    prs_zone_delete = subprs.add_parser(
-        'zone_delete', help='delete zone')
-    prs_zone_delete.add_argument(
-        '--domain', action='store', required=True,
-        help='specify zone')
-    conn_options(prs_zone_delete, server, username, password)
-    prs_zone_delete.set_defaults(func=zone_delete)
 
-    args = prs.parse_args()
-    return args
+# Delete zone
+def prsZoneDelete(obj, conn):
+    prs_zone_delete = obj.add_parser('zone_delete', help='delete zone')
+    prs_zone_delete.add_argument('--domain', action='store', required=True,
+                                 help='specify zone')
+    conn_options(prs_zone_delete, conn)
+    prs_zone_delete.set_defaults(func=zone_delete)
 
 
 def checkConfig(filename):
