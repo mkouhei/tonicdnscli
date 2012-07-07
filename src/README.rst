@@ -25,6 +25,27 @@ Setup
 History
 -------
 
+0.8 (2012-07-08)
+^^^^^^^^^^^^^^^^
+
+* Add Creating zone
+
+  * Sub-command 'zone_create'
+  * Support MASTER, SLAVE, NATIVE
+  * execute next process:
+
+    #. creating template
+    #. creating zone
+    #. deleting template
+
+* Remove template_create_update sub-command
+* Add Deleting zone
+
+  * Sub-command 'zone_delete'
+
+* Add options of soa sub-command
+* Add option '--domain' to bulk_create, bulk_delete sub-commands
+
 0.7.1 (2012-06-29)
 ^^^^^^^^^^^^^^^^^^
 
