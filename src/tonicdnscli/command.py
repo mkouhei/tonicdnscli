@@ -206,37 +206,6 @@ def template_get(args):
         processing.getAllTemplates(args.server, t)
 
 
-# Create or update template
-def template_create_or_update(args):
-    import processing
-    import converter
-
-    domain = args.domain
-
-    # When specify '--template' option
-    if args.__dict__.get('template'):
-        identifier = args.template
-
-    else:
-        identifier = domain.replace('.', '_')
-
-    o = converter.JSONConvert(domain)
-    dnsaddr = args.dnsaddr
-    desc = args.desc if args.__dict__.get('desc') else ''
-
-    password = getPassword(args)
-    t = token(args.username, password, args.server)
-    o.generateTemplate(domain, dnsaddr, desc=desc)
-
-    # When update template
-    if args.__dict__.get('template'):
-        processing.updateTemplate(args.server, t, identifier, o.record)
-
-    # When create template
-    else:
-        processing.createTemplate(args.server, t, identifier, o.record)
-
-
 # Delete template
 def template_delete(args):
     import processing
@@ -282,19 +251,32 @@ def createZone(args):
     password = getPassword(args)
     t = token(args.username, password, args.server)
 
-    template = args.template
-    domain = args.template.replace('_', '.')
+    domain = args.domain
+    template = args.domain.replace('.', '_')
+
     master = None
-    if args.__dict__.get('dnsaddr'):
+    dnsaddr = args.dnsaddr
+    if args.__dict__.get('S'):
         dtype = 'SLAVE'
-        master = args.__dict__.get('dnsaddr')
-    elif args.__dict__.get('n'):
+        master = dnsaddr
+    elif args.__dict__.get('N'):
         dtype = 'NATIVE'
     else:
         dtype = 'MASTER'
 
+    # generate template data
+    o = JSONConvert(domain)
+    o.generateTemplate(domain, dnsaddr, desc='')
+
+    # create template
+    processing.createTemplate(args.server, t, template, o.record)
+
+    # create zone
     processing.createZoneRecords(
         args.server, t, domain, template, dtype, master)
+
+    # delete template
+    processing.deleteTemplate(args.server, t, template)
 
 
 # Delete zone
@@ -310,7 +292,7 @@ def zone_delete(args):
     processing.deleteZone(args.server, t, domain)
 
 
-def setoption(obj, keyword, prefix=False, required=False):
+def setoption(obj, keyword, required=False):
     if keyword == 'server':
         obj.add_argument(
             '-s', dest='server', required=True,
@@ -347,8 +329,6 @@ def setoption(obj, keyword, prefix=False, required=False):
 
     if keyword == 'template':
         msg = 'specify template identifier'
-        if prefix:
-            msg = prefix + msg
         if required:
             obj.add_argument('--template', action='store',
                              required=True, help=msg)

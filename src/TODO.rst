@@ -16,14 +16,6 @@ Improvement
 * Specify timeout value.
 * Change minimock to Mock for being compatible Python2.7 and Python3.2.
 * Check specifying priority with creating MX|SRV record.
-* Reduce step of creating zone. Current step is below:
-
-  #. create template for new zone
-  #. create zone
-  #. delete template or update template for next new zone
-
-  * Used template is unable to re-use directly
-  * I will migrate these steps to 1 step
 
 Known bug
 ---------
