@@ -371,7 +371,7 @@ Next install python2.7 later, and nosetests. Below in Debian GNU/Linux Sid syste
 Then checkout 'devel' branch for development, commit your changes. Before pull request, execute git rebase.
 
 
-SeeP also
+See also
 --------
 
 * `TonicDNS <https://github.com/Cysource/TonicDNS>`_
