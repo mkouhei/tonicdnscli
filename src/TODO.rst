@@ -1,15 +1,15 @@
 ToDo
-====
+----
 
 Features
---------
+^^^^^^^^
 
 * Checking existing records When create or delete records.
 * Updating records.
 * Validation input data.
 
 Improvement
------------
+^^^^^^^^^^^
 
 * Add unittest.
 * Specify timeout value.
@@ -17,6 +17,6 @@ Improvement
 * Check specifying priority with creating MX|SRV record.
 
 Known bug
----------
+^^^^^^^^^
 
 * When using in preference --config option than $HOME/.tdclirc.
