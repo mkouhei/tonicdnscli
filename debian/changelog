@@ -1,5 +1,5 @@
-tonicdnscli (0.8-1) unstable; urgency=low
+tonicdnscli (0.8.1-1) unstable; urgency=low
 
   * Initial release (Closes: #679426)
 
- -- Kouhei Maeda <mkouhei@palmtb.net>  Tue, 15 May 2012 01:52:08 +0900
+ -- Kouhei Maeda <mkouhei@palmtb.net>  Tue, 11 Sep 2012 17:40:58 +0900

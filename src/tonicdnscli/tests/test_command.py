@@ -60,19 +60,19 @@ class commandTests(unittest.TestCase):
                                          'content': '10.10.20.10',
                                          'ttl': 3600}]}]
 
-    def test_checkInfile(self):
-        self.assertEquals(self.domain, c.checkInfile(
+    def test_check_infile(self):
+        self.assertEquals(self.domain, c.check_infile(
                 self.sample))
 
-    def test_setJSON(self):
+    def test_set_json(self):
         self.assertEquals(self.cu_records,
-                     c.setJSON(self.domain, True, filename=self.sample))
+                     c.set_json(self.domain, True, filename=self.sample))
         self.assertEquals(self.r_records,
-                     c.setJSON(self.domain, False, filename=self.sample))
+                     c.set_json(self.domain, False, filename=self.sample))
         self.assertEquals(self.d_cu_record,
-                     c.setJSON(self.domain, True, record=self.record))
+                     c.set_json(self.domain, True, record=self.record))
         self.assertEquals(self.d_r_record,
-                     c.setJSON(self.domain, False, record=self.record))
+                     c.set_json(self.domain, False, record=self.record))
 
 if __name__ == '__main__':
     unittest.main()

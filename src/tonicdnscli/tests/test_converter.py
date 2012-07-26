@@ -5,7 +5,7 @@
 Tests of converter.py
 """
 import unittest
-from tonicdnscli.converter import JSONConvert
+from tonicdnscli.converter import JSONConverter
 from datetime import date
 
 
@@ -93,67 +93,67 @@ mx.example.org A 10.10.11.10 3600\n""",
             }
 
     def test__init__(self):
-        o = JSONConvert('example.org')
+        o = JSONConverter('example.org')
         self.assertEquals('example.org', o.domain)
         self.assertEquals(0, o.split_index)
         self.assertListEqual([], o.records)
         self.assertListEqual([], o.separated_list)
         self.assertFalse(o.delta)
 
-    def test_readRecords(self):
-        o = JSONConvert('example.org')
-        o.readRecords(self.str1.splitlines())
+    def test_read_records(self):
+        o = JSONConverter('example.org')
+        o.read_records(self.str1.splitlines())
         self.assertListEqual(self.dicts1, o.records)
 
-    def test_checkkey(self):
-        o = JSONConvert('example.org')
-        self.assertEquals("test0.example.org", o.checkkey(self.line1, 0))
-        self.assertEquals("A", o.checkkey(self.line1, 1))
-        self.assertEquals("10.10.10.10", o.checkkey(self.line1, 2))
-        self.assertEquals("86400", o.checkkey(self.line1, 3))
-        self.assertFalse(o.checkkey(self.line1, 4))
-        self.assertEquals("0", o.checkkey(self.line2, 4))
-        self.assertFalse(o.checkkey(self.line2, 5))
-        self.assertEquals("10.10.11.10", o.checkkey(self.line3, 2))
+    def test_check_key(self):
+        o = JSONConverter('example.org')
+        self.assertEquals("test0.example.org", o.check_key(self.line1, 0))
+        self.assertEquals("A", o.check_key(self.line1, 1))
+        self.assertEquals("10.10.10.10", o.check_key(self.line1, 2))
+        self.assertEquals("86400", o.check_key(self.line1, 3))
+        self.assertFalse(o.check_key(self.line1, 4))
+        self.assertEquals("0", o.check_key(self.line2, 4))
+        self.assertFalse(o.check_key(self.line2, 5))
+        self.assertEquals("10.10.11.10", o.check_key(self.line3, 2))
 
-    def test_generateRecords(self):
-        o = JSONConvert('example.org')
-        o.generateRecords(self.line1)
+    def test_generate_records(self):
+        o = JSONConverter('example.org')
+        o.generate_records(self.line1)
         self.assertListEqual(self.list3, o.records)
-        o2 = JSONConvert('example.org')
-        o2.generateRecords(self.line2)
+        o2 = JSONConverter('example.org')
+        o2.generate_records(self.line2)
         self.assertListEqual(self.list4, o2.records)
 
-    def test_genData(self):
-        o1 = JSONConvert('example.org')
-        o1.genData(True)
+    def test_generata_data(self):
+        o1 = JSONConverter('example.org')
+        o1.generata_data(True)
         self.assertListEqual([{'records': []}], o1.dict_records)
-        o2 = JSONConvert('example.org')
-        o2.genData(False)
+        o2 = JSONConverter('example.org')
+        o2.generata_data(False)
         self.assertListEqual([{'records': [], 'name': 'example.org'}],
                           o2.dict_records)
 
-    def test_separateInputFile(self):
+    def test_separate_input_file(self):
         import os.path
         sample = os.path.dirname(__file__) + \
             '/../../../examples/example.org.txt'
-        o = JSONConvert('example.org')
+        o = JSONConverter('example.org')
         with open(sample, 'r') as f:
-            o.separateInputFile(f)
+            o.separate_input_file(f)
         self.maxDiff = None
         self.assertListEqual(self.list1, o.separated_list)
-        o2 = JSONConvert('example.org')
+        o2 = JSONConverter('example.org')
         o2.delta = 3
         with open(sample, 'r') as f2:
-            o2.separateInputFile(f2)
+            o2.separate_input_file(f2)
         self.assertListEqual(self.list2, o2.separated_list)
 
-    def test_getSOA(self):
-        o = JSONConvert('exmaple.org')
+    def test_get_soa(self):
+        o = JSONConverter('exmaple.org')
         self.assertEquals(self.new_soa,
-                          o.getSOA(self.older_cur_soa, self.content))
+                          o.get_soa(self.older_cur_soa, self.content))
         self.assertNotEquals(self.new_soa,
-                             o.getSOA(self.today_cur_soa, self.content))
+                             o.get_soa(self.today_cur_soa, self.content))
 
 if __name__ == '__main__':
     unittest.main()
