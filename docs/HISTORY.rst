@@ -132,6 +132,7 @@ History
 * Add option `-P` as password prompt with echo turned off
 
 0.1 (2012-04-20)
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
+
 * first release
 
