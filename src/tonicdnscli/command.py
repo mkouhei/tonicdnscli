@@ -196,6 +196,9 @@ def create(args):
     token = connect.get_token(args.username, password, args.server)
     processing.create_records(args.server, token, domain, json)
 
+    if args.auto_update_soa == 'True':
+        update_soa_serial(args)
+
 
 def delete(args):
     """Delete records.
@@ -230,6 +233,9 @@ def delete(args):
     password = get_password(args)
     token = connect.get_token(args.username, password, args.server)
     processing.delete_records(args.server, token, json)
+
+    if args.auto_update_soa == 'True':
+        update_soa_serial(args)
 
 
 def retrieve_tmpl(args):
@@ -420,6 +426,9 @@ def conn_options(prs, conn):
         prs.set_defaults(server=conn.get('server'),
                          username=conn.get('username'))
 
+    if conn.get('auto_update_soa'):
+        prs.set_defaults(auto_update_soa=conn.get('auto_update_soa'))
+
     if not conn.get('server'):
         set_option(prs, 'server')
     if not conn.get('username'):
@@ -439,9 +448,11 @@ def parse_options():
     if os.environ.get('HOME'):
         config_file = os.environ.get('HOME') + '/.tdclirc'
         if os.path.isfile(config_file):
-            server, username, password = check_config(config_file)
+            (server, username,
+             password, auto_update_soa) = check_config(config_file)
 
-    conn = dict(server=server, username=username, password=password)
+    conn = dict(server=server, username=username,
+                password=password, auto_update_soa=auto_update_soa)
 
     subprs = prs.add_subparsers(help='commands')
 
@@ -681,17 +692,30 @@ def check_config(filename):
     conf.read(filename)
     try:
         server = conf.get('global', 'server')
+    except configparser.NoSectionError:
+        server = False
     except conigparser.NoOptionError:
         server = False
     try:
         username = conf.get('auth', 'username')
+    except configparser.NoSectionError:
+        username = False
     except configparser.NoOptionError:
         username = False
     try:
         password = conf.get('auth', 'password')
+    except configparser.NoSectionError:
+        password = False
     except configparser.NoOptionError:
         password = False
-    return server, username, password
+    try:
+        auto_update_soa = conf.get('global', 'soa_update')
+    except configparser.NoSectionError:
+        auto_update_soa = False
+    except configparser.NoOptionError:
+        auto_update_soa = False
+
+    return server, username, password, auto_update_soa
 
 
 def main():
