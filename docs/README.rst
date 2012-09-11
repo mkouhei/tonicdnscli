@@ -7,6 +7,9 @@ TonicDNS is  RESTful API for PowerDNS.
 Convert readble text record to JSON, and create or delete zone records with TonicDNS.
 
 
+.. image:: https://secure.travis-ci.org/mkouhei/tonicdnscli.png
+
+
 Requirements
 ------------
 
