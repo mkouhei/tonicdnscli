@@ -440,7 +440,7 @@ def conn_options(prs, conn):
 def parse_options():
     """Define sub-commands and command line options."""
 
-    server, username, password = False, False, False
+    server, username, password, auto_update_soa = False, False, False, False
 
     prs = argparse.ArgumentParser(description='usage')
     prs.add_argument('-v', '--version', action='version',

@@ -1,6 +1,11 @@
 History
 -------
 
+0.8.2 (2012-09-11)
+^^^^^^^^^^^^^^^^^^
+
+* Fix bug local variable 'auto_update_soa' referenced before assignment
+
 0.8.1 (2012-09-11)
 ^^^^^^^^^^^^^^^^^^
 
