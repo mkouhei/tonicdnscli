@@ -165,6 +165,12 @@ Update SOA record or speficie zone.::
    true
    true
 
+If you want to update automatically, append next variable to global section of ~/.tdclirc.::
+
+  [global]
+  (snip)
+  soa_update: True
+
 
 Create zone for MASTER
 ^^^^^^^^^^^^^^^^^^^^^^

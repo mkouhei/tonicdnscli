@@ -1,6 +1,16 @@
 History
 -------
 
+0.8.1 (2012-09-11)
+^^^^^^^^^^^^^^^^^^
+
+* Add updating SOA serial automatically
+* Fix travic-ci runnning error of test_pep8
+* Refacotoring
+
+  * Change method name
+  * Remove unnecessary method, module
+
 0.8 (2012-07-08)
 ^^^^^^^^^^^^^^^^
 
