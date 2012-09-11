@@ -16,26 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import sys
 
 
-class Auth(object):
-
-    def __init__(self, username, password, server):
-        self.username = username
-        self.password = password
-        self.token = ''
-        self.uri = 'https://' + server + '/authenticate'
-
-    def setInfo(self):
-        authinfo = {
-                "username": self.username,
-                "password": self.password,
-                "local_user": self.username
-                }
-        return authinfo
-
-    def getToken(self):
-        method = 'PUT'
-        import connect as conn
-        self.token = conn.tonicDNSClient(self.uri, method,
-                                         self.token, data=self.setInfo())
+def print_inline(arg):
+    sys.stdout.write("%s" % arg)

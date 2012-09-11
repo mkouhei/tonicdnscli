@@ -52,22 +52,22 @@ class connectTests(unittest.TestCase):
     def tearDown(self):
         restore()
 
-    def test_tonicDNSClient(self):
+    def test_tonicdns_client(self):
         dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
         uri = self.uri + '/zone/example.org'
-        conn.tonicDNSClient(uri,
-                            'GET', self.token, self.data)
+        conn.tonicdns_client(uri,
+                             'GET', self.token, self.data)
         sys.stdout = ostdout
         dumpout.seek(0)
         self.assert_(dumpout.getvalue())
 
-    def test_formattedPrint(self):
+    def test_print_formatted(self):
         dumpout = io.StringIO()
         ostdout = sys.stdout
         sys.stdout = dumpout
-        conn.formattedPrint(self.datadict)
+        conn.print_formatted(self.datadict)
         sys.stdout = ostdout
         dumpout.seek(0)
         self.assert_(dumpout.getvalue())

@@ -16,10 +16,54 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import sys
+import json
+import socket
+import utils
 from __init__ import __timeout__
+from converter import JSONConverter
+if sys.version_info > (2, 6) and sys.version_info < (2, 8):
+    import urllib2 as urllib
+elif sys.version_info > (3, 0):
+    import urllib.request as urllib
 
 
-def tonicDNSClient(uri, method, token='', data='', keyword='', content=''):
+def get_token(username, password, server):
+    """Retrieve token of TonicDNS API.
+
+    Arguments:
+
+        usename:  TonicDNS API username
+        password: TonicDNS API password
+        server:   TonicDNS API server
+    """
+    method = 'PUT'
+    uri = 'https://' + server + '/authenticate'
+    token = ''
+
+    authinfo = {
+        "username": username,
+        "password": password,
+        "local_user": username
+        }
+
+    token = tonicdns_client(uri, method, token, data=authinfo)
+
+    return token
+
+
+def tonicdns_client(uri, method, token='', data='', keyword='', content=''):
+    """TonicDNS API client
+
+    Arguments:
+
+        uri:     TonicDNS API URI
+        method:  TonicDNS API request method
+        token:   TonicDNS API authentication token
+        data:    Post data to TonicDNS API
+        keyword: Processing keyword of response
+        content:
+    """
     res = request(uri, method, data, token)
     if token:
         if keyword == 'serial':
@@ -40,13 +84,15 @@ def tonicDNSClient(uri, method, token='', data='', keyword='', content=''):
 
 
 def request(uri, method, data, token=''):
-    import sys
-    import json
-    if sys.version_info > (2, 6) and sys.version_info < (2, 8):
-        import urllib2 as urllib
-    elif sys.version_info > (3, 0):
-        import urllib.request as urllib
-    import socket
+    """Request to TonicDNS API.
+
+    Arguments:
+
+        uri:     TonicDNS API URI
+        method:  TonicDNS API request method
+        data:    Post data to TonicDNS API
+        token:   TonicDNS API authentication token
+    """
     socket.setdefaulttimeout(__timeout__)
 
     obj = urllib.build_opener(urllib.HTTPHandler)
@@ -80,12 +126,20 @@ def request(uri, method, data, token=''):
         exit(1)
 
 
-# separated from request (tonicDNSClient)
 def response(uri, method, res, token='', keyword='', content=''):
-    import json
+    """Response of tonicdns_client request
 
-    # response body
+    Arguments:
+
+        uri:     TonicDNS API URI
+        method:  TonicDNS API request method
+        res:     Response of against request to TonicDNS API
+        token:   TonicDNS API token
+        keyword: Processing keyword
+        content:
+    """
     if method == 'GET' or (method == 'PUT' and not token):
+        # response body
 
         data = res.read()
         data_utf8 = data.decode('utf-8')
@@ -95,10 +149,9 @@ def response(uri, method, res, token='', keyword='', content=''):
             token = json.loads(data_utf8)['hash']
             return token
 
-        # filtering with keyword
         if keyword == 'serial':
-            from converter import JSONConvert
-            record = searchRecord(datas, 'SOA')[0]
+            # filtering with keyword
+            record = search_record(datas, 'SOA')[0]
 
             # if SOA record, remove priority unnecessary
             del record['priority']
@@ -106,69 +159,74 @@ def response(uri, method, res, token='', keyword='', content=''):
             # override ttl
             record['ttl'] = int(record['ttl'])
 
-            c = JSONConvert(content['domain'])
-            new_record = c.getSOA(record, content)
+            c = JSONConverter(content['domain'])
+            new_record = c.get_soa(record, content)
             return record, new_record
 
-        # '--search' option of 'get' subcommand
         elif keyword:
-            records = searchRecord(datas, keyword)
+            # '--search' option of 'get' subcommand
+            records = search_record(datas, keyword)
             datas.update({"records": records})
 
-        # 'tmpl_get' subcommand
         if uri.split('/')[3] == 'template':
+            # 'tmpl_get' subcommand
 
-            # when specify template identfier
             if len(uri.split('/')) == 5:
-                formattedPrint(datas)
+                # when specify template identfier
+                print_formatted(datas)
 
-            # when get all templates
             else:
+                # when get all templates
                 for data in datas:
-                    formattedPrint(data)
+                    print_formatted(data)
 
-        # 'get' subcommand
         else:
-            formattedPrint(datas)
+            # 'get' subcommand
+            print_formatted(datas)
 
-    # response non JSON data
     else:
+        # response non JSON data
         data = res.read()
         print(data)
 
 
-def searchRecord(datas, keyword):
-    # search target JSON -> dictionary
-    # key target is "name" or "content"
-    # type is "type", default null
-    # either key and type, or on the other hand
-    # data is dictionaly
+def search_record(datas, keyword):
+    """Search target JSON -> dictionary
+
+    Arguments:
+
+        datas: dictionary of record datas
+        keyword: search keyword (default is null)
+
+    Key target is "name" or "content" or "type". default null.
+    Either key and type, or on the other hand.
+    """
     result = []
 
     for record in datas['records']:
 
-        if record['name'].find(keyword) >= 0 or \
-                record['content'].find(keyword) >= 0 or \
-                record['type'] == keyword:
+        if (record['name'].find(keyword) >= 0 or
+            record['content'].find(keyword) >= 0 or
+            record['type'] == keyword):
             result.append(record)
 
     return result
 
 
-def formattedPrint(datas):
-    import sys
-    if sys.version_info > (2, 6) and sys.version_info < (2, 8):
-        import utils2 as utils
-    elif sys.version_info > (3, 0):
-        import utils3 as utils
+def print_formatted(datas):
+    """Pretty print JSON DATA
 
+    Argument:
+
+        datas: dictionary of data
+    """
     if not datas:
         print("No data")
         exit(1)
 
-    # get all zones
-    # API /zone without :identifier
     if isinstance(datas, list):
+        # get all zones
+        # API /zone without :identifier
         hr()
         print('%-20s %-8s %-12s'
               % ('name', 'type', 'notified_serial'))
@@ -196,7 +254,7 @@ def formattedPrint(datas):
 
         print("DNS   : %(type)s" % datas)
 
-        # header
+        # print header
         hr()
         print('%-33s %-5s %-25s %-5s %-3s'
               % ('name', 'type', 'content', 'ttl', 'prio'))
@@ -234,8 +292,8 @@ def formattedPrint(datas):
 
         hr()
 
-    # for template
     elif datas.get('identifier'):
+        # for template
         print("identifier : %(identifier)s" % datas)
         print("description: %(description)s" % datas)
         hr()

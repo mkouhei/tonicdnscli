@@ -3,4 +3,3 @@ include LICENSE
 recursive-include examples *.txt *.sample
 recursive-include docs *.1 *.rst
 recursive-include src *.py *.rst
-recursive-exclude src utils3.py
