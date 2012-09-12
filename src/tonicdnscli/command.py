@@ -428,6 +428,8 @@ def conn_options(prs, conn):
 
     if conn.get('auto_update_soa'):
         prs.set_defaults(auto_update_soa=conn.get('auto_update_soa'))
+    else:
+        prs.set_defaults(auto_update_soa=False)
 
     if not conn.get('server'):
         set_option(prs, 'server')
