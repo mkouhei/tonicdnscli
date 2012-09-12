@@ -696,7 +696,7 @@ def check_config(filename):
         server = conf.get('global', 'server')
     except configparser.NoSectionError:
         server = False
-    except conigparser.NoOptionError:
+    except configparser.NoOptionError:
         server = False
     try:
         username = conf.get('auth', 'username')
