@@ -81,6 +81,6 @@ def get_content_name_dict():
                                keyword='', raw_flag=True)
 
     records = zone_data.get('records')
-    addr_name_dict = dict((record.get('content'), record.get('name'))
+    content_name_dict = dict((record.get('content'), record.get('name'))
                           for record in records)
     return content_name_dict
