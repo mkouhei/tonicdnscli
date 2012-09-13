@@ -5,7 +5,6 @@ Features
 ^^^^^^^^
 
 * Checking existing records When create or delete records.
-* Updating records.
 * Validation input data.
 
 Improvement

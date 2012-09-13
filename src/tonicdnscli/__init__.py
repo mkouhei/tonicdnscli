@@ -16,5 +16,5 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__version__ = '0.8.4'
+__version__ = '0.9'
 __timeout__ = 5
