@@ -21,3 +21,8 @@ import sys
 
 def print_inline(arg):
     sys.stdout.write("%s" % arg)
+
+
+def error(msg):
+    print("ERROR: %s" % msg)
+    exit(1)

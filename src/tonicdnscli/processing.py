@@ -87,7 +87,7 @@ def delete_records(server, token, data):
         connect.tonicdns_client(uri, method, token, i)
 
 
-def get_zone(server, token, domain, keyword=''):
+def get_zone(server, token, domain, keyword='', raw_flag=False):
     """Retrieve zone records.
 
     Argument:
@@ -101,7 +101,9 @@ def get_zone(server, token, domain, keyword=''):
     """
     method = 'GET'
     uri = 'https://' + server + '/zone/' + domain
-    connect.tonicdns_client(uri, method, token, data=False, keyword=keyword)
+    data = connect.tonicdns_client(uri, method, token, data=False,
+                                   keyword=keyword, raw_flag=raw_flag)
+    return data
 
 
 def get_all_zone(server, token):
