@@ -200,12 +200,35 @@ def search_record(datas, keyword):
 
     Key target is "name" or "content" or "type". default null.
     Either key and type, or on the other hand.
+
+    When keyword has include camma ",",
+    Separate keyword to name, type, content.
     """
+
+    key_name, key_type, key_content = False, False, False
+
+    if keyword.find(',') > -1:
+        if len(keyword.split(',')) == 3:
+            key_content = keyword.split(',')[2]
+        key_name = keyword.split(',')[0]
+        key_type = keyword.split(',')[1]
+
     result = []
 
     for record in datas['records']:
 
-        if (record['name'].find(keyword) >= 0 or
+        if key_name and key_type:
+            if key_content:
+                if (record['name'].find(key_name) > -1 and
+                    record['type'] == key_type and
+                    record['content'].find(key_content) > -1):
+                    result.append(record)
+            else:
+                if (record['name'].find(key_name) > -1 and
+                    record['type'] == key_type):
+                    result.append(record)
+
+        elif (record['name'].find(keyword) >= 0 or
             record['content'].find(keyword) >= 0 or
             record['type'] == keyword):
             result.append(record)

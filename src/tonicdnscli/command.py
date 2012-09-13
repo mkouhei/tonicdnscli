@@ -406,7 +406,8 @@ def set_option(prs, keyword, required=False):
 
     if keyword == 'search':
         prs.add_argument('--search', action='store',
-                         help='partial match search')
+                         help='partial match search or refine search.\
+                         latter syntax is "name,rtype,content"')
 
 
 def conn_options(prs, conn):
