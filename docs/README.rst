@@ -123,8 +123,7 @@ Create single record
 Create single record with specific zone.::
 
    $ tonicdnscli create -s ns.example.org -u tonicusername -P \
-   create --domain example.org --name www2.example.org --rtype A \
-   --content 10.10.10.10
+   --domain example.org --name www2.example.org --rtype A --content 10.10.10.10
    true
 
 Create records
@@ -132,9 +131,18 @@ Create records
 
 Create multi records with specific zone.::
 
-   $ tonicdnscli bulk_create -s ns.example.org -u tonicusername -P \
-   examples/example.org.txt
+   $ tonicdnscli bulk_create -s ns.example.org -u tonicusername -P examples/example.org.txt
    true
+
+Update single record
+^^^^^^^^^^^^^^^^^^^^
+
+Update single record with specific zone.::
+
+  $ tonicdnscli update -s ns.example.org -u tonicdnsusername -P \
+  --domain example.org --name www2.example.org --rtype A --content 10.10.10.10 --new-content 10.10.10.11
+  true (<- delete record)
+  true (<- create record)
 
 Delete single records
 ^^^^^^^^^^^^^^^^^^^^^
@@ -142,8 +150,7 @@ Delete single records
 Delete single record with specific zone.::
 
    $ tonicdnscli delete -s ns.example.org -u tonicusername -P \
-   --domain example.org --name www2.example.org --rtype A \
-   --content 10.10.10.10
+   --domain example.org --name www2.example.org --rtype A --content 10.10.10.11
    true
 
 Delete records
@@ -151,8 +158,7 @@ Delete records
 
 Delete multi records with specific zone.::
 
-   $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P \
-   examples/example.org.txt
+   $ tonicdnscli bulk_delete -s ns.example.org -u tonicusername -P examples/example.org.txt
    true
 
 Update SOA
@@ -160,10 +166,9 @@ Update SOA
 
 Update SOA record or speficie zone.::
 
-   $ tonicdnscli soa -s ns.example.org -u tonicusername -P \
-   --domain example.org
-   true
-   true
+   $ tonicdnscli soa -s ns.example.org -u tonicusername -P --domain example.org
+   true (<- create record)
+   true (<- delete record)
 
 If you want to update automatically, append next variable to global section of ~/.tdclirc.::
 
@@ -177,8 +182,7 @@ Create zone for MASTER
 
 Master DNS server IP address with `--dnsaddr` option.::
 
-   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
-   --domain example.net --dnsaddr 192.168.0.100
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P --domain example.net --dnsaddr 192.168.0.100
    true
    true
    true
@@ -189,30 +193,27 @@ Create zone for SLAVE
 
 Require `-S` option.::
 
-   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
-   --domain example.net --dnsaddr 192.168.0.100 -S
-   true
-   true
-   true
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P --domain example.net --dnsaddr 192.168.0.100 -S
+   true (<- create template)
+   true (<- create zone)
+   true (<- delete template)
 
 Create zone for NATIVE
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Require `-N` option.::
 
-   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P \
-   --domain example.net --dnsaddr 192.168.0.100 -N
-   true
-   true
-   true
+   $ tonicdnscli zone_create -s ns.example.org -u tonicusername -P --domain example.net --dnsaddr 192.168.0.100 -N
+   true (<- create template)
+   true (<- create zone)
+   true (<- delete template)
 
 Delete zone
 ^^^^^^^^^^^
 
 Delete specific zone.::
 
-   $ tonicdnscli zone_delete -s ns.example.org -u tonicusername -P \
-   --domain example.com
+   $ tonicdnscli zone_delete -s ns.example.org -u tonicusername -P --domain example.com
    true
 
 
@@ -241,8 +242,7 @@ Delete template
 
 Delete specific template.::
 
-   $ tonicdnscli tmpl_delete -s ns.example.org -u tonicusername -P \
-   --template example_com
+   $ tonicdnscli tmpl_delete -s ns.example.org -u tonicusername -P --template example_com
    true
 
 

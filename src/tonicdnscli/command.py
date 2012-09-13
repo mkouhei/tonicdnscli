@@ -21,8 +21,10 @@ import sys
 import json
 import argparse
 import os
+import copy
 import processing
 import connect
+import utils
 from __init__ import __version__
 from converter import JSONConverter
 if sys.version_info > (2, 6) and sys.version_info < (2, 8):
@@ -152,10 +154,17 @@ def get(args):
     else:
         keyword = ''
 
+    if args.__dict__.get('raw_flag'):
+        raw_flag = True
+    else:
+        raw_flag = False
+
     if args.__dict__.get('domain'):
         # When specified zone
         domain = args.domain
-        processing.get_zone(args.server, token, domain, keyword)
+        data = processing.get_zone(args.server, token, domain,
+                                   keyword, raw_flag)
+        return data
 
     else:
         # When get all zones
@@ -236,6 +245,59 @@ def delete(args):
 
     if args.auto_update_soa == 'True':
         update_soa_serial(args)
+
+
+def update(args):
+    """Update a record.
+
+    Argument:
+
+        args: arguments object
+
+    Firstly call delete(), then create().
+    """
+    # Check specifying some new values
+    if (not args.__dict__.get('new_type') and
+        not args.__dict__.get('new_content') and
+        not args.__dict__.get('new_ttl') and
+        not args.__dict__.get('new_priority')):
+        utils.error("Not update any values.")
+
+    args.__dict__['search'] = (args.__dict__.get('name') + ',' +
+                               args.__dict__.get('rtype') + ',' +
+                               args.__dict__.get('content'))
+
+    args.__dict__['raw_flag'] = True
+    data = get(args)
+    if len(data.get('records')) == 1:
+        cur_ttl = data.get('records')[0].get('ttl')
+        cur_priority = data.get('records')[0].get('priority')
+    elif len(data.get('records')) > 1:
+        utils.error("Match multiple records")
+    else:
+        utils.error("No match records")
+
+    new_args = copy.copy(args)
+
+    if new_args.__dict__.get('new_type'):
+        new_args.__dict__['rtype'] = new_args.__dict__.get('new_type')
+
+    if new_args.__dict__.get('new_content'):
+        new_args.__dict__['content'] = new_args.__dict__.get('new_content')
+
+    if new_args.__dict__.get('new_ttl'):
+        new_args.__dict__['ttl'] = new_args.__dict__.get('new_ttl')
+    else:
+        new_args.__dict__['ttl'] = cur_ttl
+
+    if new_args.__dict__.get('new_priority'):
+        new_args.__dict__['priority'] = new_args.__dict__.get('new_priority')
+    else:
+        if cur_priority:
+            new_args.__dict__['priority'] = cur_priority
+
+    delete(args)
+    create(new_args)
 
 
 def retrieve_tmpl(args):
@@ -395,6 +457,16 @@ def set_option(prs, keyword, required=False):
         prs.add_argument('--priority', action='store', default=False,
             help='specify with domain and rtype options as MX|SRV')
 
+    if keyword == 'update':
+        prs.add_argument('--new-type', action='store',
+                         help='specify new value with domain option')
+        prs.add_argument('--new-content', action='store',
+                         help='specify new value with domain option')
+        prs.add_argument('--new-ttl', action='store',
+                         help='specify new value with domain option')
+        prs.add_argument('--new-priority', action='store',
+                         help='specify new value with domain option')
+
     if keyword == 'template':
         msg = 'specify template identifier'
         if required:
@@ -406,7 +478,8 @@ def set_option(prs, keyword, required=False):
 
     if keyword == 'search':
         prs.add_argument('--search', action='store',
-                         help='partial match search')
+                         help='partial match search or refine search.\
+                         latter syntax is "name,rtype,content"')
 
 
 def conn_options(prs, conn):
@@ -475,6 +548,9 @@ def parse_options():
 
     # Delete bulk_records
     parse_bulk_delete(subprs, conn)
+
+    # Update a record
+    parse_update(subprs, conn)
 
     # Update SOA serial
     parse_update_soa(subprs, conn)
@@ -587,6 +663,23 @@ def parse_bulk_delete(prs, conn):
     prs_delete.add_argument('--domain', action='store',
                             help='delete records with specify zone')
     prs_delete.set_defaults(func=delete)
+
+
+def parse_update(prs, conn):
+    """Update a record.
+
+    Arguments:
+
+        prs:  parser object of argparse
+        conn: dictionary of connection information
+    """
+
+    prs_update = prs.add_parser(
+        'update', help='update record of specific zone')
+    set_option(prs_update, 'domain')
+    set_option(prs_update, 'update')
+    conn_options(prs_update, conn)
+    prs_update.set_defaults(func=update)
 
 
 def parse_get_tmpl(prs, conn):
