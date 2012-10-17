@@ -5,6 +5,9 @@
 Tests of command.py
 """
 import unittest
+import sys
+import os.path
+sys.path.append(os.path.abspath('src'))
 import tonicdnscli.command as c
 
 
@@ -13,7 +16,7 @@ class commandTests(unittest.TestCase):
         import os.path
         self.maxDiff = None
         self.sample = os.path.dirname(__file__) + \
-            '/../../../examples/example.org.txt'
+            '/../../examples/example.org.txt'
         self.domain = 'example.org'
         self.cu_records = [{'records':
                          [{'content': '10.10.10.10',

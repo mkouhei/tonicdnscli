@@ -5,6 +5,9 @@
 Tests of converter.py
 """
 import unittest
+import sys
+import os.path
+sys.path.append(os.path.abspath('src'))
 from tonicdnscli.converter import JSONConverter
 from datetime import date
 
@@ -136,7 +139,7 @@ mx.example.org A 10.10.11.10 3600\n""",
     def test_separate_input_file(self):
         import os.path
         sample = os.path.dirname(__file__) + \
-            '/../../../examples/example.org.txt'
+            '/../../examples/example.org.txt'
         o = JSONConverter('example.org')
         with open(sample, 'r') as f:
             o.separate_input_file(f)

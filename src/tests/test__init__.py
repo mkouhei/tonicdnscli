@@ -5,6 +5,9 @@
 Tests of __init__.py
 """
 import unittest
+import sys
+import os.path
+sys.path.append(os.path.abspath('src'))
 import tonicdnscli
 
 

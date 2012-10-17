@@ -10,6 +10,8 @@ if sys.version_info > (2, 6) and sys.version_info < (2, 8):
     import StringIO as io
 elif sys.version_info > (3, 0):
     import io as io
+import os.path
+sys.path.append(os.path.abspath('src'))
 from mock import Mock
 import tonicdnscli.connect as conn
 import tonicdnscli.processing as p
