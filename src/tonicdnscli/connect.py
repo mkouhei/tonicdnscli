@@ -197,7 +197,11 @@ def response(uri, method, res, token='', keyword='',
                 return datas
             else:
                 #print_formatted(datas)
-                utils.pretty_print(datas)
+                if len(uri.split('zone/')) > 1:
+                    domain = uri.split('zone/')[1]
+                else:
+                    domain = ''
+                utils.pretty_print(datas, keyword, domain)
 
     else:
         # response non JSON data

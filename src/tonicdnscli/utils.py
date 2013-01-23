@@ -78,7 +78,8 @@ def get_row_s(row_d, key, col_width, domain=None):
 
         def compare(value, domain):
             if value == domain:
-                return value
+                #return value
+                return ""
             else:
                 return hostname(domain)
         name_ = compare(value, domain)
@@ -114,14 +115,14 @@ def print_bottom(cols_width, domain=0):
     sys.stdout.write("%s\n" % border)
 
 
-def pretty_print(rows):
+def pretty_print(rows, keyword, domain):
     """
     rows is
     list when get domains
     dict when get specific domain
     """
     if isinstance(rows, dict):
-        pretty_print_domain(rows)
+        pretty_print_domain(rows, keyword, domain)
     elif isinstance(rows, list):
         pretty_print_zones(rows)
 
@@ -141,7 +142,14 @@ def pretty_print_zones(rows):
     print_bottom(col_width)
 
 
-def pretty_print_domain(rows):
+def pretty_print_domain(rows, keyword, domain):
+    """
+    Arguments:
+
+        rows:    get response data
+        keyword: search keyword
+
+    """
     if len(rows.get('records')) == 0:
         return None
 
@@ -168,56 +176,58 @@ def pretty_print_domain(rows):
     cols_width_sorted = [cw_[1], cw_[5], cw_[2],
                          cw_[3], cw_[0], cw_[4]]
 
-    soa_s = ('zone:        ' + soa.get('name') + '\n' +
-             'SOA record:  ' + soa.get('content') + '\n' +
-             'ttl:         ' + soa.get('ttl') + '\n' +
-             'change date: ' + soa.get('change_date'))
+    if isinstance(soa, dict):
+        soa_s = ('zone:        ' + soa.get('name') + '\n' +
+                 'SOA record:  ' + soa.get('content') + '\n' +
+                 'ttl:         ' + soa.get('ttl') + '\n' +
+                 'change date: ' + soa.get('change_date'))
+        domain = soa.get('name')
+        print(soa_s)
 
-    domain = soa.get('name')
+    print domain
 
-    print(soa_s)
-    print_header(cols_width_sorted, header_l_sorted, len(domain))
-
-    str_value = ''
-    for row in rows.get('records'):
-        if row.get('type') == 'SOA':
-            pass
-        else:
-            # name
-            if row.get('name'):
-                str_value = get_row_s(row, 'name',
-                                      cols_width_sorted[0],
-                                      domain=soa.get('name'))
-                sys.stdout.write("|%s" % str_value)
-            # type
-            if row.get('type'):
-                str_value = get_row_s(row, 'type',
-                                      cols_width_sorted[1])
-                sys.stdout.write("|%s" % str_value)
-            # content
-            if row.get('content'):
-                str_value = get_row_s(row, 'content',
-                                      cols_width_sorted[2])
-                sys.stdout.write("|%s" % str_value)
-            # ttl
-            if row.get('ttl'):
-                str_value = get_row_s(row, 'ttl',
-                                      cols_width_sorted[3])
-                sys.stdout.write("|%s" % str_value)
-            # priority
-            if row.get('priority') is None:
-                val = {'priority': '-'}
+    if keyword != 'SOA':
+        print_header(cols_width_sorted, header_l_sorted, len(domain))
+        str_value = ''
+        for row in rows.get('records'):
+            if row.get('type') == 'SOA':
+                pass
             else:
-                val = row.copy()
-            str_value = get_row_s(val, 'priority',
-                                  cols_width_sorted[4])
-            sys.stdout.write("|%s" % str_value)
-            if row.get('change_date') is None:
-                val = {'change_date': '-'}
-            else:
-                val = row.copy()
-            str_value = get_row_s(val, 'change_date',
-                                  cols_width_sorted[5])
-            print("|%s|" % str_value)
+                # name
+                if row.get('name'):
+                    str_value = get_row_s(row, 'name',
+                                          cols_width_sorted[0],
+                                          domain=domain)
+                    sys.stdout.write("|%s" % str_value)
+                # type
+                if row.get('type'):
+                    str_value = get_row_s(row, 'type',
+                                          cols_width_sorted[1])
+                    sys.stdout.write("|%s" % str_value)
+                # content
+                if row.get('content'):
+                    str_value = get_row_s(row, 'content',
+                                          cols_width_sorted[2])
+                    sys.stdout.write("|%s" % str_value)
+                # ttl
+                if row.get('ttl'):
+                    str_value = get_row_s(row, 'ttl',
+                                          cols_width_sorted[3])
+                    sys.stdout.write("|%s" % str_value)
+                # priority
+                if row.get('priority') is None:
+                    val = {'priority': '-'}
+                else:
+                    val = row.copy()
+                str_value = get_row_s(val, 'priority',
+                                      cols_width_sorted[4])
+                sys.stdout.write("|%s" % str_value)
+                if row.get('change_date') is None:
+                    val = {'change_date': '-'}
+                else:
+                    val = row.copy()
+                str_value = get_row_s(val, 'change_date',
+                                      cols_width_sorted[5])
+                print("|%s|" % str_value)
 
-    print_bottom(cols_width_sorted, len(domain))
+        print_bottom(cols_width_sorted, len(domain))
