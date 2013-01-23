@@ -182,19 +182,22 @@ def response(uri, method, res, token='', keyword='',
 
             if len(uri.split('/')) == 5:
                 # when specify template identfier
-                print_formatted(datas)
+                #print_formatted(datas)
+                utils.pretty_print(datas)
 
             else:
                 # when get all templates
                 for data in datas:
-                    print_formatted(data)
+                    #print_formatted(data)
+                    utils.pretty_print(datas)
 
         else:
             # 'get' subcommand
             if raw_flag:
                 return datas
             else:
-                print_formatted(datas)
+                #print_formatted(datas)
+                utils.pretty_print(datas)
 
     else:
         # response non JSON data

@@ -6,38 +6,26 @@ Tests of connect.py
 """
 import unittest
 from minimock import mock, Mock, restore
-import tonicdnscli.connect as conn
 import sys
 if sys.version_info > (2, 6) and sys.version_info < (2, 8):
     import StringIO as io
 elif sys.version_info > (3, 0):
     import io as io
-import os.path
-sys.path.append(os.path.abspath('src'))
 if sys.version_info > (2, 6) and sys.version_info < (2, 8):
     import urllib2 as urllib
 elif sys.version_info > (3, 0):
     import urllib.request as urllib
+import os.path
+sys.path.append(os.path.abspath('src'))
+import tonicdnscli.connect as conn
+import tests.test_vars as v
 
 
 class connectTests(unittest.TestCase):
     def setUp(self):
+        self.datajson = v.datajson
 
-        self.datajson = '''{"name": "example.org", "type": "MASTER",
-"notified_serial": "2012042701",
-"records": [{"name": "example.org", "type": "SOA", "content":
-"ns.example.org hostmaster.example.org 2012020501 3600 900 86400 3600",
-"ttl": "86400", "priority": null, "change_date": "1328449038"},
-{"name": "example.org", "type": "NS", "content": "ns.example.org",
-"ttl": "86400", "priority": null, "change_date":"1328449038"}]}'''
-
-        self.datadict = {"name": "example.org", "type": "MASTER",
-"notified_serial": "2012042701",
-"records": [{"name": "example.org", "type": "SOA", "content":
-"ns.example.org hostmaster.example.org 2012020501 3600 900 86400 3600",
-"ttl": "86400", "priority": False, "change_date": "1328449038"},
-{"name": "example.org", "type": "NS", "content": "ns.example.org",
-"ttl": "86400", "priority": False, "change_date":"1328449038"}]}
+        self.datadict = v.datadict
 
         urllib.build_opener = Mock('build_opener',
             returns=Mock('opener',
@@ -46,8 +34,8 @@ class connectTests(unittest.TestCase):
                         read=Mock('opener.open.read',
                             returns=self.datajson)))))
 
-        self.uri = 'https://ns.example.org'
-        self.token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
+        self.uri = v.uri
+        self.token = v.token
         self.data = ''
 
     def tearDown(self):
