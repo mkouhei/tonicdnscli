@@ -155,7 +155,7 @@ def pretty_print_domain(rows, keyword, domain):
 
     # six columns; priority, name, content, ttl, change_date, type
     header_l = ['prio', 'name', 'content',
-                 'ttl', 'change date', 'type']
+                'ttl', 'change date', 'type']
     # 0->4, 1->0, 2->2, 3->3, 4->5, 5->1
     header_l_sorted = ['name', 'type', 'content',
                        'ttl', 'prio', 'change date']

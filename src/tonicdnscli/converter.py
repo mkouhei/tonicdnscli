@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     Copyright (C) 2012 Kouhei Maeda <mkouhei@palmtb.net>
@@ -57,12 +56,10 @@ class JSONConverter(object):
             "name": self.check_key(line, 0),
             "type": self.check_key(line, 1),
             "content": self.check_key(line, 2),
-            "ttl": int(self.check_key(line, 3))
-            }
+            "ttl": int(self.check_key(line, 3))}
         if self.check_key(line, 4):
             d.update(
-                {"priority": int(self.check_key(line, 4))}
-                )
+                {"priority": int(self.check_key(line, 4))})
         self.records.append(d)
 
     def generate_template(self, domain, ipaddr, desc):
@@ -70,24 +67,22 @@ class JSONConverter(object):
         serial = date.strftime(date.today(), '%Y%m%d') + '01'
         ns = 'ns.' + domain
         soa = (ns + ' hostmaster.' + domain +
-            ' ' + serial + ' ' + self.refresh + ' ' + self.retry +
-            ' ' + self.expire + ' ' + str(self.ttl))
+               ' ' + serial + ' ' + self.refresh + ' ' + self.retry +
+               ' ' + self.expire + ' ' + str(self.ttl))
         self.record = {
-                'identifier': domain.replace('.', '_'),
-                'description': desc,
-                'entries': [
+            'identifier': domain.replace('.', '_'),
+            'description': desc,
+            'entries': [
                 self.record(domain, 'SOA', soa),
                 self.record(domain, 'NS', ns),
-                self.record(ns, 'A', ipaddr)
-                ]}
+                self.record(ns, 'A', ipaddr)]}
 
     def record(self, name, rtype, content):
         record_d = {
             'name': name,
             'type': rtype,
             'content': content,
-            'ttl': self.ttl
-            }
+            'ttl': self.ttl}
         return record_d
 
     def generate_zone(self, domain, template, dtype, master=None):
@@ -97,10 +92,7 @@ class JSONConverter(object):
             "name": domain,
             "type": dtype,
             "master": master,
-            "templates": [
-                {"identifier": template}
-                ]
-            }
+            "templates": [{"identifier": template}]}
 
     def check_key(self, key, index):
         import re
@@ -172,6 +164,7 @@ class JSONConverter(object):
             serial = str(int(cur_serial) + 1)
 
         new_record['content'] = (mname + ' ' + rname + ' ' +
-            serial + ' ' + self.refresh + ' ' + self.retry + ' ' +
-            self.expire + ' ' + str(self.ttl))
+                                 serial + ' ' + self.refresh +
+                                 ' ' + self.retry + ' ' +
+                                 self.expire + ' ' + str(self.ttl))
         return new_record

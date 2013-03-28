@@ -30,14 +30,13 @@ example.org MX mx2.example.org 86400 10
 mx.example.org A 10.10.11.10 3600
 mx2.example.org A\t\t10.10.11.10 3600
 """]
-        self.list2 = ["""test0.example.org A 10.10.10.10 86400
-test1.example.org A 10.10.10.11 86400
-test2.example.org A 10.10.10.12 86400\n""",
-"""example.org MX mx.example.org 86400 0
-example.org MX mx2.example.org 86400 10
-mx.example.org A 10.10.11.10 3600\n""",
-'mx2.example.org A\t\t10.10.11.10 3600\n']
-
+        self.list2 = ['test0.example.org A 10.10.10.10 86400\n'
+                      'test1.example.org A 10.10.10.11 86400\n'
+                      'test2.example.org A 10.10.10.12 86400\n',
+                      'example.org MX mx.example.org 86400 0\n'
+                      'example.org MX mx2.example.org 86400 10\n'
+                      'mx.example.org A 10.10.11.10 3600\n',
+                      'mx2.example.org A\t\t10.10.11.10 3600\n']
         self.list3 = [{'name': 'test0.example.org', 'type': 'A',
                        'content': '10.10.10.10', 'ttl': 86400}]
         self.list4 = [{'name': 'example.org', 'type': 'MX',
@@ -67,24 +66,21 @@ mx.example.org A 10.10.11.10 3600\n""",
             'type': 'SOA',
             'content': 'ns.example.org postmaster.example.org 2012040501',
             'ttl': 86400,
-            'priority': None
-            }
+            'priority': None}
         today = date.strftime(date.today(), '%Y%m%d')
         self.today_cur_soa = {
             'name': 'example.org',
             'type': 'SOA',
             'content': 'ns.example.org postmaster.example.org ' + today + '01',
             'ttl': 86400,
-            'priority': None
-            }
+            'priority': None}
         self.new_soa = {
             'name': 'example.org',
             'type': 'SOA',
             'content': 'ns.example.org postmaster.example.org '
             + today + '01 3600 900 86400 3600',
             'ttl': 86400,
-            'priority': None
-            }
+            'priority': None}
         self.content = {
             'domain': 'example.org',
             'mname': 'ns.example.org',
@@ -92,8 +88,7 @@ mx.example.org A 10.10.11.10 3600\n""",
             'refresh': 3600,
             'retry': 900,
             'expire': 86400,
-            'minimum': 3600
-            }
+            'minimum': 3600}
 
     def test__init__(self):
         o = JSONConverter('example.org')
@@ -134,7 +129,7 @@ mx.example.org A 10.10.11.10 3600\n""",
         o2 = JSONConverter('example.org')
         o2.generata_data(False)
         self.assertListEqual([{'records': [], 'name': 'example.org'}],
-                          o2.dict_records)
+                             o2.dict_records)
 
     def test_separate_input_file(self):
         import os.path

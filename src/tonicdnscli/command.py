@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     Copyright (C) 2012 Kouhei Maeda <mkouhei@palmtb.net>
@@ -181,8 +180,8 @@ def create(args):
     # for PUT HTTP method
     action = True
 
-    if (args.__dict__.get('domain') and args.__dict__.get('name')
-        and args.__dict__.get('rtype') and args.__dict__.get('content')):
+    if ((args.__dict__.get('domain') and args.__dict__.get('name')
+         and args.__dict__.get('rtype') and args.__dict__.get('content'))):
         # for create sub-command
 
         domain = args.domain
@@ -219,8 +218,8 @@ def delete(args):
     # for DELETE HTTP method
     action = False
 
-    if (args.__dict__.get('domain') and args.__dict__.get('name')
-        and args.__dict__.get('rtype') and args.__dict__.get('content')):
+    if ((args.__dict__.get('domain') and args.__dict__.get('name')
+         and args.__dict__.get('rtype') and args.__dict__.get('content'))):
         # for delete sub-command
 
         domain = args.domain
@@ -257,10 +256,10 @@ def update(args):
     Firstly call delete(), then create().
     """
     # Check specifying some new values
-    if (not args.__dict__.get('new_type') and
-        not args.__dict__.get('new_content') and
-        not args.__dict__.get('new_ttl') and
-        not args.__dict__.get('new_priority')):
+    if ((not args.__dict__.get('new_type') and
+         not args.__dict__.get('new_content') and
+         not args.__dict__.get('new_ttl') and
+         not args.__dict__.get('new_priority'))):
         utils.error("Not update any values.")
 
     args.__dict__['search'] = (args.__dict__.get('name') + ',' +
@@ -441,11 +440,11 @@ def set_option(prs, keyword, required=False):
 
     if keyword == 'infile':
         prs.add_argument('infile', action='store',
-                           help='pre-converted text file')
+                         help='pre-converted text file')
 
     if keyword == 'domain':
         prs.add_argument('--domain', action='store', required=True,
-                           help='create record with specify domain')
+                         help='create record with specify domain')
         prs.add_argument('--name', action='store', required=True,
                          help='specify with domain option')
         prs.add_argument('--rtype', action='store', required=True,
@@ -453,9 +452,10 @@ def set_option(prs, keyword, required=False):
         prs.add_argument('--content', action='store', required=True,
                          help='specify with domain option')
         prs.add_argument('--ttl', action='store', default='3600',
-                     help='specify with domain option, default 3600')
+                         help='specify with domain option, default 3600')
         prs.add_argument('--priority', action='store', default=False,
-            help='specify with domain and rtype options as MX|SRV')
+                         help='specify with domain and '
+                         'rtype options as MX|SRV')
 
     if keyword == 'update':
         prs.add_argument('--new-type', action='store',
@@ -519,7 +519,7 @@ def parse_options():
 
     prs = argparse.ArgumentParser(description='usage')
     prs.add_argument('-v', '--version', action='version',
-                        version=__version__)
+                     version=__version__)
     if os.environ.get('HOME'):
         config_file = os.environ.get('HOME') + '/.tdclirc'
         if os.path.isfile(config_file):
@@ -579,7 +579,7 @@ def parse_show(prs):
         prs:  parser object of argparse
     """
     prs_show = prs.add_parser('show',
-                                    help='show converted JSON')
+                              help='show converted JSON')
     set_option(prs_show, 'infile')
     prs_show.set_defaults(func=show)
 
@@ -722,7 +722,7 @@ def parse_update_soa(prs, conn):
     """
     prs_soa = prs.add_parser('soa', help='update SOA record')
     prs_soa.add_argument('--domain', action='store', required=True,
-                            help='specify domain FQDN')
+                         help='specify domain FQDN')
     prs_soa.add_argument('--mname', action='store',
                          help='specify MNAME of SOA record')
     prs_soa.add_argument('--rname', action='store',
@@ -751,7 +751,7 @@ def parse_create_zone(prs, conn):
     prs_zone_create.add_argument(
         '--domain', action='store', required=True, help='specify zone')
     prs_zone_create.add_argument('--dnsaddr', action='store', required=True,
-        help='specify IP address of DNS master')
+                                 help='specify IP address of DNS master')
     group_zone_create = prs_zone_create.add_mutually_exclusive_group()
     group_zone_create.add_argument('-S', action='store_true',
                                    help='create zone to SLAVE')

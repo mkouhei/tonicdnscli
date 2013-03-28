@@ -27,11 +27,16 @@ class connectTests(unittest.TestCase):
 
         self.datadict = v.datadict
 
-        urllib.build_opener = Mock('build_opener',
-            returns=Mock('opener',
-                open=Mock('opener.open',
-                    returns=Mock('opener.open',
-                        read=Mock('opener.open.read',
+        urllib.build_opener = Mock(
+            'build_opener',
+            returns=Mock(
+                'opener',
+                open=Mock(
+                    'opener.open',
+                    returns=Mock(
+                        'opener.open',
+                        read=Mock(
+                            'opener.open.read',
                             returns=self.datajson)))))
 
         self.uri = v.uri

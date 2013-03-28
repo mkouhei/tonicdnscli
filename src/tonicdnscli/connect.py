@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     Copyright (C) 2012 Kouhei Maeda <mkouhei@palmtb.net>
@@ -44,8 +43,7 @@ def get_token(username, password, server):
     authinfo = {
         "username": username,
         "password": password,
-        "local_user": username
-        }
+        "local_user": username}
 
     token = tonicdns_client(uri, method, token, data=authinfo)
 
@@ -238,18 +236,18 @@ def search_record(datas, keyword):
 
         if key_name and key_type:
             if key_content:
-                if (record['name'].find(key_name) > -1 and
-                    record['type'] == key_type and
-                    record['content'].find(key_content) > -1):
+                if ((record['name'].find(key_name) > -1 and
+                     record['type'] == key_type and
+                     record['content'].find(key_content) > -1)):
                     result.append(record)
             else:
-                if (record['name'].find(key_name) > -1 and
-                    record['type'] == key_type):
+                if ((record['name'].find(key_name) > -1 and
+                     record['type'] == key_type)):
                     result.append(record)
 
-        elif (record['name'].find(keyword) >= 0 or
-            record['content'].find(keyword) >= 0 or
-            record['type'] == keyword):
+        elif ((record['name'].find(keyword) >= 0 or
+               record['content'].find(keyword) >= 0 or
+               record['type'] == keyword)):
             result.append(record)
 
     return result

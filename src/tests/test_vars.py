@@ -26,7 +26,7 @@ datadict = {"name": "example.org", "type": "MASTER",
             {"name": "example.org", "type": "NS",
              "content": "ns.example.org",
              "ttl": "86400", "priority": False,
-             "change_date":"1328449038"}]}
+             "change_date": "1328449038"}]}
 
 uri = 'https://ns.example.org'
 token = 'efb9fc406a15bf9bdc60f52b36c14bcc6a1fd041'
