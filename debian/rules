@@ -20,3 +20,5 @@ override_dh_install:
 	dh_install
 	find $(CURDIR)/debian/python-tonicdnscli -name "*pyc" -delete
 	find $(CURDIR)/debian/python-tonicdnscli -type d -a -empty -delete
+	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/share/pyshared/tonicdnscli_tests
+	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/lib/python2.7/dist-packages/tonicdnscli_tests
