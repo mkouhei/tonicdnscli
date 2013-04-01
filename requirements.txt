@@ -1,2 +1,2 @@
-pep8==1.2
+pep8==1.4
 minimock

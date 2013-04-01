@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Copyright (C) 2012 Kouhei Maeda <mkouhei@palmtb.net>
+    Copyright (C) 2012, 2013 Kouhei Maeda <mkouhei@palmtb.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,8 +43,7 @@ def get_token(username, password, server):
     authinfo = {
         "username": username,
         "password": password,
-        "local_user": username
-        }
+        "local_user": username}
 
     token = tonicdns_client(uri, method, token, data=authinfo)
 
@@ -182,19 +180,26 @@ def response(uri, method, res, token='', keyword='',
 
             if len(uri.split('/')) == 5:
                 # when specify template identfier
-                print_formatted(datas)
+                #print_formatted(datas)
+                utils.pretty_print(datas)
 
             else:
                 # when get all templates
                 for data in datas:
-                    print_formatted(data)
+                    #print_formatted(data)
+                    utils.pretty_print(datas)
 
         else:
             # 'get' subcommand
             if raw_flag:
                 return datas
             else:
-                print_formatted(datas)
+                #print_formatted(datas)
+                if len(uri.split('zone/')) > 1:
+                    domain = uri.split('zone/')[1]
+                else:
+                    domain = ''
+                utils.pretty_print(datas, keyword, domain)
 
     else:
         # response non JSON data
@@ -231,18 +236,18 @@ def search_record(datas, keyword):
 
         if key_name and key_type:
             if key_content:
-                if (record['name'].find(key_name) > -1 and
-                    record['type'] == key_type and
-                    record['content'].find(key_content) > -1):
+                if ((record['name'].find(key_name) > -1 and
+                     record['type'] == key_type and
+                     record['content'].find(key_content) > -1)):
                     result.append(record)
             else:
-                if (record['name'].find(key_name) > -1 and
-                    record['type'] == key_type):
+                if ((record['name'].find(key_name) > -1 and
+                     record['type'] == key_type)):
                     result.append(record)
 
-        elif (record['name'].find(keyword) >= 0 or
-            record['content'].find(keyword) >= 0 or
-            record['type'] == keyword):
+        elif ((record['name'].find(keyword) >= 0 or
+               record['content'].find(keyword) >= 0 or
+               record['type'] == keyword)):
             result.append(record)
 
     return result

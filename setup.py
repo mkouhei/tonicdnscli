@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Copyright (C) 2012 Kouhei Maeda <mkouhei@palmtb.net>
+    Copyright (C) 2012, 2013 Kouhei Maeda <mkouhei@palmtb.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -56,14 +55,14 @@ setup(name='tonicdnscli',
       install_requires=requires,
       extras_require=dict(
         test=[
-            'Nose',
+            'pytest',
             'pep8',
             'unittest',
             'minimock',
             ],
         ),
-      test_suite='nose.collector',
-      tests_require=['Nose','pep8','minimock'],
+      test_suite='tests',
+      tests_require=['pytest','pep8','minimock'],
       entry_points="""
         [console_scripts]
         tonicdnscli = tonicdnscli.command:main
