@@ -88,11 +88,12 @@ Retrieve all zones
 Get all zones and print.::
 
    $ tonicdnscli get -u tonicusername -P
-   ==============================================================================
-   name                 type     notified_serial
-   ==============================================================================
-   example.org          MASTER   2012052201
-   example.net          MASTER   2012060502
+   +-------------+--------+-----------------+
+   | name        | type   | notified_serial |
+   +-------------+--------+-----------------+
+   | example.org | MASTER | 2012052201      |
+   | example.net | MASTER | 2012060502      |
+   +-------------+--------+-----------------+
 
 
 Retrieve records
@@ -101,20 +102,20 @@ Retrieve records
 Get records of specific zone and print.::
 
    $ tonicdnscli get -s ns.example.org -d example.org -u tonicusername -P
-   domain: example.org
-   serial: 2012042403
-   DNS   : MASTER
-   ==============================================================================
-   name                              type  content                   ttl   prio
-   ==============================================================================
-   example.org                       SOA  
-   >            ns.example.org hostmaster.example.org 2012042403  86400 
-   example.org                       NS    ns.example.org            86400 
-   example.org                       NS    ns2.example.org           86400 
-   ns.example.org                    A     192.168.0.100             86400 
-   ns2.example.org                   A     192.168.0.101             86400 
-   www.example.org                   A     192.168.0.1               86400 
-   ==============================================================================
+   zone:        example.org
+   SOA record:  ns.example.org hostmaster.example.org 2012042403
+   ttl:         86400 
+   change date: 1341314161
+   example.org
+   +------+------+-----------------+-------+------+-------------+
+   | name | type | content         | ttl   | prio | change date |
+   +------+------+-----------------+-------+------+-------------+
+   |      | NS   | ns.example.org  | 86400 | -    | -           |
+   |      | NS   | ns2.example.org | 86400 | -    | -           |
+   | ns.  | A    | 192.168.0.100   | 86400 | -    | -           |
+   | ns2. | A    | 192.168.0.101   | 86400 | -    | -           |
+   | www. | A    | 192.168.0.1     | 86400 | -    | -           |
+   +------+------+-----------------+-------+------+-------------+
 
 
 Create single record
@@ -253,9 +254,9 @@ Firstly copy pre-commit hook script.::
 
    $ cp -f utils/pre-commit.txt .git/hooks/pre-commit
 
-Next install python2.7 later, and nosetests. Below in Debian GNU/Linux Sid system,::
+Next install python2.7 later, and py.test. Below in Debian GNU/Linux Sid system,::
 
-   $ sudo apt-get install python python-nose
+   $ sudo apt-get install python python-pytest
 
 Then checkout 'devel' branch for development, commit your changes. Before pull request, execute git rebase.
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -65,6 +64,3 @@ class connectTests(unittest.TestCase):
         sys.stdout = ostdout
         dumpout.seek(0)
         self.assert_(dumpout.getvalue())
-
-if __name__ == '__main__':
-    unittest.main()

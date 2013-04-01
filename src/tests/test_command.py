@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -74,6 +73,3 @@ class commandTests(unittest.TestCase):
                           c.set_json(self.domain, True, record=self.record))
         self.assertEquals(self.d_r_record,
                           c.set_json(self.domain, False, record=self.record))
-
-if __name__ == '__main__':
-    unittest.main()

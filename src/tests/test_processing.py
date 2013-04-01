@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -110,6 +109,3 @@ class processingTests(unittest.TestCase):
         dumpout.seek(0)
         dumpout.getvalue()
         self.assertEquals('true\n', dumpout.getvalue())
-
-if __name__ == '__main__':
-    unittest.main()

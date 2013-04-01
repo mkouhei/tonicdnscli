@@ -1,6 +1,12 @@
 History
 -------
 
+0.10 (2013-04-01)
+^^^^^^^^^^^^^^^^^
+
+* Change format of pretty print
+* move test directory
+
 0.9 (2012-09-13)
 ^^^^^^^^^^^^^^^^
 
