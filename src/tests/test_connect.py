@@ -17,7 +17,7 @@ elif sys.version_info > (3, 0):
 import os.path
 sys.path.append(os.path.abspath('src'))
 import tonicdnscli.connect as conn
-import tests.test_vars as v
+import test_vars as v
 
 
 class connectTests(unittest.TestCase):

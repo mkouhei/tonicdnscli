@@ -7,7 +7,7 @@ import unittest
 import sys
 import os.path
 sys.path.append(os.path.abspath('src'))
-import tests.test_vars as v
+import test_vars as v
 import tonicdnscli.utils as u
 
 

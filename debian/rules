@@ -14,9 +14,9 @@
 
 override_dh_auto_test:
 	set -e; \
-	PYTHONPATH=$(CURDIR)/src py.test -v
+	py.test -v $(CURDIR)/_build
 
 override_dh_install:
 	dh_install
-	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/share/pyshared/tonicdnscli/tests
-	rm -rf $(CURDIR)/debian/python-tonicdnscli/usr/lib/python2.7/dist-packages/tonicdnscli/tests
+	find $(CURDIR)/debian/python-tonicdnscli -name "*pyc" -delete
+	find $(CURDIR)/debian/python-tonicdnscli -type d -a -empty -delete
