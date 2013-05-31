@@ -62,12 +62,12 @@ def generate_row_s(row, columns_width, domain):
 
     for i, column in enumerate(row_l):
         if i == 0:
-            row_s += ('| ' + column + ' ' *
+            row_s += (column + ' ' *
                       (columns_width[i] - len(column) - domain + 1))
         else:
-            row_s += ('| ' + column + ' ' *
+            row_s += (column + ' ' *
                       (columns_width[i] - len(column) + 1))
-    row_s += '|'
+    row_s += ' '
     return row_s
 
 
@@ -85,20 +85,20 @@ def get_row_s(row_d, key, col_width, domain=None):
         name_ = compare(value, domain)
 
         if domain:
-            return (" " + name_ + " " *
+            return (name_ + " " *
                     (col_width - len(name_) - len(domain) + 1))
         else:
-            return (" " + name_ + " " *
+            return (name_ + " " *
                     (col_width - len(name_) + 1))
 
 
 def print_header(cols_width, col_header_l, domain=0):
-    border = '+'
+    border = ''
     for i, col_width in enumerate(cols_width):
         if i == 0:
-            border += "-" * (col_width - domain + 1) + '-+'
+            border += "-" * (col_width - domain) + '-'
         else:
-            border += "-" * (col_width + 1) + '-+'
+            border += "-" * (col_width) + '-'
 
     sys.stdout.write("%s\n" % border)
     print(generate_row_s(col_header_l, cols_width, domain))
@@ -106,12 +106,12 @@ def print_header(cols_width, col_header_l, domain=0):
 
 
 def print_bottom(cols_width, domain=0):
-    border = '+'
+    border = ''
     for i, col_width in enumerate(cols_width):
         if i == 0:
-            border += "-" * (col_width - domain + 1) + '-+'
+            border += "-" * (col_width - domain) + '-'
         else:
-            border += "-" * (col_width + 1) + '-+'
+            border += "-" * (col_width) + '-'
     sys.stdout.write("%s\n" % border)
 
 
@@ -198,22 +198,22 @@ def pretty_print_domain(rows, keyword, domain):
                     str_value = get_row_s(row, 'name',
                                           cols_width_sorted[0],
                                           domain=domain)
-                    sys.stdout.write("|%s" % str_value)
+                    sys.stdout.write("%s" % str_value)
                 # type
                 if row.get('type'):
                     str_value = get_row_s(row, 'type',
                                           cols_width_sorted[1])
-                    sys.stdout.write("|%s" % str_value)
+                    sys.stdout.write("%s" % str_value)
                 # content
                 if row.get('content'):
                     str_value = get_row_s(row, 'content',
                                           cols_width_sorted[2])
-                    sys.stdout.write("|%s" % str_value)
+                    sys.stdout.write("%s" % str_value)
                 # ttl
                 if row.get('ttl'):
                     str_value = get_row_s(row, 'ttl',
                                           cols_width_sorted[3])
-                    sys.stdout.write("|%s" % str_value)
+                    sys.stdout.write("%s" % str_value)
                 # priority
                 if row.get('priority') is None:
                     val = {'priority': '-'}
@@ -221,13 +221,13 @@ def pretty_print_domain(rows, keyword, domain):
                     val = row.copy()
                 str_value = get_row_s(val, 'priority',
                                       cols_width_sorted[4])
-                sys.stdout.write("|%s" % str_value)
+                sys.stdout.write("%s" % str_value)
                 if row.get('change_date') is None:
                     val = {'change_date': '-'}
                 else:
                     val = row.copy()
                 str_value = get_row_s(val, 'change_date',
                                       cols_width_sorted[5])
-                print("|%s|" % str_value)
+                print("%s" % str_value)
 
         print_bottom(cols_width_sorted, len(domain))
